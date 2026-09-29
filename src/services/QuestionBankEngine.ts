@@ -15,6 +15,27 @@ export interface RawFilePayload {
   rawBaseUrl?: string;
 }
 
+export function buildQuestionContentFingerprint(
+  subject: string,
+  questionText: string,
+  options?: [string, string, string, string]
+): string {
+  const cleanText = String(questionText || '')
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[^a-z0-9\\{}^_+-=]/g, '');
+  const cleanOpts = options
+    ? options
+        .map((o) =>
+          String(o || '')
+            .toLowerCase()
+            .replace(/\s+/g, '')
+        )
+        .join('|')
+    : '';
+  return `${subject.toLowerCase()}::${cleanText}::${cleanOpts}`;
+}
+
 function normalizeSubject(raw: unknown, filePath: string): SubjectName | null {
   const str = String(raw || '').trim().toLowerCase();
   const pathLower = filePath.toLowerCase();
@@ -192,6 +213,7 @@ export class QuestionBankEngine {
 
     const issues: QuestionValidationIssue[] = [];
     const duplicateIds: string[] = [];
+    const seenContentFingerprints = new Map<string, string>();
     let totalRawRecords = 0;
     let missingSolutionsCount = 0;
     let brokenImagesCount = 0;
@@ -311,6 +333,24 @@ export class QuestionBankEngine {
         }
 
         const options = extractOptions(raw);
+        const contentFingerprint = buildQuestionContentFingerprint(
+          subject,
+          questionText,
+          options || undefined
+        );
+        const existingIdForContent = seenContentFingerprints.get(contentFingerprint);
+        if (existingIdForContent) {
+          duplicateIds.push(id);
+          issues.push({
+            id,
+            sourceFile: filePath,
+            reason: 'duplicate_id',
+            message: `Duplicate question content detected in "${id}" (identical to question "${existingIdForContent}").`,
+            severity: 'error',
+          });
+          continue;
+        }
+
         const rawAnswer =
           raw.correctAnswer ?? raw.answer ?? raw.ans ?? raw.correct_option ?? raw.correct ?? raw.key;
         const qType = normalizeQuestionType(raw.type ?? raw.questionType ?? raw.format, Boolean(options), rawAnswer);
@@ -448,6 +488,7 @@ export class QuestionBankEngine {
           rawSourceId: String(raw.id ?? id),
         };
 
+        seenContentFingerprints.set(contentFingerprint, id);
         this.indexQuestion(normalizedQuestion);
       }
     }
@@ -568,11 +609,17 @@ export class QuestionBankEngine {
     chaptersBySubject: Partial<Record<SubjectName, string[]>>
   ): NormalizedQuestion[] {
     const result: NormalizedQuestion[] = [];
+    const seen = new Set<string>();
     for (const [sub, chapters] of Object.entries(chaptersBySubject) as [SubjectName, string[]][]) {
       if (!chapters) continue;
       for (const chap of chapters) {
         const list = this.getQuestionsByChapter(sub, chap);
-        result.push(...list);
+        for (const q of list) {
+          if (!seen.has(q.id)) {
+            seen.add(q.id);
+            result.push(q);
+          }
+        }
       }
     }
     return result;

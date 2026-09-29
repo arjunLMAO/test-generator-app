@@ -13,7 +13,10 @@ import {
   TestQuestionAllocation,
   TestStatus,
 } from '../types/jee';
-import { QuestionBankEngine } from './QuestionBankEngine';
+import {
+  QuestionBankEngine,
+  buildQuestionContentFingerprint,
+} from './QuestionBankEngine';
 
 export interface TestGenerationRequest {
   userId: string;
@@ -107,16 +110,33 @@ export class TestGeneratorService {
     chapterWeaknessMap: Map<string, number>,
     weights: AdaptiveWeightConfig,
     mode: TestMode,
-    rng: () => number
+    rng: () => number,
+    globalUsedIds: Set<string>,
+    globalUsedFingerprints: Set<string>
   ): NormalizedQuestion[] {
-    const typedPool = pool.filter((q) => q.type === qType);
-    if (typedPool.length <= targetCount) {
-      return [...typedPool];
+    // Deduplicate candidate pool by both ID and normalized question content fingerprint
+    const uniqueTypedPool: NormalizedQuestion[] = [];
+    const localSeenIds = new Set<string>(globalUsedIds);
+    const localSeenFingerprints = new Set<string>(globalUsedFingerprints);
+
+    for (const q of pool) {
+      if (q.type !== qType) continue;
+      const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+      if (localSeenIds.has(q.id) || localSeenFingerprints.has(fp)) {
+        continue;
+      }
+      localSeenIds.add(q.id);
+      localSeenFingerprints.add(fp);
+      uniqueTypedPool.push(q);
+    }
+
+    if (uniqueTypedPool.length <= targetCount) {
+      return [...uniqueTypedPool];
     }
 
     // Group by chapter so we distribute evenly across selected chapters
     const byChap = new Map<string, NormalizedQuestion[]>();
-    for (const q of typedPool) {
+    for (const q of uniqueTypedPool) {
       const list = byChap.get(q.chapter) || [];
       list.push(q);
       byChap.set(q.chapter, list);
@@ -137,12 +157,16 @@ export class TestGeneratorService {
       hard: targetHard,
     };
 
-    const selectedIds = new Set<string>();
+    const selectedIds = new Set<string>(globalUsedIds);
+    const selectedFingerprints = new Set<string>(globalUsedFingerprints);
     const selected: NormalizedQuestion[] = [];
 
     // Weighted picker helper from a candidate array
     const pickWeighted = (candidates: NormalizedQuestion[]): NormalizedQuestion | null => {
-      const available = candidates.filter((c) => !selectedIds.has(c.id));
+      const available = candidates.filter((c) => {
+        const fp = buildQuestionContentFingerprint(c.subject, c.question, c.options);
+        return !selectedIds.has(c.id) && !selectedFingerprints.has(fp);
+      });
       if (available.length === 0) return null;
 
       // Prefer questions matching remaining difficulty quota if possible
@@ -174,8 +198,10 @@ export class TestGeneratorService {
         const chapCandidates = byChap.get(chap) || [];
         const picked = pickWeighted(chapCandidates);
         if (picked) {
+          const fp = buildQuestionContentFingerprint(picked.subject, picked.question, picked.options);
           selected.push(picked);
           selectedIds.add(picked.id);
+          selectedFingerprints.add(fp);
           if (diffQuota[picked.difficulty] > 0) {
             diffQuota[picked.difficulty]--;
           }
@@ -263,23 +289,33 @@ export class TestGeneratorService {
       }
 
       const allocations: TestQuestionAllocation[] = [];
+      const retestUsedIds = new Set<string>();
+      const retestUsedFingerprints = new Set<string>();
       let orderCounter = 1;
 
       for (const sub of orderedSubjects) {
         const allowedChapters = new Set(effectiveChaptersBySubject[sub] || []);
         const subPool = engine
           .getQuestionsBySubject(sub)
-          .filter(
-            (q) =>
+          .filter((q) => {
+            const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+            return (
               allowedChapters.has(q.chapter) &&
               incorrectQuestionIds.has(q.id) &&
-              !correctQuestionIds.has(q.id)
-          );
+              !correctQuestionIds.has(q.id) &&
+              !retestUsedIds.has(q.id) &&
+              !retestUsedFingerprints.has(fp)
+            );
+          });
 
         const mcqs = subPool.filter((q) => q.type === 'mcq').slice(0, scoringConfig.mcqCountPerSubject);
         const ints = subPool.filter((q) => q.type === 'integer').slice(0, scoringConfig.integerCountPerSubject);
 
         for (const q of [...mcqs, ...ints]) {
+          const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+          if (retestUsedIds.has(q.id) || retestUsedFingerprints.has(fp)) continue;
+          retestUsedIds.add(q.id);
+          retestUsedFingerprints.add(fp);
           allocations.push({
             questionId: q.id,
             order: orderCounter++,
@@ -376,13 +412,21 @@ export class TestGeneratorService {
     // Select questions per subject in canonical order: Physics -> Chemistry -> Mathematics
     const allocations: TestQuestionAllocation[] = [];
     const globalUsedIds = new Set<string>();
+    const globalUsedFingerprints = new Set<string>();
     let orderCounter = 1;
 
     for (const sub of orderedSubjects) {
       const allowedChapters = new Set(effectiveChaptersBySubject[sub] || []);
       const subPool = engine
         .getQuestionsBySubject(sub)
-        .filter((q) => allowedChapters.has(q.chapter) && !globalUsedIds.has(q.id));
+        .filter((q) => {
+          const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+          return (
+            allowedChapters.has(q.chapter) &&
+            !globalUsedIds.has(q.id) &&
+            !globalUsedFingerprints.has(fp)
+          );
+        });
 
       const selectedMcqs = this.selectBalancedQuestionsForSubject(
         subPool,
@@ -392,8 +436,17 @@ export class TestGeneratorService {
         chapterWeaknessMap,
         adaptiveWeights,
         request.mode,
-        rng
+        rng,
+        globalUsedIds,
+        globalUsedFingerprints
       );
+
+      for (const q of selectedMcqs) {
+        globalUsedIds.add(q.id);
+        globalUsedFingerprints.add(
+          buildQuestionContentFingerprint(q.subject, q.question, q.options)
+        );
+      }
 
       const selectedInts = this.selectBalancedQuestionsForSubject(
         subPool,
@@ -403,11 +456,19 @@ export class TestGeneratorService {
         chapterWeaknessMap,
         adaptiveWeights,
         request.mode,
-        rng
+        rng,
+        globalUsedIds,
+        globalUsedFingerprints
       );
 
-      for (const q of [...selectedMcqs, ...selectedInts]) {
+      for (const q of selectedInts) {
         globalUsedIds.add(q.id);
+        globalUsedFingerprints.add(
+          buildQuestionContentFingerprint(q.subject, q.question, q.options)
+        );
+      }
+
+      for (const q of [...selectedMcqs, ...selectedInts]) {
         allocations.push({
           questionId: q.id,
           order: orderCounter++,
@@ -464,6 +525,7 @@ export class TestGeneratorService {
     }
     const allowedSubjects = new Set(selectedSubjects);
     const seenIds = new Set<string>();
+    const seenFingerprints = new Set<string>();
 
     for (const item of allocations) {
       if (seenIds.has(item.questionId)) {
@@ -475,6 +537,11 @@ export class TestGeneratorService {
       if (!q) {
         return `Validation failed: Question "${item.questionId}" does not exist in the question bank.`;
       }
+      const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+      if (seenFingerprints.has(fp)) {
+        return `Validation failed: Duplicate question content detected for "${q.id}" in generated test.`;
+      }
+      seenFingerprints.add(fp);
       if (!allowedSubjects.has(q.subject)) {
         return `Validation failed: Question "${q.id}" belongs to unselected subject "${q.subject}".`;
       }
