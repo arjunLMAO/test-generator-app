@@ -8,6 +8,7 @@ import {
   QuestionValidationIssue,
   SubjectName,
 } from '../types/jee';
+import { sanitizeStudentQuestionText } from './StudentQuestionSerializer';
 
 export interface RawFilePayload {
   filePath: string;
@@ -656,9 +657,10 @@ export class QuestionBankEngine {
           continue;
         }
 
-        const questionText = String(
+        const rawQuestionText = String(
           raw.question ?? raw.questionText ?? raw.statement ?? raw.prompt ?? raw.text ?? ''
         ).trim();
+        const questionText = sanitizeStudentQuestionText(rawQuestionText);
         if (!questionText) {
           issues.push({
             id,

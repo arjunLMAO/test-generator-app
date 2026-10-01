@@ -91,13 +91,13 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
   if (!analytics.hasData) {
     return (
       <div className="min-h-screen bg-[#090D16] text-slate-100 py-12 px-6">
-        <div className="max-w-4xl mx-auto p-10 rounded-xl bg-[#111827] border border-slate-800 text-center space-y-5">
-          <div className="text-xs font-mono text-blue-400">LONG-TERM ANALYTICS ENGINE</div>
+        <div className="max-w-4xl mx-auto p-10 rounded-2xl bg-[#111827] border border-slate-800 text-center space-y-5">
+          <div className="text-xs font-semibold text-blue-400">Long-Term Analytics</div>
           <h1 className="text-3xl font-display text-white">
             Your performance dashboard will appear after your first test.
           </h1>
           <p className="text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
-            Vectra JEE never populates charts with fabricated scores. Complete a Full Syllabus or Chapter Test to unlock longitudinal accuracy trends, chapter improvement deltas, and mistake-recovery queues.
+            JEE Test Generator never populates charts with fabricated scores. Complete a Full Syllabus or Chapter Test to unlock longitudinal accuracy trends, chapter improvement deltas, and mistake-recovery queues.
           </p>
           <div className="pt-2 flex items-center justify-center gap-3">
             <button
@@ -122,8 +122,8 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
           <div>
-            <div className="text-xs font-mono text-blue-400">
-              LONGITUDINAL TELEMETRY · CROSS-TEST ANALYTICS
+            <div className="text-xs font-semibold text-blue-400">
+              Longitudinal Progress & Mastery Insights
             </div>
             <h1 className="text-3xl sm:text-4xl font-display text-white mt-1">
               Performance & Mastery Analytics

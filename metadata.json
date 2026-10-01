@@ -1,6 +1,6 @@
 {
-  "name": "Vectra JEE — Adaptive Test Engine & Performance Analytics",
-  "description": "Production-grade JEE Main & Advanced test generation, real-time examination environment, chapter-level weakness diagnostics, and mistake-retest analytics platform.",
+  "name": "JEE Test Generator",
+  "description": "Adaptive JEE Main & Advanced test generator, real-time examination workspace, chapter-level diagnostics, and mistake-retest analytics platform.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -31,9 +31,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       <button
         type="button"
         onClick={() => onSelectTab('dashboard')}
-        className="text-2xl font-display tracking-tight text-slate-100 hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+        className="text-2xl font-display font-semibold tracking-tight text-slate-100 hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
       >
-        Vectra JEE
+        JEE Test Generator
       </button>
 
       {/* Zone 2: 5 clean text navigation links */}

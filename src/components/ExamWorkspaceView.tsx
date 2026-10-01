@@ -19,6 +19,7 @@ import {
   QuestionResponseState,
   SubjectName,
 } from '../types/jee';
+import { sanitizeStudentQuestionText } from '../services/StudentQuestionSerializer';
 import { MathText } from './MathText';
 
 interface ExamWorkspaceViewProps {
@@ -277,16 +278,16 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
       <header className="sticky top-0 z-30 h-16 px-4 sm:px-6 bg-[#0D1320] border-b border-slate-800 flex items-center justify-between gap-3">
         {/* Left: Brand + Test Title */}
         <div className="flex items-center gap-4 min-w-0">
-          <span className="text-xl font-display text-white whitespace-nowrap shrink-0">
-            Vectra JEE
+          <span className="text-xl font-display font-semibold text-white whitespace-nowrap shrink-0">
+            JEE Test Generator
           </span>
           <span className="hidden xl:inline text-xs text-slate-400 truncate max-w-xs">
             {test.title}
           </span>
         </div>
 
-        {/* Center: Subject Navigation Tabs (PHYSICS | CHEMISTRY | MATHEMATICS) */}
-        <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg overflow-x-auto">
+        {/* Center: Subject Navigation Tabs (Physics | Chemistry | Mathematics) */}
+        <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
           {test.subjects.map((sub) => {
             const isActive = currentAllocation.subject === sub;
             const subQs = test.questions.filter((q) => q.subject === sub);
@@ -300,13 +301,13 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                 key={sub}
                 type="button"
                 onClick={() => handleSwitchSubjectTab(sub)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                   isActive
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue-600 text-white shadow-xs'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/70'
                 }`}
               >
-                <span>{sub.toUpperCase()}</span>
+                <span>{sub}</span>
                 <span
                   className={`font-mono text-[11px] tabular-nums ${
                     isActive ? 'text-blue-100' : 'text-slate-500'
@@ -350,7 +351,7 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
             className="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>SUBMIT TEST</span>
+            <span>Submit Test</span>
           </button>
         </div>
       </header>
@@ -359,7 +360,7 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
       {test.noticeMessage && (
         <div className="px-6 py-2 bg-blue-950/40 border-b border-blue-500/30 text-xs text-blue-200 flex items-center justify-between">
           <span>{test.noticeMessage}</span>
-          <span className="font-mono text-[11px] text-blue-300 tabular-nums">
+          <span className="font-medium text-[11px] text-blue-300">
             Autosave Active
           </span>
         </div>
@@ -370,52 +371,34 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
         {/* LEFT / MAIN QUESTION AREA */}
         <main className="flex-1 flex flex-col justify-between overflow-y-auto">
           <div className="max-w-4xl w-full mx-auto px-6 py-7 space-y-6">
-            {/* Question Metadata Header (Zero-Pill Discipline: clean unboxed text with middots) */}
+            {/* Question Metadata Header (Clean exam-authentic header without chapter/topic spoilers) */}
             <div className="pb-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                <span className="text-base font-mono font-semibold text-white tabular-nums">
-                  Question {currentAllocation.order} of {test.questions.length}
+              <div className="flex flex-wrap items-center gap-2.5 text-sm text-slate-400">
+                <span className="text-lg font-semibold text-white tracking-tight">
+                  Question {currentAllocation.order} <span className="text-slate-500 font-normal">of {test.questions.length}</span>
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="font-semibold text-blue-400">
-                  {currentQuestion.subject.toUpperCase()}
+                  {currentQuestion.subject}
                 </span>
                 <span aria-hidden="true">·</span>
-                <span className="text-slate-200">{currentQuestion.chapter}</span>
-                {currentQuestion.category && (
-                  <>
-                    <span aria-hidden="true">·</span>
-                    <span className="text-emerald-400 font-medium">
-                      {currentQuestion.category
-                        .split('::')
-                        .pop()
-                        ?.replace(/\s*\[[^\]]*\]$/, '')
-                        .trim()}
-                    </span>
-                  </>
-                )}
-                <span aria-hidden="true">·</span>
-                <span className="font-mono uppercase text-slate-300">
-                  {currentQuestion.type === 'mcq' ? 'Single Choice MCQ' : 'Numerical / Integer'}
-                </span>
-                <span aria-hidden="true">·</span>
-                <span className="capitalize text-slate-400">
-                  Difficulty: {currentQuestion.difficulty}
+                <span className="text-slate-300 font-medium">
+                  {currentQuestion.type === 'mcq' ? 'Single Choice (MCQ)' : 'Numerical Value'}
                 </span>
               </div>
 
               <div className="flex items-center gap-3 text-xs font-mono tabular-nums">
-                <span className="text-emerald-400">
+                <span className="text-emerald-400 font-semibold">
                   +{currentQuestion.type === 'mcq' ? test.scoringConfig.mcqCorrectMarks : test.scoringConfig.integerCorrectMarks}
                 </span>
                 <span className="text-slate-600">/</span>
-                <span className="text-red-400">
+                <span className="text-red-400 font-semibold">
                   {currentQuestion.type === 'mcq' ? test.scoringConfig.mcqWrongMarks : test.scoringConfig.integerWrongMarks}
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowShortcutsTip((p) => !p)}
-                  className="ml-2 text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
+                  className="ml-2 font-sans text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
                   title="Keyboard shortcuts"
                 >
                   <Keyboard className="w-3.5 h-3.5" />
@@ -425,18 +408,18 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
             </div>
 
             {showShortcutsTip && (
-              <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 flex flex-wrap items-center gap-4 font-mono">
-                <span>[A / B / C / D] Select MCQ Option</span>
+              <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300 flex flex-wrap items-center gap-4">
+                <span><strong className="font-mono text-white">A / B / C / D</strong> Select Option</span>
                 <span>·</span>
-                <span>[M] Mark for Review</span>
+                <span><strong className="font-mono text-white">M</strong> Mark for Review</span>
                 <span>·</span>
-                <span>[← / →] Previous / Next Question</span>
+                <span><strong className="font-mono text-white">← / →</strong> Previous / Next</span>
               </div>
             )}
 
             {/* Question Statement */}
             <div className="text-base sm:text-lg text-slate-100 leading-relaxed py-2 select-text">
-              <MathText text={currentQuestion.question} />
+              <MathText text={sanitizeStudentQuestionText(currentQuestion.question)} />
             </div>
 
             {/* Optional Image / Scientific Diagram with Zoom & Fallback (Section 26, 116) */}

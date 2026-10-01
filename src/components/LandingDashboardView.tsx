@@ -197,31 +197,31 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
         {/* HERO SECTION (Section 20) */}
         <section className="pt-4 space-y-8">
           <div className="max-w-3xl space-y-4">
-            <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-blue-400 tabular-nums">
+            <div className="flex flex-wrap items-center gap-2.5 text-xs font-medium text-blue-400">
               <span>{totalChapters} Chapters Indexed</span>
               <span aria-hidden="true">·</span>
-              <span>{diagnostics.validQuestionsCount.toLocaleString()} Validated Questions</span>
+              <span>{diagnostics.validQuestionsCount.toLocaleString()} Curated Questions</span>
               <span aria-hidden="true">·</span>
-              <span>Adaptive Mistake Recovery Engine</span>
+              <span>Category-Balanced Exam Builder</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display tracking-tight text-white leading-[1.04]">
-              JEE, BUT BUILT AROUND YOU.
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-semibold tracking-tight text-white leading-[1.06]">
+              JEE prep, built <span className="italic font-normal text-blue-300">around you.</span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-              Generate focused tests. Analyse every mistake. Turn weak chapters into strengths.
+              Generate category-diverse mock tests across any chapter, pinpoint conceptual blind spots, and turn every mistake into lasting mastery.
             </p>
           </div>
 
           {/* TWO DOMINANT PRIMARY MODE CARDS (Section 1, 2, 20) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
             {/* OPTION A: FULL SYLLABUS TEST */}
-            <div className="group relative rounded-xl bg-[#111827] border border-slate-800 hover:border-blue-500/60 p-7 flex flex-col justify-between transition-all duration-150 hover:-translate-y-0.5">
+            <div className="group relative rounded-2xl bg-[#111827] border border-slate-800 hover:border-blue-500/60 p-7 flex flex-col justify-between transition-all duration-150 hover:-translate-y-0.5 shadow-lg shadow-black/20">
               <div className="space-y-5">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span>OPTION A · COMPLETE EXAMINATION</span>
-                  <span className="text-blue-400 tabular-nums">300 MARKS</span>
+                <div className="flex items-center justify-between text-xs font-medium text-slate-400">
+                  <span>Complete Mock Examination</span>
+                  <span className="text-blue-400 font-semibold tabular-nums">300 Marks</span>
                 </div>
 
                 <div className="space-y-2">
@@ -275,11 +275,11 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
             </div>
 
             {/* OPTION B: SELECT CHAPTERS */}
-            <div className="group relative rounded-xl bg-[#111827] border border-slate-800 hover:border-emerald-500/60 p-7 flex flex-col justify-between transition-all duration-150 hover:-translate-y-0.5">
+            <div className="group relative rounded-2xl bg-[#111827] border border-slate-800 hover:border-emerald-500/60 p-7 flex flex-col justify-between transition-all duration-150 hover:-translate-y-0.5 shadow-lg shadow-black/20">
               <div className="space-y-5">
-                <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
-                  <span>OPTION B · TARGETED PRACTICE</span>
-                  <span className="text-emerald-400 tabular-nums">1–3 HOURS</span>
+                <div className="flex items-center justify-between text-xs font-medium text-slate-400">
+                  <span>Targeted Chapter Practice</span>
+                  <span className="text-emerald-400 font-semibold tabular-nums">1–3 Hours</span>
                 </div>
 
                 <div className="space-y-2">
@@ -373,9 +373,9 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
 
           {!analytics.hasData ? (
             /* Honest Empty State for Brand-New Student (Section 69 & 141) */
-            <div className="p-8 rounded-xl bg-[#111827] border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="p-8 rounded-2xl bg-[#111827] border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div className="space-y-2 max-w-xl">
-                <div className="text-xs font-mono text-slate-400">NO HISTORICAL ATTEMPTS YET</div>
+                <div className="text-xs font-semibold text-blue-400">Ready when you are</div>
                 <h3 className="text-lg font-semibold text-white">
                   Your performance dashboard will appear after your first test.
                 </h3>
@@ -671,7 +671,7 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
 
         {/* Quiet Footer */}
         <footer className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>Vectra JEE — Competitive Examination Generation & Analytics Platform</div>
+          <div>JEE Test Generator — Adaptive Examination & Analytics Platform</div>
           <div className="flex items-center gap-4">
             <button
               type="button"

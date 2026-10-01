@@ -2,8 +2,10 @@
 
 @layer base {
   :root {
-    --font-display: 'Instrument Serif', Georgia, serif;
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-display: 'Fraunces', 'Outfit', Georgia, serif;
+    --font-heading: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
@@ -12,11 +14,24 @@
     background-color: #090D16;
     color: #F1F5F9;
     overflow-x: hidden;
+    letter-spacing: -0.005em;
   }
 
   h1, .font-display {
     font-family: var(--font-display);
     text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  h2, h3, h4, button, nav {
+    font-family: var(--font-heading);
+    letter-spacing: -0.015em;
+  }
+
+  .math-rich-content {
+    font-family: var(--font-body);
+    line-height: 1.72;
+    letter-spacing: 0.004em;
   }
 
   .font-mono, .tabular-nums {
