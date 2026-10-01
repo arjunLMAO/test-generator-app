@@ -7,100 +7,132 @@ interface MathTextProps {
   block?: boolean;
 }
 
+function decodeHtmlEntities(input: string): string {
+  return input
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'");
+}
+
+function normalizeHtmlFormatting(input: string): string {
+  return input
+    // Strip embedded <style>...</style> blocks from scraped HTML tables so dark theme styles apply
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    // Cleanly format [image: ...] scraper notes
+    .replace(/\[image:\s*([^\]]+)\]/gi, '<span class="text-xs font-mono text-slate-400">[Diagram: $1]</span>')
+    // Replace paragraph boundaries with clean line breaks
+    .replace(/<\/p>\s*<p>/gi, '<br/><br/>')
+    .replace(/<\/?p[^>]*>/gi, '')
+    .replace(/<\/?blockquote[^>]*>/gi, '')
+    .replace(/<br\s*\/?>/gi, '<br/>')
+    // Collapse 3+ consecutive <br/> into 2
+    .replace(/(?:<br\/>\s*){3,}/gi, '<br/><br/>')
+    .trim();
+}
+
 export const MathText: React.FC<MathTextProps> = ({ text, className = '', block = false }) => {
   const renderedHtml = useMemo(() => {
     if (!text) return '';
 
-    const raw = String(text);
+    const raw = normalizeHtmlFormatting(String(text));
 
-    // Replace $$...$$ display math first, then $...$ inline math
-    const segments: string[] = [];
-    const displayRegex = /\$\$([\s\S]+?)\$\$/g;
-    let lastIdx = 0;
+    // Tokenize display math ($$...$$ and \[...\]) and inline math ($...$ and \(...\))
+    const tokenRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^\n$]+?\$)/g;
+    const parts: string[] = [];
+    let lastIndex = 0;
     let match: RegExpExecArray | null;
 
-    const processInline = (segment: string): string => {
-      const inlineRegex = /\$([^\n$]+?)\$/g;
-      let iLast = 0;
-      let iMatch: RegExpExecArray | null;
-      const out: string[] = [];
-
-      const escapeHtml = (str: string) =>
-        str
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/\n/g, '<br/>');
-
-      while ((iMatch = inlineRegex.exec(segment)) !== null) {
-        if (iMatch.index > iLast) {
-          out.push(escapeHtml(segment.slice(iLast, iMatch.index)));
-        }
-        try {
-          out.push(
-            katex.renderToString(iMatch[1], {
-              displayMode: false,
-              throwOnError: false,
-              strict: false,
-            })
-          );
-        } catch {
-          out.push(escapeHtml(iMatch[0]));
-        }
-        iLast = inlineRegex.lastIndex;
-      }
-
-      if (iLast < segment.length) {
-        const tail = segment.slice(iLast);
-        // Check if raw contains un-delimited LaTeX commands like \frac{...}
-        if (!segment.includes('$') && /\\(frac|sqrt|int|sum|alpha|beta|theta|Delta|rightarrow)/.test(tail)) {
-          try {
-            out.push(
-              katex.renderToString(tail, {
-                displayMode: block,
-                throwOnError: false,
-                strict: false,
-              })
-            );
-          } catch {
-            out.push(escapeHtml(tail));
-          }
-        } else {
-          out.push(escapeHtml(tail));
-        }
-      }
-
-      return out.join('');
+    const formatPlainSegment = (seg: string): string => {
+      // Allow safe inline formatting tags (strong, b, i, em, sub, sup, br, span)
+      return decodeHtmlEntities(seg).replace(/\n/g, '<br/>');
     };
 
-    while ((match = displayRegex.exec(raw)) !== null) {
-      if (match.index > lastIdx) {
-        segments.push(processInline(raw.slice(lastIdx, match.index)));
+    while ((match = tokenRegex.exec(raw)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(formatPlainSegment(raw.slice(lastIndex, match.index)));
       }
+
+      const token = match[0];
+      let isDisplay = false;
+      let mathSource = '';
+
+      if (token.startsWith('$$') && token.endsWith('$$')) {
+        isDisplay = true;
+        mathSource = token.slice(2, -2);
+      } else if (token.startsWith('\\[') && token.endsWith('\\]')) {
+        isDisplay = true;
+        mathSource = token.slice(2, -2);
+      } else if (token.startsWith('\\(') && token.endsWith('\\)')) {
+        isDisplay = false;
+        mathSource = token.slice(2, -2);
+      } else if (token.startsWith('$') && token.endsWith('$')) {
+        isDisplay = false;
+        mathSource = token.slice(1, -1);
+      }
+
+      // Decode HTML entities inside LaTeX blocks (e.g., &amp; in \begin{aligned}, &lt; for <)
+      const cleanedMath = decodeHtmlEntities(mathSource)
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/?[^>]+>/g, '')
+        .trim();
+
+      if (
+        cleanedMath.includes('\\begin{aligned}') ||
+        cleanedMath.includes('\\begin{array}') ||
+        cleanedMath.includes('\\begin{cases}')
+      ) {
+        // Keep inline or display based on context, KaTeX supports aligned/cases in both
+      }
+
       try {
-        segments.push(
-          katex.renderToString(match[1], {
-            displayMode: true,
+        parts.push(
+          katex.renderToString(cleanedMath, {
+            displayMode: isDisplay || block,
             throwOnError: false,
             strict: false,
           })
         );
       } catch {
-        segments.push(processInline(match[1]));
+        parts.push(formatPlainSegment(token));
       }
-      lastIdx = displayRegex.lastIndex;
+
+      lastIndex = tokenRegex.lastIndex;
     }
 
-    if (lastIdx < raw.length) {
-      segments.push(processInline(raw.slice(lastIdx)));
+    if (lastIndex < raw.length) {
+      const tail = raw.slice(lastIndex);
+      if (
+        !raw.includes('$') &&
+        !raw.includes('\\(') &&
+        !raw.includes('\\[') &&
+        /\\(frac|sqrt|int|sum|alpha|beta|theta|Delta|rightarrow|mathrm)/.test(tail)
+      ) {
+        try {
+          parts.push(
+            katex.renderToString(decodeHtmlEntities(tail), {
+              displayMode: block,
+              throwOnError: false,
+              strict: false,
+            })
+          );
+        } catch {
+          parts.push(formatPlainSegment(tail));
+        }
+      } else {
+        parts.push(formatPlainSegment(tail));
+      }
     }
 
-    return segments.join('');
+    return parts.join('');
   }, [text, block]);
 
   return (
     <span
-      className={`leading-relaxed ${className}`}
+      className={`math-rich-content leading-relaxed ${className}`}
       dangerouslySetInnerHTML={{ __html: renderedHtml }}
     />
   );

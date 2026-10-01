@@ -115,8 +115,12 @@ async function startServer() {
   // Serve question bank static images if present
   app.use('/question-bank', express.static(QUESTION_BANK_DIR));
 
-  // 1. Get Question Bank + Diagnostics
+  // 1. Get Question Bank + Diagnostics (Re-scans if new files were added on disk)
   app.get('/api/question-bank', (_req, res) => {
+    const currentFiles = scanQuestionBankDirectory(QUESTION_BANK_DIR);
+    if (currentFiles.length !== qbEngine.getDiagnostics().filesScanned) {
+      qbEngine.ingestFiles(currentFiles);
+    }
     res.json({
       questions: qbEngine.getAllQuestions(),
       diagnostics: qbEngine.getDiagnostics(),
@@ -136,9 +140,9 @@ async function startServer() {
         return;
       }
 
-      const customDir = path.join(QUESTION_BANK_DIR, 'imported');
+      const customDir = path.join(QUESTION_BANK_DIR, 'user-uploads');
       if (replaceExisting) {
-        fs.rmSync(QUESTION_BANK_DIR, { recursive: true, force: true });
+        fs.rmSync(customDir, { recursive: true, force: true });
       }
       fs.mkdirSync(customDir, { recursive: true });
 
@@ -261,11 +265,10 @@ async function startServer() {
         return;
       }
 
-      if (replaceExisting) {
-        fs.rmSync(QUESTION_BANK_DIR, { recursive: true, force: true });
-      }
-
       const gitDir = path.join(QUESTION_BANK_DIR, 'git-sync');
+      if (replaceExisting) {
+        fs.rmSync(gitDir, { recursive: true, force: true });
+      }
       fs.mkdirSync(gitDir, { recursive: true });
 
       let importedFilesCount = 0;
@@ -303,9 +306,10 @@ async function startServer() {
     }
   });
 
-  // 4. Reset Question Bank to Default 55 Chapters
+  // 4. Reset Question Bank (Preserves permanent /imported/converted and default 55-chapter bank)
   app.post('/api/question-bank/reset', (_req, res) => {
-    fs.rmSync(QUESTION_BANK_DIR, { recursive: true, force: true });
+    fs.rmSync(path.join(QUESTION_BANK_DIR, 'user-uploads'), { recursive: true, force: true });
+    fs.rmSync(path.join(QUESTION_BANK_DIR, 'git-sync'), { recursive: true, force: true });
     ensureQuestionBankSeeded(QUESTION_BANK_DIR);
     const updatedRaw = scanQuestionBankDirectory(QUESTION_BANK_DIR);
     const diagnostics = qbEngine.ingestFiles(updatedRaw);
@@ -319,6 +323,32 @@ async function startServer() {
   app.get('/api/student/:userId/state', (req, res) => {
     db = loadDatabase();
     const user = getOrCreateUser(db, req.params.userId);
+
+    // If an active in-progress test was created before categorical diversification,
+    // automatically regenerate it with the diverse category-capped engine
+    if (
+      user.activeTest &&
+      user.activeTest.questions.length > 0 &&
+      !user.activeTest.questions[0].category
+    ) {
+      const regen = TestGeneratorService.generateTest(
+        qbEngine,
+        {
+          userId: user.userId,
+          mode: user.activeTest.mode,
+          selectedSubjects: user.activeTest.subjects,
+          chaptersBySubject: user.activeTest.chaptersBySubject,
+          allowFlexibleCount: true,
+          scoringConfig: user.activeTest.scoringConfig || user.scoringConfig,
+        },
+        user.historyMap
+      );
+      if (regen.success && regen.test) {
+        user.activeTest = regen.test;
+        saveDatabase(db);
+      }
+    }
+
     res.json(user);
   });
 

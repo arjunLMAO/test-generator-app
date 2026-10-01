@@ -1,0 +1,842 @@
+{
+  "schemaVersion": "v2-categorized-diverse",
+  "subject": "Chemistry",
+  "chapter": "Atomic Structure",
+  "chapterCode": "CHM-ATM",
+  "questions": [
+    {
+      "id": "CHM-ATM-M001",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Stoichiometric & Molar Equivalence",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In an analysis of Atomic Structure (Quantum Numbers & Radial Nodes), $3\\text{ mmol}$ of a reactant completely reacts with excess reagent in $40\\text{ mL}$ of solution. What is the initial molar concentration of the reactant?",
+      "options": [
+        "$0.075\\text{ M}$",
+        "$0.150\\text{ M}$",
+        "$0.750\\text{ M}$",
+        "$0.070\\text{ M}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Molarity $M = \\frac{\\text{mmol}}{\\text{mL}} = \\frac{3}{40} = 0.075\\text{ M}$.",
+      "explanation": "Apply stoichiometric & molar equivalence relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Stoichiometric & Molar Equivalence"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M002",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Stoichiometric & Molar Equivalence",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "During a titration experiment in Atomic Structure (Bohr Ionization Energy), $4\\text{ moles}$ of a species undergo an oxidation state change of $\\Delta n = 5$ units per formula unit. How many Faradays of charge are equivalent to this transformation?",
+      "options": [
+        "$9\\text{ F}$",
+        "$20\\text{ F}$",
+        "$\\frac{4}{5}\\text{ F}$",
+        "$40\\text{ F}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Number of equivalents $= \\text{moles} \\times n\\text{-factor} = 4 \\times 5 = 20\\text{ F}$.",
+      "explanation": "Apply stoichiometric & molar equivalence relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Stoichiometric & Molar Equivalence"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M003",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Thermodynamic & Energetic Balance",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For a chemical process studied under Atomic Structure (Heisenberg Uncertainty), the enthalpy change is $\\Delta H^\\circ = -50\\text{ kJ mol}^{-1}$ and $T\\Delta S^\\circ = +30\\text{ kJ mol}^{-1}$. Calculate the standard Gibbs free energy change $\\Delta G^\\circ$.",
+      "options": [
+        "$-20\\text{ kJ mol}^{-1}$",
+        "$+80\\text{ kJ mol}^{-1}$",
+        "$-80\\text{ kJ mol}^{-1}$",
+        "$+20\\text{ kJ mol}^{-1}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$\\Delta G^\\circ = \\Delta H^\\circ - T\\Delta S^\\circ = -50 - 30 = -80\\text{ kJ mol}^{-1}$.",
+      "explanation": "Apply thermodynamic & energetic balance relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Thermodynamic & Energetic Balance"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M004",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Thermodynamic & Energetic Balance",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "Two coupled elementary steps in Atomic Structure (Electronic Configuration Exceptions) have standard enthalpy changes $\\Delta H_1^\\circ = +24\\text{ kJ/mol}$ and $\\Delta H_2^\\circ = -42\\text{ kJ/mol}$. By Hess's law, what is $\\Delta H^\\circ$ for the target reaction $2\\text{ Step}_1 + \\text{Step}_2$?",
+      "options": [
+        "$-18\\text{ kJ/mol}$",
+        "$90\\text{ kJ/mol}$",
+        "$-60\\text{ kJ/mol}$",
+        "$6\\text{ kJ/mol}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "$\\Delta H^\\circ = 2(24) + (-42) = 6\\text{ kJ/mol}$.",
+      "explanation": "Apply thermodynamic & energetic balance relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Thermodynamic & Energetic Balance"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M005",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Equilibrium & Extent of Reaction",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a reversible system of Atomic Structure (Quantum Numbers & Radial Nodes), the forward and backward rate constants are $k_f = 56\\text{ s}^{-1}$ and $k_b = 8\\text{ s}^{-1}$. What is the equilibrium constant $K_c$ and the equilibrium ratio $[\\text{Product}]/[\\text{Reactant}]$?",
+      "options": [
+        "$7$",
+        "$\\frac{1}{7}$",
+        "$56$",
+        "$15$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$K_c = k_f / k_b = (56) / 8 = 7$.",
+      "explanation": "Apply equilibrium & extent of reaction relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Equilibrium & Extent of Reaction"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M006",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Equilibrium & Extent of Reaction",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "When $1\\text{ mole}$ of a weak electrolyte in Atomic Structure (Bohr Ionization Energy) dissociates into $9$ ions with degree of dissociation $\\alpha = 0.5$, what is the Van't Hoff factor $i$?",
+      "options": [
+        "$9.00$",
+        "$5.00$",
+        "$10.00$",
+        "$4.50$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Using $i = 1 + (n - 1)\\alpha = 1 + (9 - 1)(0.5) = 5.00$.",
+      "explanation": "Apply equilibrium & extent of reaction relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Equilibrium & Extent of Reaction"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M007",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Kinetic Rate & Half-Life Analysis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For a first-order transformation in Atomic Structure (Heisenberg Uncertainty) with rate constant $k = \\frac{\\ln 2}{9}\\text{ min}^{-1}$, how much time is required for the reactant concentration to drop to $\\frac{1}{2^{3}}$ of its initial value?",
+      "options": [
+        "$12\\text{ min}$",
+        "$\\frac{9}{3}\\text{ min}$",
+        "$27\\text{ min}$",
+        "$54\\text{ min}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Half-life $t_{1/2} = \\frac{\\ln 2}{k} = 9\\text{ min}$. For 3 half-lives, $t = 27\\text{ min}$.",
+      "explanation": "Apply kinetic rate & half-life analysis relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Kinetic Rate & Half-Life Analysis"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M008",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Kinetic Rate & Half-Life Analysis",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In a kinetic study of Electronic Configuration Exceptions (Atomic Structure), tripling the concentration of reactant $X$ increases the instantaneous reaction rate by a factor of $9$. What is the order of reaction with respect to $X$?",
+      "options": [
+        "$1$",
+        "$3$",
+        "$0.5$",
+        "$2$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Since $3^n = 9 \\implies n = 2$ (second order in $X$).",
+      "explanation": "Apply kinetic rate & half-life analysis relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Kinetic Rate & Half-Life Analysis"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M009",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Electronic Structure & Quantum Rules",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In an atomic/molecular orbital level studied in Atomic Structure (Quantum Numbers & Radial Nodes) with principal quantum parameter $n = 6$ and azimuthal parameter $l = 4$, how many radial nodes are present in the wavefunction?",
+      "options": [
+        "$1$",
+        "$0$",
+        "$5$",
+        "$2$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Number of radial nodes $= n - l - 1 = (6) - (4) - 1 = 1$.",
+      "explanation": "Apply electronic structure & quantum rules relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Electronic Structure & Quantum Rules"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M010",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Electronic Structure & Quantum Rules",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "A paramagnetic species analyzed in Atomic Structure (Bohr Ionization Energy) contains $n = 6$ unpaired electrons in its valence shell. What is its spin-only magnetic moment $\\mu_s$ in Bohr Magnetons ($\\text{BM}$)?",
+      "options": [
+        "$6\\text{ BM}$",
+        "$\\sqrt{48}\\text{ BM}$",
+        "$\\sqrt{37}\\text{ BM}$",
+        "$8\\text{ BM}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Spin-only magnetic moment $\\mu_s = \\sqrt{n(n+2)} = \\sqrt{6(8)} = \\sqrt{48}\\text{ BM}$.",
+      "explanation": "Apply electronic structure & quantum rules relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Electronic Structure & Quantum Rules"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M011",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Bonding, Hybridization & Polarity",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Atomic Structure (Heisenberg Uncertainty), a central atom forms $\\sigma$-bonds with $7$ monovalent ligands and possesses $1$ lone pair of electrons. What is the steric number of the central atom?",
+      "options": [
+        "$7$",
+        "$6$",
+        "$8$",
+        "$9$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Steric number $= (\\text{number of } \\sigma\\text{-bonds}) + (\\text{lone pairs}) = 7 + 1 = 8$.",
+      "explanation": "Apply bonding, hybridization & polarity relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Bonding, Hybridization & Polarity"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M012",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Bonding, Hybridization & Polarity",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "If a diatomic molecular species in Atomic Structure (Electronic Configuration Exceptions) has $10$ bonding electrons and $6$ antibonding electrons, what is its Molecular Orbital bond order?",
+      "options": [
+        "$8$",
+        "$1$",
+        "$7$",
+        "$2$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Bond order $= \\frac{N_b - N_a}{2} = \\frac{10 - 6}{2} = 2$.",
+      "explanation": "Apply bonding, hybridization & polarity relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Bonding, Hybridization & Polarity"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M013",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Colligative & Phase Behavior",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a binary ideal solution examined in Atomic Structure (Quantum Numbers & Radial Nodes), pure component $A$ has vapor pressure $P_A^\\circ = 300\\text{ Torr}$ and mole fraction $x_A = 0.5$. What is the partial vapor pressure of $A$ above the solution by Raoult's law?",
+      "options": [
+        "$150\\text{ Torr}$",
+        "$300\\text{ Torr}$",
+        "$75\\text{ Torr}$",
+        "$600\\text{ Torr}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "By Raoult's law, $P_A = x_A P_A^\\circ = 0.5 \\times 300 = 150\\text{ Torr}$.",
+      "explanation": "Apply colligative & phase behavior relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Colligative & Phase Behavior"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M014",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Colligative & Phase Behavior",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Adding a non-volatile non-electrolyte solute to a solvent in Atomic Structure (Bohr Ionization Energy) produces a molality of $m = 3\\text{ mol kg}^{-1}$. If the ebullioscopic constant is $K_b = 0.52\\text{ K kg mol}^{-1}$, find the boiling point elevation $\\Delta T_b$.",
+      "options": [
+        "$3.12\\text{ K}$",
+        "$1.56\\text{ K}$",
+        "$0.78\\text{ K}$",
+        "$5.77\\text{ K}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "$\\Delta T_b = K_b \\cdot m = 0.52 \\times 3 = 1.56\\text{ K}$.",
+      "explanation": "Apply colligative & phase behavior relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Colligative & Phase Behavior"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M015",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Electrochemical Potential & Nernst",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In an electrochemical cell studied under Atomic Structure (Heisenberg Uncertainty), the standard reduction potentials of cathode and anode are $+1.70\\text{ V}$ and $-0.40\\text{ V}$ respectively. What is the standard cell EMF $E_{\\text{cell}}^\\circ$?",
+      "options": [
+        "$+1.30\\text{ V}$",
+        "$-2.10\\text{ V}$",
+        "$+2.10\\text{ V}$",
+        "$+6.80\\text{ V}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$E_{\\text{cell}}^\\circ = E_{\\text{cathode}}^\\circ - E_{\\text{anode}}^\\circ = 1.70 - (-0.40) = +2.10\\text{ V}$.",
+      "explanation": "Apply electrochemical potential & nernst relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Electrochemical Potential & Nernst"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M016",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Electrochemical Potential & Nernst",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "At $298\\text{ K}$, the Nernst equation for an $n$-electron redox couple in Atomic Structure (Electronic Configuration Exceptions) shows a slope of $-\\frac{0.059}{n}\\text{ V}$ per decade of reaction quotient $Q$. If $n = 5$, by how many millivolts does $E$ change when $Q$ increases by a factor of $10^{5}$?",
+      "options": [
+        "Increases by $59\\text{ mV}$",
+        "Decreases by $295\\text{ mV}$",
+        "Remains unchanged",
+        "Decreases by $59\\text{ mV}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "$\\Delta E = -\\frac{0.059}{5} \\log_{10}(10^{5}) = -0.059\\text{ V} = -59\\text{ mV}$.",
+      "explanation": "Apply electrochemical potential & nernst relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Electrochemical Potential & Nernst"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M017",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Periodic Trends & Oxidation States",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a neutral polyatomic oxo-anion $\\text{XO}_{6}^{2-}$ studied in Atomic Structure (Quantum Numbers & Radial Nodes), oxygen exhibits its standard oxidation state of $-2$. What is the oxidation state of central element $\\text{X}$?",
+      "options": [
+        "$+10$",
+        "$+12$",
+        "$+14$",
+        "$+4$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Let oxidation state of $\\text{X}$ be $x$: $x + 6(-2) = -2 \\implies x = +10$.",
+      "explanation": "Apply periodic trends & oxidation states relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Periodic Trends & Oxidation States"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M018",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Periodic Trends & Oxidation States",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Across a period in Atomic Structure (Bohr Ionization Energy), effective nuclear charge $Z_{\\text{eff}} = Z - \\sigma$ increases by $0.65$ per unit increase in atomic number $Z$ according to Slater's rules. By how much does $Z_{\\text{eff}}$ increase across $7$ consecutive main-group elements in the same period?",
+      "options": [
+        "$4.55$",
+        "$3.90$",
+        "$2.10$",
+        "$6.00$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Across 7 consecutive elements there are 6 steps, giving $\\Delta Z_{\\text{eff}} = 0.65 \\times 6 = 3.90$.",
+      "explanation": "Apply periodic trends & oxidation states relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Periodic Trends & Oxidation States"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M019",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Coordination & Crystal Field Theory",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In an octahedral coordination complex $[\\text{M}(\\text{L})_6]^{n+}$ analyzed in Atomic Structure (Heisenberg Uncertainty), a $d^1$ metal ion experiences crystal field splitting $\\Delta_o = 21000\\text{ cm}^{-1}$. What is the magnitude of its Crystal Field Stabilization Energy (CFSE)?",
+      "options": [
+        "$12600\\text{ cm}^{-1}$",
+        "$21000\\text{ cm}^{-1}$",
+        "$8400\\text{ cm}^{-1}$",
+        "$25200\\text{ cm}^{-1}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "For $t_{2g}^1 e_g^0$ in an octahedral field, $|\\text{CFSE}| = 0.4\\Delta_o = 8400\\text{ cm}^{-1}$.",
+      "explanation": "Apply coordination & crystal field theory relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Coordination & Crystal Field Theory"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M020",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Coordination & Crystal Field Theory",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "A chelating ligand in Atomic Structure (Electronic Configuration Exceptions) has denticity $d = 9$ and coordinates to a metal ion of coordination number $18$. How many such ligand molecules are bound in the homoleptic coordination sphere?",
+      "options": [
+        "$9$",
+        "$18$",
+        "$3$",
+        "$2$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Number of ligands $= \\frac{\\text{Coordination Number}}{\\text{Denticity}} = \\frac{18}{9} = 2$.",
+      "explanation": "Apply coordination & crystal field theory relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Coordination & Crystal Field Theory"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M021",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Stereochemistry & Isomeric Counting",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "An unsymmetrical organic molecule studied in Atomic Structure (Quantum Numbers & Radial Nodes) contains $n = 2$ distinct chiral stereocenters and no internal plane or center of symmetry. What is the total number of optically active stereoisomers?",
+      "options": [
+        "$4$",
+        "$2$",
+        "$4$",
+        "$3$"
+      ],
+      "correctAnswer": "A",
+      "solution": "For an unsymmetrical molecule with $n = 2$ chiral centers, total optically active isomers $= 2^n = 4$.",
+      "explanation": "Apply stereochemistry & isomeric counting relations in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Stereochemistry & Isomeric Counting"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M022",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Stereochemistry & Isomeric Counting",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Determine the Degree of Unsaturation (Double Bond Equivalent) for a neutral hydrocarbon in Atomic Structure (Bohr Ionization Energy) having molecular formula $\\text{C}_{24}\\text{H}_{46}$.",
+      "options": [
+        "$1$",
+        "$2$",
+        "$3$",
+        "$0$"
+      ],
+      "correctAnswer": "B",
+      "solution": "$\\text{DBE} = C + 1 - \\frac{H}{2} = 24 + 1 - \\frac{46}{2} = 2$.",
+      "explanation": "Apply stereochemistry & isomeric counting relations in Atomic Structure (Bohr Ionization Energy).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Stereochemistry & Isomeric Counting"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M023",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Reaction Mechanism & Selectivity",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In a two-step synthetic sequence in Atomic Structure (Heisenberg Uncertainty), Step 1 proceeds with $80\\%$ yield and Step 2 proceeds with $75\\%$ yield starting from $25\\text{ moles}$ of substrate. How many moles of final purified product are obtained?",
+      "options": [
+        "$19.38\\text{ mol}$",
+        "$20.00\\text{ mol}$",
+        "$15.00\\text{ mol}$",
+        "$12.50\\text{ mol}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Overall yield $= 0.80 \\times 0.75 = 0.60$. Moles of product $= 0.60 \\times 25 = 15.00\\text{ mol}$.",
+      "explanation": "Apply reaction mechanism & selectivity relations in Atomic Structure (Heisenberg Uncertainty).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Reaction Mechanism & Selectivity"
+      ]
+    },
+    {
+      "id": "CHM-ATM-M024",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Reaction Mechanism & Selectivity",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In a competing nucleophilic substitution vs elimination pathway in Atomic Structure (Electronic Configuration Exceptions), the major product to minor product ratio is $6 : 1$. What percentage of the total product mixture is the major regioisomer?",
+      "options": [
+        "$14.3\\%$",
+        "$75.0\\%$",
+        "$16.7\\%$",
+        "$85.7\\%$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Percentage of major product $= \\frac{6}{6 + 1} \\times 100\\% = 85.7\\%$.",
+      "explanation": "Apply reaction mechanism & selectivity relations in Atomic Structure (Electronic Configuration Exceptions).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Reaction Mechanism & Selectivity"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I001",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Numerical Stoichiometric Equivalents",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "For a reaction analyzed under Atomic Structure (Quantum Numbers & Radial Nodes), $3$ moles of a reagent with $n$-factor $4$ react completely. Find the total number of equivalents transferred.",
+      "correctAnswer": 12,
+      "solution": "$n_{\\text{eq}} = 3 \\times 4 = 12$.",
+      "explanation": "Apply numerical stoichiometric equivalents in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Numerical Stoichiometric Equivalents"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I002",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Numerical Enthalpy & Free Energy",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "In a thermochemical cycle in Atomic Structure (Bohr Ionization Energy), three sequential steps have enthalpy changes $+16\\text{ kJ}$, $-5\\text{ kJ}$, and $+10\\text{ kJ}$. What is the net enthalpy change $\\Delta H_{\\text{net}}$ in kJ?",
+      "correctAnswer": 21,
+      "solution": "$\\Delta H_{\\text{net}} = 16 - 5 + 10 = 21\\text{ kJ}$.",
+      "explanation": "Apply numerical enthalpy & free energy in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Numerical Enthalpy & Free Energy"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I003",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Heisenberg Uncertainty",
+      "category": "Numerical Quantum & Nodal Count",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "What is the total number of orbitals (excluding spin degeneracy) associated with principal quantum shell $n = 6$ in Atomic Structure (Heisenberg Uncertainty)?",
+      "correctAnswer": 36,
+      "solution": "Total orbitals in shell $n$ is $n^2 = 6^2 = 36$.",
+      "explanation": "Apply numerical quantum & nodal count in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Heisenberg Uncertainty",
+        "Numerical Quantum & Nodal Count"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I004",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Electronic Configuration Exceptions",
+      "category": "Numerical Oxidation & Coordination Number",
+      "difficulty": "hard",
+      "type": "integer",
+      "question": "In a neutral coordination carbonyl $\\text{M}(\\text{CO})_{7}$ studied in Atomic Structure (Electronic Configuration Exceptions), each $\\text{CO}$ ligand donates $2$ electrons. How many electrons are donated in total by all $\\text{CO}$ ligands to the central metal?",
+      "correctAnswer": 14,
+      "solution": "Total electrons donated $= 2 \\times 7 = 14$.",
+      "explanation": "Apply numerical oxidation & coordination number in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Electronic Configuration Exceptions",
+        "Numerical Oxidation & Coordination Number"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I005",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Quantum Numbers & Radial Nodes",
+      "category": "Numerical Degree of Unsaturation",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "Find the Degree of Unsaturation (DBE) of an organic compound with molecular formula $\\text{C}_{15}\\text{H}_{14}\\text{O}_2$ studied in Atomic Structure (Quantum Numbers & Radial Nodes).",
+      "correctAnswer": 9,
+      "solution": "$\\text{DBE} = (15) + 1 - \\frac{14}{2} = 9$.",
+      "explanation": "Apply numerical degree of unsaturation in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Quantum Numbers & Radial Nodes",
+        "Numerical Degree of Unsaturation"
+      ]
+    },
+    {
+      "id": "CHM-ATM-I006",
+      "subject": "Chemistry",
+      "chapter": "Atomic Structure",
+      "topic": "Bohr Ionization Energy",
+      "category": "Numerical Kinetics & Half-Life",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "A zero-order catalytic reaction in Atomic Structure (Bohr Ionization Energy) has rate constant $k = 2\\text{ M s}^{-1}$ and initial concentration $[A]_0 = 32\\text{ M}$. Find its half-life $t_{1/2}$ in seconds.",
+      "correctAnswer": 8,
+      "solution": "For zero-order kinetics, $t_{1/2} = \\frac{[A]_0}{2k} = \\frac{32}{4} = 8\\text{ s}$.",
+      "explanation": "Apply numerical kinetics & half-life in Atomic Structure.",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Atomic Structure",
+        "Bohr Ionization Energy",
+        "Numerical Kinetics & Half-Life"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,842 @@
+{
+  "schemaVersion": "v2-categorized-diverse",
+  "subject": "Mathematics",
+  "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+  "chapterCode": "MAT-CNC",
+  "questions": [
+    {
+      "id": "MAT-CNC-M001",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Symmetric Functions & Vieta Relations",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola), if $\\alpha$ and $\\beta$ are the roots of $x^2 - 7x + 12 = 0$, what is the value of $\\alpha^2 + \\beta^2$?",
+      "options": [
+        "$25$",
+        "$49$",
+        "$23$",
+        "$29$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$\\alpha + \\beta = 7$ and $\\alpha\\beta = 12$, so $\\alpha^2 + \\beta^2 = (7)^2 - 2(12) = 25$.",
+      "explanation": "Apply symmetric functions & vieta relations techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Symmetric Functions & Vieta Relations"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M002",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Symmetric Functions & Vieta Relations",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For the polynomial equation $x^2 - 4x + 5 = 0$ studied in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) with roots $r_1, r_2$, evaluate the reciprocal sum $\\frac{1}{r_1} + \\frac{1}{r_2}$.",
+      "options": [
+        "$\\frac{5}{4}$",
+        "$\\frac{4}{5}$",
+        "$\\frac{16}{5}$",
+        "$-\\frac{4}{5}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "$\\frac{1}{r_1} + \\frac{1}{r_2} = \\frac{r_1 + r_2}{r_1 r_2} = \\frac{4}{5}$.",
+      "explanation": "Apply symmetric functions & vieta relations techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Symmetric Functions & Vieta Relations"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M003",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Discriminant & Nature of Roots",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse), for what positive value of parameter $k$ does the quadratic equation $x^2 - k x + 36 = 0$ possess coincident (equal) real roots?",
+      "options": [
+        "$6$",
+        "$36$",
+        "$12$",
+        "$24$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Setting discriminant $\\Delta = k^2 - 4(36) = 0$ for $k > 0$ gives $k = 12$.",
+      "explanation": "Apply discriminant & nature of roots techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Discriminant & Nature of Roots"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M004",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Discriminant & Nature of Roots",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "How many distinct real roots does the biquadratic equation $x^4 - 13x^2 + 42 = 0$ analyzed in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle) possess?",
+      "options": [
+        "$2$",
+        "$0$",
+        "$3$",
+        "$4$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Factoring $(x^2 - 6)(x^2 - 7) = 0$ with $6 \\neq 7 > 0$ yields $4$ distinct real roots $\\pm\\sqrt{6}, \\pm\\sqrt{7}$.",
+      "explanation": "Apply discriminant & nature of roots techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Discriminant & Nature of Roots"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M005",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Common Roots & Parameter Elimination",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "If the equations $x^2 - 8x + 7 = 0$ and $x^2 - 9x + k = 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola) share the common root $x = 1$, find the value of $k$.",
+      "options": [
+        "$8$",
+        "$9$",
+        "$7$",
+        "$15$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Substituting the common root $x = 1$ into the second equation gives $1 - (9) + k = 0 \\implies k = 8$.",
+      "explanation": "Apply common roots & parameter elimination techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Common Roots & Parameter Elimination"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M006",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Common Roots & Parameter Elimination",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Two quadratic equations $2x^2 + 16x + 18 = 0$ and $x^2 + p x + q = 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) have both roots in common. Find $p + q$.",
+      "options": [
+        "$34$",
+        "$17$",
+        "$72$",
+        "$1$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Proportionality of coefficients $\\frac{1}{2} = \\frac{p}{16} = \\frac{q}{18} \\implies p = 8,\\; q = 9 \\implies p + q = 17$.",
+      "explanation": "Apply common roots & parameter elimination techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Common Roots & Parameter Elimination"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M007",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Location of Roots on Real Axis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse), find the largest integral value of parameter $m$ for which the number $x = 3$ lies strictly between the roots of $f(x) = x^2 - 6x + m = 0$.",
+      "options": [
+        "$9$",
+        "$10$",
+        "$8$",
+        "$5$"
+      ],
+      "correctAnswer": "C",
+      "solution": "For $x = 3$ to lie strictly between the roots, $f(3) < 0 \\implies 3^2 - 2(3^2) + m < 0 \\implies m < 9$, so largest integer is $8$.",
+      "explanation": "Apply location of roots on real axis techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Location of Roots on Real Axis"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M008",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Location of Roots on Real Axis",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "What is the abscissa of the vertex of the parabola $y = x^2 - 20x + 4$ studied in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle), where the function attains its global minimum?",
+      "options": [
+        "$x = -10$",
+        "$x = 20$",
+        "$x = 4$",
+        "$x = 10$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Vertex abscissa $x_v = -\\frac{-20}{2(1)} = 10$.",
+      "explanation": "Apply location of roots on real axis techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Location of Roots on Real Axis"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M009",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Transformation of Equations",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "If $\\alpha, \\beta$ are the roots of $x^2 - 11x + 5 = 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola), what is the monic quadratic equation whose roots are $\\alpha + 1$ and $\\beta + 1$?",
+      "options": [
+        "$x^2 - 13x + 17 = 0$",
+        "$x^2 - 11x + 6 = 0$",
+        "$x^2 - 12x + 16 = 0$",
+        "$x^2 - 9x + -5 = 0$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Replacing $x \\to x - 1$ gives $(x - 1)^2 - 11(x - 1) + 5 = x^2 - 13x + 17 = 0$.",
+      "explanation": "Apply transformation of equations techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Transformation of Equations"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M010",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Transformation of Equations",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola), if one root of $x^2 + p x + q = 0$ ($p, q \\in \\mathbb{Q}$) is the surd $12 + \\sqrt{6}$ (where $\\sqrt{6} \\notin \\mathbb{Q}$), what is the rational coefficient $p$?",
+      "options": [
+        "$+24$",
+        "$-24$",
+        "$138$",
+        "$-12$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Conjugate surd roots are $12 \\pm \\sqrt{6}$, so sum of roots $= -p = 24 \\implies p = -24$.",
+      "explanation": "Apply transformation of equations techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Transformation of Equations"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M011",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Rational Range & Extremum Analysis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Determine the minimum value of the quadratic expression $E(x) = x^2 - 14x + 62$ over all real $x \\in \\mathbb{R}$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "options": [
+        "$62$",
+        "$0$",
+        "$13$",
+        "$7$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Completing the square gives $E(x) = (x - 7)^2 + 13 \\ge 13$.",
+      "explanation": "Apply rational range & extremum analysis techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Rational Range & Extremum Analysis"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M012",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Rational Range & Extremum Analysis",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "For positive real $x > 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle), find the minimum value of the sum $S(x) = x + \\frac{196}{x}$.",
+      "options": [
+        "$14$",
+        "$196$",
+        "$15$",
+        "$28$"
+      ],
+      "correctAnswer": "D",
+      "solution": "By AM-GM inequality, $x + \\frac{14^2}{x} \\ge 2\\sqrt{x \\cdot \\frac{14^2}{x}} = 28$.",
+      "explanation": "Apply rational range & extremum analysis techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Rational Range & Extremum Analysis"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M013",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Functional Equations & Composition",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola), let $f(x) = 15x + 9$ and $g(x) = 2x - 1$. Evaluate the composite function $(f \\circ g)(2)$.",
+      "options": [
+        "$54$",
+        "$38$",
+        "$69$",
+        "$72$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$g(2) = 3$, and $f(g(2)) = f(3) = 3(15) + 9 = 54$.",
+      "explanation": "Apply functional equations & composition techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Functional Equations & Composition"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M014",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Functional Equations & Composition",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "If a function $f$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) satisfies the linear relation $f(x) + 2f(1 - x) = 48x$ for all $x \\in \\mathbb{R}$, find $f(1)$.",
+      "options": [
+        "$+16$",
+        "$-16$",
+        "$32$",
+        "$0$"
+      ],
+      "correctAnswer": "B",
+      "solution": "At $x = 1$: $f(1) + 2f(0) = 48$. At $x = 0$: $f(0) + 2f(1) = 0 \\implies f(0) = -2f(1)$. Thus $-3f(1) = 48 \\implies f(1) = -16$.",
+      "explanation": "Apply functional equations & composition techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Functional Equations & Composition"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M015",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Telescoping Series & Recurrence",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse), let $S_n = \\alpha^n + \\beta^n$ for roots of $x^2 - 17x + 4 = 0$. Using Newton's recurrence $S_3 = 17S_2 - 4S_1$, express $S_3$ in terms of $a = 17$ and $b = 4$.",
+      "options": [
+        "$4909$",
+        "$4777$",
+        "$4709$",
+        "$277$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$S_1 = 17$, $S_2 = 281$, so $S_3 = 17(281) - 4(17) = 4709$.",
+      "explanation": "Apply telescoping series & recurrence techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Telescoping Series & Recurrence"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M016",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Telescoping Series & Recurrence",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "Evaluate the telescoping finite sum $\\sum_{r=1}^{18} \\left(\\frac{1}{r} - \\frac{1}{r+1}\\right)$ encountered in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "options": [
+        "$\\frac{1}{19}$",
+        "$\\frac{17}{18}$",
+        "$\\frac{19}{18}$",
+        "$\\frac{18}{19}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Telescoping cancellation leaves $1 - \\frac{1}{19} = \\frac{18}{19}$.",
+      "explanation": "Apply telescoping series & recurrence techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Telescoping Series & Recurrence"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M017",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Differential Rate & Tangent Locus",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "Find the slope of the tangent to the curve $y = x^3 - 19x^2 + 6$ at the point where $x = 2$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "options": [
+        "$-64$",
+        "$-26$",
+        "$-62$",
+        "$-32$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$\\frac{dy}{dx} = 3x^2 - 2(19)x$. At $x = 2$, slope $= 12 - 4(19) = -64$.",
+      "explanation": "Apply differential rate & tangent locus techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Differential Rate & Tangent Locus"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M018",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Differential Rate & Tangent Locus",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "At what abscissa $x$ does the normal to the parabola $y = x^2 - 14x$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) become parallel to the $y$-axis?",
+      "options": [
+        "$x = -7$",
+        "$x = 7$",
+        "$x = 14$",
+        "$x = 0$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Normal is parallel to the $y$-axis when tangent is horizontal: $y'(x) = 2x - 14 = 0 \\implies x = 7$.",
+      "explanation": "Apply differential rate & tangent locus techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Differential Rate & Tangent Locus"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M019",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Definite Integration & Symmetry",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Using the King property $\\int_0^a f(x)\\,dx = \\int_0^a f(a-x)\\,dx$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse), evaluate $I = \\int_0^{42} \\frac{\\sqrt{x}}{\\sqrt{x} + \\sqrt{42 - x}}\\,dx$.",
+      "options": [
+        "$42$",
+        "$\\frac{21}{2}$",
+        "$21$",
+        "$0$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Adding $I + I = \\int_0^{42} 1\\,dx = 42 \\implies I = 21$.",
+      "explanation": "Apply definite integration & symmetry techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Definite Integration & Symmetry"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M020",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Definite Integration & Symmetry",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "Compute the area bounded by the line $y = 9x$, the $x$-axis, and the vertical ordinate $x = 2$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "options": [
+        "$36$",
+        "$9$",
+        "$81$",
+        "$18$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Area $= \\int_0^2 9x\\,dx = \\left[ \\frac{9}{2}x^2 \\right]_0^2 = 18$.",
+      "explanation": "Apply definite integration & symmetry techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Definite Integration & Symmetry"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M021",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Linear Systems & Determinant Rank",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "For what value of $\\lambda$ is the $2 \\times 2$ matrix $A = \\begin{pmatrix} 23 & 3 \\\\ 2 & \\lambda \\end{pmatrix}$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola) singular ($\\det A = 0$)?",
+      "options": [
+        "$\\frac{6}{23}$",
+        "$\\frac{23}{6}$",
+        "$-\\frac{6}{23}$",
+        "$138$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$\\det A = 23\\lambda - 2(3) = 0 \\implies \\lambda = \\frac{6}{23}$.",
+      "explanation": "Apply linear systems & determinant rank techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Linear Systems & Determinant Rank"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M022",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Linear Systems & Determinant Rank",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "If $A$ is a $3 \\times 3$ matrix in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) with determinant $|A| = 4$, what is the determinant of its adjoint matrix $|\\text{adj}(A)|$?",
+      "options": [
+        "$4$",
+        "$16$",
+        "$64$",
+        "$12$"
+      ],
+      "correctAnswer": "B",
+      "solution": "For an $n \\times n$ matrix, $|\\text{adj}(A)| = |A|^{n-1} = 4^{3-1} = 16$.",
+      "explanation": "Apply linear systems & determinant rank techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Linear Systems & Determinant Rank"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M023",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Combinatorial Counting & Probability",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse), how many distinct $2$-element subsets can be chosen from a finite set containing $27$ distinct elements?",
+      "options": [
+        "$702$",
+        "$325$",
+        "$351$",
+        "$54$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$\\binom{27}{2} = \\frac{(27)(26)}{2} = 351$.",
+      "explanation": "Apply combinatorial counting & probability techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Combinatorial Counting & Probability"
+      ]
+    },
+    {
+      "id": "MAT-CNC-M024",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Combinatorial Counting & Probability",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "Two independent events $E_1$ and $E_2$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle) have probabilities $P(E_1) = \\frac{1}{6}$ and $P(E_2) = \\frac{1}{2}$. What is the probability $P(E_1 \\cap E_2)$ that both occur?",
+      "options": [
+        "$\\frac{8}{12}$",
+        "$\\frac{7}{12}$",
+        "$\\frac{2}{6}$",
+        "$\\frac{1}{12}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "For independent events, $P(E_1 \\cap E_2) = P(E_1)P(E_2) = \\frac{1}{6} \\times \\frac{1}{2} = \\frac{1}{12}$.",
+      "explanation": "Apply combinatorial counting & probability techniques in Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Combinatorial Counting & Probability"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I001",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Numerical Vieta & Root Sum",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "If $\\alpha, \\beta$ are the roots of $x^2 - 3x + 4 = 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola), compute the exact integer value of $(\\alpha + \\beta)^2 - \\alpha\\beta$.",
+      "correctAnswer": 5,
+      "solution": "$(\\alpha + \\beta)^2 - \\alpha\\beta = 3^2 - 4 = 5$.",
+      "explanation": "Apply numerical vieta & root sum in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Numerical Vieta & Root Sum"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I002",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Numerical Discriminant Parameter",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "Find the positive constant $c$ for which the quadratic $x^2 - 8x + c = 0$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola) has discriminant equal to $0$.",
+      "correctAnswer": 16,
+      "solution": "$\\Delta = (-8)^2 - 4c = 0 \\implies c = 16$.",
+      "explanation": "Apply numerical discriminant parameter in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Numerical Discriminant Parameter"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I003",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Normal & Tangent Locus on Ellipse",
+      "category": "Numerical Extremum & Minimum Value",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "What is the minimum value of the polynomial $P(x) = (x - 5)^2 + (x - 7)^2 + 6$ over $x \\in \\mathbb{R}$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Normal & Tangent Locus on Ellipse)?",
+      "correctAnswer": 8,
+      "solution": "Minimum occurs at midpoint $x = 6$, giving $1^2 + (-1)^2 + 6 = 8$.",
+      "explanation": "Apply numerical extremum & minimum value in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Normal & Tangent Locus on Ellipse",
+        "Numerical Extremum & Minimum Value"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I004",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Auxiliary Circle & Director Circle",
+      "category": "Numerical Function & Composite Value",
+      "difficulty": "hard",
+      "type": "integer",
+      "question": "In Conic Sections (Parabola, Ellipse, Hyperbola) (Auxiliary Circle & Director Circle), if $f(x) = x^2 + 6x + 7$, evaluate $f(3) - f(1)$.",
+      "correctAnswer": 20,
+      "solution": "$f(3) - f(1) = (9 + 3(6) + 7) - (1 + 6 + 7) = 20$.",
+      "explanation": "Apply numerical function & composite value in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Auxiliary Circle & Director Circle",
+        "Numerical Function & Composite Value"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I005",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Focal Chord of Parabola",
+      "category": "Numerical Definite Integral & Area",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "Compute the definite integral $\\int_0^2 (3x^2 + 14x + 8)\\,dx$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Focal Chord of Parabola).",
+      "correctAnswer": 52,
+      "solution": "$\\left[ x^3 + 7x^2 + 8x \\right]_0^2 = 8 + 4(7) + 2(8) = 52$.",
+      "explanation": "Apply numerical definite integral & area in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Focal Chord of Parabola",
+        "Numerical Definite Integral & Area"
+      ]
+    },
+    {
+      "id": "MAT-CNC-I006",
+      "subject": "Mathematics",
+      "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+      "topic": "Eccentricity of Conjugate Hyperbola",
+      "category": "Numerical Combinatorial & Determinant Value",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "Evaluate the determinant $\\begin{vmatrix} 8 & 1 \\\\ -9 & 2 \\end{vmatrix}$ in Conic Sections (Parabola, Ellipse, Hyperbola) (Eccentricity of Conjugate Hyperbola).",
+      "correctAnswer": 25,
+      "solution": "$2(8) - (1)(-9) = 25$.",
+      "explanation": "Apply numerical combinatorial & determinant value in Conic Sections (Parabola, Ellipse, Hyperbola).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Conic Sections (Parabola, Ellipse, Hyperbola)",
+        "Eccentricity of Conjugate Hyperbola",
+        "Numerical Combinatorial & Determinant Value"
+      ]
+    }
+  ]
+}

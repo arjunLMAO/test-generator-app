@@ -56,6 +56,8 @@ export interface NormalizedQuestion {
   sourceFile?: string;
   tags: string[];
   rawSourceId?: string;
+  category?: string;
+  templateSignature?: string;
 }
 
 export interface QuestionValidationIssue {
@@ -151,6 +153,8 @@ export interface TestQuestionAllocation {
   chapter: string;
   type: QuestionType;
   difficulty: DifficultyLevel;
+  category?: string;
+  templateSignature?: string;
   optionOrder?: [number, number, number, number]; // permutation if randomized
 }
 

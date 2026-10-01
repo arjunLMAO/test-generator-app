@@ -1,3 +1,489 @@
 {
-  "users": {}
+  "users": {
+    "student-arjun": {
+      "userId": "student-arjun",
+      "name": "Arjun Girdhar",
+      "email": "girdhar.arjun@gmail.com",
+      "targetExam": "JEE Main & Advanced 2027",
+      "activeTest": {
+        "id": "TEST-MUN1RH15-1RTH",
+        "userId": "student-arjun",
+        "title": "Mathematics Chapter Test (2 Chapters)",
+        "mode": "CHAPTER_TEST",
+        "subjects": [
+          "Mathematics"
+        ],
+        "chaptersBySubject": {
+          "Mathematics": [
+            "Area Under The Curves",
+            "Binomial Theorem"
+          ]
+        },
+        "startTime": "2026-09-29T19:06:03.641Z",
+        "durationSeconds": 3600,
+        "status": "IN_PROGRESS",
+        "questionBankVersion": "qb-4004-62f",
+        "generationSeed": "seed-1790708763613-fvam5x",
+        "questions": [
+          {
+            "questionId": "BT-0102",
+            "order": 1,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0077",
+            "order": 2,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0061",
+            "order": 3,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0017",
+            "order": 4,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0010",
+            "order": 5,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0058",
+            "order": 6,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0074",
+            "order": 7,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0081",
+            "order": 8,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0088",
+            "order": 9,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0024",
+            "order": 10,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0007",
+            "order": 11,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0086",
+            "order": 12,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0120",
+            "order": 13,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0056",
+            "order": 14,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0079",
+            "order": 15,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0005",
+            "order": 16,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0080",
+            "order": 17,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0022",
+            "order": 18,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0035",
+            "order": 19,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0003",
+            "order": 20,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "mcq",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0105",
+            "order": 21,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "integer",
+            "difficulty": "easy"
+          },
+          {
+            "questionId": "AUTC-0036",
+            "order": 22,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "integer",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0042",
+            "order": 23,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "integer",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "AUTC-0039",
+            "order": 24,
+            "subject": "Mathematics",
+            "chapter": "Area Under The Curves",
+            "type": "integer",
+            "difficulty": "medium"
+          },
+          {
+            "questionId": "BT-0084",
+            "order": 25,
+            "subject": "Mathematics",
+            "chapter": "Binomial Theorem",
+            "type": "integer",
+            "difficulty": "easy"
+          }
+        ],
+        "responses": {
+          "BT-0102": {
+            "questionId": "BT-0102",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 117,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0077": {
+            "questionId": "AUTC-0077",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0061": {
+            "questionId": "BT-0061",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0017": {
+            "questionId": "AUTC-0017",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0010": {
+            "questionId": "BT-0010",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0058": {
+            "questionId": "AUTC-0058",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0074": {
+            "questionId": "BT-0074",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0081": {
+            "questionId": "AUTC-0081",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0088": {
+            "questionId": "BT-0088",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0024": {
+            "questionId": "AUTC-0024",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0007": {
+            "questionId": "BT-0007",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0086": {
+            "questionId": "AUTC-0086",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0120": {
+            "questionId": "BT-0120",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0056": {
+            "questionId": "AUTC-0056",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0079": {
+            "questionId": "BT-0079",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0005": {
+            "questionId": "AUTC-0005",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0080": {
+            "questionId": "BT-0080",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0022": {
+            "questionId": "AUTC-0022",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0035": {
+            "questionId": "BT-0035",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0003": {
+            "questionId": "AUTC-0003",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 287,
+            "lastUpdatedAt": "2026-09-29T19:08:23.890Z"
+          },
+          "BT-0105": {
+            "questionId": "BT-0105",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0036": {
+            "questionId": "AUTC-0036",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0042": {
+            "questionId": "BT-0042",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "AUTC-0039": {
+            "questionId": "AUTC-0039",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+          },
+          "BT-0084": {
+            "questionId": "BT-0084",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 4,
+            "lastUpdatedAt": "2026-09-29T19:08:20.140Z"
+          }
+        },
+        "currentQuestionOrder": 20,
+        "activeSubject": "Mathematics",
+        "scoringConfig": {
+          "mcqCountPerSubject": 20,
+          "integerCountPerSubject": 5,
+          "oneSubjectDurationSeconds": 3600,
+          "twoSubjectDurationSeconds": 7200,
+          "threeSubjectDurationSeconds": 10800,
+          "mcqCorrectMarks": 4,
+          "mcqWrongMarks": -1,
+          "mcqUnattemptedMarks": 0,
+          "integerCorrectMarks": 4,
+          "integerWrongMarks": 0,
+          "integerUnattemptedMarks": 0
+        }
+      },
+      "reports": [],
+      "historyMap": {},
+      "scoringConfig": {
+        "mcqCountPerSubject": 20,
+        "integerCountPerSubject": 5,
+        "oneSubjectDurationSeconds": 3600,
+        "twoSubjectDurationSeconds": 7200,
+        "threeSubjectDurationSeconds": 10800,
+        "mcqCorrectMarks": 4,
+        "mcqWrongMarks": -1,
+        "mcqUnattemptedMarks": 0,
+        "integerCorrectMarks": 4,
+        "integerWrongMarks": 0,
+        "integerUnattemptedMarks": 0
+      }
+    }
+  }
 }

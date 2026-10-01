@@ -382,6 +382,18 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="text-slate-200">{currentQuestion.chapter}</span>
+                {currentQuestion.category && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span className="text-emerald-400 font-medium">
+                      {currentQuestion.category
+                        .split('::')
+                        .pop()
+                        ?.replace(/\s*\[[^\]]*\]$/, '')
+                        .trim()}
+                    </span>
+                  </>
+                )}
                 <span aria-hidden="true">·</span>
                 <span className="font-mono uppercase text-slate-300">
                   {currentQuestion.type === 'mcq' ? 'Single Choice MCQ' : 'Numerical / Integer'}

@@ -16,6 +16,8 @@ import {
 import {
   QuestionBankEngine,
   buildQuestionContentFingerprint,
+  buildQuestionTemplateSignature,
+  classifyQuestionCategory,
 } from './QuestionBankEngine';
 
 export interface TestGenerationRequest {
@@ -99,6 +101,11 @@ export class TestGeneratorService {
       base *= mode === TestMode.ADAPTIVE_TEST ? weights.weakChapterBoost * 1.35 : weights.weakChapterBoost;
     }
 
+    // Prefer authentic multi-source imported JEE questions over baseline seed questions when both exist
+    if (q.sourceFile && q.sourceFile.includes('imported/')) {
+      base *= 1.35;
+    }
+
     return Math.max(0.05, base);
   }
 
@@ -112,29 +119,35 @@ export class TestGeneratorService {
     mode: TestMode,
     rng: () => number,
     globalUsedIds: Set<string>,
-    globalUsedFingerprints: Set<string>
+    globalUsedFingerprints: Set<string>,
+    globalUsedTemplates: Set<string> = new Set(),
+    maxPerCategory = 2
   ): NormalizedQuestion[] {
-    // Deduplicate candidate pool by both ID and normalized question content fingerprint
+    // Deduplicate candidate pool by ID, content fingerprint, AND structural equation template signature
     const uniqueTypedPool: NormalizedQuestion[] = [];
     const localSeenIds = new Set<string>(globalUsedIds);
     const localSeenFingerprints = new Set<string>(globalUsedFingerprints);
+    const localSeenTemplates = new Set<string>(globalUsedTemplates);
 
     for (const q of pool) {
       if (q.type !== qType) continue;
       const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
-      if (localSeenIds.has(q.id) || localSeenFingerprints.has(fp)) {
+      const tmpl =
+        q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);
+      if (
+        localSeenIds.has(q.id) ||
+        localSeenFingerprints.has(fp) ||
+        localSeenTemplates.has(tmpl)
+      ) {
         continue;
       }
       localSeenIds.add(q.id);
       localSeenFingerprints.add(fp);
+      localSeenTemplates.add(tmpl);
       uniqueTypedPool.push(q);
     }
 
-    if (uniqueTypedPool.length <= targetCount) {
-      return [...uniqueTypedPool];
-    }
-
-    // Group by chapter so we distribute evenly across selected chapters
+    // Group by chapter and then categorically by question category
     const byChap = new Map<string, NormalizedQuestion[]>();
     for (const q of uniqueTypedPool) {
       const list = byChap.get(q.chapter) || [];
@@ -143,7 +156,6 @@ export class TestGeneratorService {
     }
 
     const chapters = Array.from(byChap.keys());
-    // Shuffle chapters deterministically
     chapters.sort(() => rng() - 0.5);
 
     // Difficulty targets
@@ -159,19 +171,42 @@ export class TestGeneratorService {
 
     const selectedIds = new Set<string>(globalUsedIds);
     const selectedFingerprints = new Set<string>(globalUsedFingerprints);
+    const selectedTemplates = new Set<string>(globalUsedTemplates);
+    const categoryCounts = new Map<string, number>();
     const selected: NormalizedQuestion[] = [];
 
-    // Weighted picker helper from a candidate array
-    const pickWeighted = (candidates: NormalizedQuestion[]): NormalizedQuestion | null => {
+    const getCategory = (q: NormalizedQuestion): string =>
+      q.category ||
+      classifyQuestionCategory(q.subject, q.chapter, q.topic, q.question, q.options);
+
+    const getTemplate = (q: NormalizedQuestion): string =>
+      q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);
+
+    // Weighted picker helper that strictly enforces current category ceiling (Pass 1: max 1, Pass 2: max 2)
+    // and strictly enforces MAX 1 per structural equation template signature
+    const pickWeightedWithCategoryCap = (
+      candidates: NormalizedQuestion[],
+      currentCategoryCap: number
+    ): NormalizedQuestion | null => {
       const available = candidates.filter((c) => {
         const fp = buildQuestionContentFingerprint(c.subject, c.question, c.options);
-        return !selectedIds.has(c.id) && !selectedFingerprints.has(fp);
+        const tmpl = getTemplate(c);
+        const cat = getCategory(c);
+        const catUsed = categoryCounts.get(cat) || 0;
+        return (
+          !selectedIds.has(c.id) &&
+          !selectedFingerprints.has(fp) &&
+          !selectedTemplates.has(tmpl) &&
+          catUsed < currentCategoryCap
+        );
       });
       if (available.length === 0) return null;
 
-      // Prefer questions matching remaining difficulty quota if possible
-      const matchingDiff = available.filter((c) => diffQuota[c.difficulty] > 0);
-      const activePool = matchingDiff.length > 0 ? matchingDiff : available;
+      // Prefer categories with 0 selected so far, then matching difficulty quota
+      const zeroCatPool = available.filter((c) => (categoryCounts.get(getCategory(c)) || 0) === 0);
+      const basePool = zeroCatPool.length > 0 ? zeroCatPool : available;
+      const matchingDiff = basePool.filter((c) => diffQuota[c.difficulty] > 0);
+      const activePool = matchingDiff.length > 0 ? matchingDiff : basePool;
 
       const itemWeights = activePool.map((c) =>
         this.computeQuestionWeight(c, historyMap[c.id], chapterWeaknessMap, weights, mode)
@@ -188,27 +223,40 @@ export class TestGeneratorService {
       return activePool[activePool.length - 1];
     };
 
-    // Round-robin across chapters to guarantee balanced chapter representation
-    let safetyCounter = 0;
-    while (selected.length < targetCount && safetyCounter < 500) {
-      safetyCounter++;
-      let addedInPass = false;
-      for (const chap of chapters) {
-        if (selected.length >= targetCount) break;
-        const chapCandidates = byChap.get(chap) || [];
-        const picked = pickWeighted(chapCandidates);
-        if (picked) {
-          const fp = buildQuestionContentFingerprint(picked.subject, picked.question, picked.options);
-          selected.push(picked);
-          selectedIds.add(picked.id);
-          selectedFingerprints.add(fp);
-          if (diffQuota[picked.difficulty] > 0) {
-            diffQuota[picked.difficulty]--;
+    // Pass 1: Strictly at most 1 question per category across chapters
+    // Pass 2: Up to maxPerCategory (2) questions per category across chapters (never exceeding 2!)
+    for (let cap = 1; cap <= maxPerCategory; cap++) {
+      let safetyCounter = 0;
+      while (selected.length < targetCount && safetyCounter < 300) {
+        safetyCounter++;
+        let addedInPass = false;
+        for (const chap of chapters) {
+          if (selected.length >= targetCount) break;
+          const chapCandidates = byChap.get(chap) || [];
+          const picked = pickWeightedWithCategoryCap(chapCandidates, cap);
+          if (picked) {
+            const fp = buildQuestionContentFingerprint(
+              picked.subject,
+              picked.question,
+              picked.options
+            );
+            const tmpl = getTemplate(picked);
+            const cat = getCategory(picked);
+
+            selected.push(picked);
+            selectedIds.add(picked.id);
+            selectedFingerprints.add(fp);
+            selectedTemplates.add(tmpl);
+            categoryCounts.set(cat, (categoryCounts.get(cat) || 0) + 1);
+
+            if (diffQuota[picked.difficulty] > 0) {
+              diffQuota[picked.difficulty]--;
+            }
+            addedInPass = true;
           }
-          addedInPass = true;
         }
+        if (!addedInPass) break;
       }
-      if (!addedInPass) break;
     }
 
     return selected;
@@ -413,6 +461,7 @@ export class TestGeneratorService {
     const allocations: TestQuestionAllocation[] = [];
     const globalUsedIds = new Set<string>();
     const globalUsedFingerprints = new Set<string>();
+    const globalUsedTemplates = new Set<string>();
     let orderCounter = 1;
 
     for (const sub of orderedSubjects) {
@@ -421,10 +470,13 @@ export class TestGeneratorService {
         .getQuestionsBySubject(sub)
         .filter((q) => {
           const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+          const tmpl =
+            q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);
           return (
             allowedChapters.has(q.chapter) &&
             !globalUsedIds.has(q.id) &&
-            !globalUsedFingerprints.has(fp)
+            !globalUsedFingerprints.has(fp) &&
+            !globalUsedTemplates.has(tmpl)
           );
         });
 
@@ -438,13 +490,18 @@ export class TestGeneratorService {
         request.mode,
         rng,
         globalUsedIds,
-        globalUsedFingerprints
+        globalUsedFingerprints,
+        globalUsedTemplates,
+        2
       );
 
       for (const q of selectedMcqs) {
         globalUsedIds.add(q.id);
         globalUsedFingerprints.add(
           buildQuestionContentFingerprint(q.subject, q.question, q.options)
+        );
+        globalUsedTemplates.add(
+          q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question)
         );
       }
 
@@ -458,13 +515,18 @@ export class TestGeneratorService {
         request.mode,
         rng,
         globalUsedIds,
-        globalUsedFingerprints
+        globalUsedFingerprints,
+        globalUsedTemplates,
+        2
       );
 
       for (const q of selectedInts) {
         globalUsedIds.add(q.id);
         globalUsedFingerprints.add(
           buildQuestionContentFingerprint(q.subject, q.question, q.options)
+        );
+        globalUsedTemplates.add(
+          q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question)
         );
       }
 
@@ -476,6 +538,8 @@ export class TestGeneratorService {
           chapter: q.chapter,
           type: q.type,
           difficulty: q.difficulty,
+          category: q.category,
+          templateSignature: q.templateSignature,
         });
       }
     }
@@ -526,6 +590,8 @@ export class TestGeneratorService {
     const allowedSubjects = new Set(selectedSubjects);
     const seenIds = new Set<string>();
     const seenFingerprints = new Set<string>();
+    const seenTemplates = new Set<string>();
+    const categoryCounts = new Map<string, number>();
 
     for (const item of allocations) {
       if (seenIds.has(item.questionId)) {
@@ -542,6 +608,22 @@ export class TestGeneratorService {
         return `Validation failed: Duplicate question content detected for "${q.id}" in generated test.`;
       }
       seenFingerprints.add(fp);
+
+      const tmpl =
+        q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);
+      if (seenTemplates.has(tmpl)) {
+        return `Validation failed: Structural template duplicate detected for "${q.id}" in generated test.`;
+      }
+      seenTemplates.add(tmpl);
+
+      const catKey = `${q.type}::${
+        q.category || classifyQuestionCategory(q.subject, q.chapter, q.topic, q.question, q.options)
+      }`;
+      const nextCatCount = (categoryCounts.get(catKey) || 0) + 1;
+      if (nextCatCount > 2) {
+        return `Validation failed: Question category "${catKey}" exceeded maximum allowed limit of 2 questions per test.`;
+      }
+      categoryCounts.set(catKey, nextCatCount);
       if (!allowedSubjects.has(q.subject)) {
         return `Validation failed: Question "${q.id}" belongs to unselected subject "${q.subject}".`;
       }

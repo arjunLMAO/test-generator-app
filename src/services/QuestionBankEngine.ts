@@ -36,6 +36,179 @@ export function buildQuestionContentFingerprint(
   return `${subject.toLowerCase()}::${cleanText}::${cleanOpts}`;
 }
 
+export function buildQuestionTemplateSignature(
+  subject: string,
+  chapter: string,
+  questionText: string
+): string {
+  const plain = String(questionText || '')
+    .replace(/<[^>]+>/g, ' ')
+    // Replace display and inline math blocks with structural token keeping only LaTeX command names
+    .replace(/\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^\n$]+?\$/g, (m) => {
+      const cmds = (m.match(/\\[a-zA-Z]+/g) || [])
+        .filter((c) => !['\\text', '\\mathrm', '\\left', '\\right', '\\displaystyle'].includes(c))
+        .slice(0, 4)
+        .join('');
+      return ` MATH(${cmds}) `;
+    })
+    .replace(/-?\d+(?:\.\d+)?/g, '#')
+    .replace(/[^a-zA-Z#()]+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+  return `${subject.toLowerCase()}::${chapter.toLowerCase()}::${plain.slice(0, 180)}`;
+}
+
+export function classifyQuestionCategory(
+  subject: SubjectName,
+  chapter: string,
+  topic: string,
+  questionText: string,
+  options?: [string, string, string, string],
+  explicitCategory?: string
+): string {
+  if (explicitCategory && explicitCategory.trim().length > 0) {
+    return `${chapter} :: ${explicitCategory.trim()}`;
+  }
+
+  const qLower = String(questionText || '')
+    .replace(/<[^>]+>/g, ' ')
+    .toLowerCase();
+  const optsJoined = (options || []).join(' ').toLowerCase();
+
+  const cleanTopic = (topic && topic.toLowerCase() !== 'needs review' ? topic : chapter).trim();
+
+  // Structural JEE format archetypes
+  if (qLower.includes('match list') || qLower.includes('list - i') || qLower.includes('list-i') || qLower.includes('column i')) {
+    return `${chapter} :: ${cleanTopic} — Matrix & List Matching`;
+  }
+  if (
+    (qLower.includes('assertion') && qLower.includes('reason')) ||
+    (optsJoined.includes('(a)') && optsJoined.includes('(r)') && optsJoined.includes('explanation'))
+  ) {
+    return `${chapter} :: ${cleanTopic} — Assertion & Reason`;
+  }
+  if (qLower.includes('statement i') || qLower.includes('statement-i') || qLower.includes('statement 1')) {
+    return `${chapter} :: ${cleanTopic} — Statement Analysis`;
+  }
+  if (
+    qLower.includes('correct statement') ||
+    qLower.includes('incorrect statement') ||
+    qLower.includes('not correct') ||
+    qLower.includes('how many of the following') ||
+    qLower.includes('number of correct')
+  ) {
+    return `${chapter} :: ${cleanTopic} — Multi-Statement Verification`;
+  }
+
+  // Specific problem-type pattern keywords
+  const patternChecks: Array<[RegExp, string]> = [
+    [/common root|one root in common|both roots in common/i, 'Common Roots Condition'],
+    [/location of root|lie in the interval|lies between the roots|greater than|less than/i, 'Location of Roots'],
+    [/symmetric|alpha\^2\s*\+\s*\\beta\^2|\\alpha\^3|\bvieta/i, 'Symmetric Functions of Roots'],
+    [/equation whose roots are|transformation of/i, 'Transformation of Equations'],
+    [/discriminant|real and distinct|equal roots|imaginary roots|no real root/i, 'Nature of Roots & Discriminant'],
+    [/maximum value|minimum value|extremum|least value|greatest value|range of/i, 'Extremum & Range Analysis'],
+    [/number of real|number of integral|number of solutions|how many solutions/i, 'Number of Solutions & Counting'],
+    [/domain of|range of the function|bijective|one-one|onto|inverse of/i, 'Domain, Range & Invertibility'],
+    [/limit|continuous|differentiable|non-differentiable|rolle|lagrange/i, 'Continuity & Differentiability'],
+    [/area bounded|area of the region|enclosed by/i, 'Area Bounded by Curves'],
+    [/differential equation|integrating factor|general solution|particular solution/i, 'Differential Equation Solution'],
+    [/shortest distance|skew lines|foot of perpendicular|image of the point|plane/i, '3D Line & Plane Geometry'],
+    [/tangent|normal|chord of contact|director circle|focal chord|eccentricity|latus rectum/i, 'Tangent, Normal & Conic Locus'],
+    [/system of linear|cramer|no solution|infinitely many solutions|nontrivial|eigen|cayley|adjoint/i, 'Matrix Algebra & Linear Systems'],
+    [/variance|standard deviation|mean deviation|median/i, 'Statistical Dispersion & Moments'],
+    [/bayes|conditional probability|binomial distribution|independent events/i, 'Probability & Distributions'],
+    [/dimension|dimensional formula/i, 'Dimensional Formula Analysis'],
+    [/percentage error|vernier|screw gauge|significant figure|least count/i, 'Precision Instruments & Error Propagation'],
+    [/projectile|time of flight|horizontal range|maximum height|trajectory/i, 'Projectile & 2D Kinematics'],
+    [/relative velocity|river|rain|boat|wind/i, 'Relative Motion Analysis'],
+    [/pulley|atwood|tension in the string/i, 'Pulley & Constraint Mechanics'],
+    [/inclined plane|friction|normal reaction|angle of repose/i, 'Friction & Inclined Dynamics'],
+    [/work done|potential energy|power delivered|vertical circle|spring/i, 'Work-Energy & Conservative Forces'],
+    [/moment of inertia|radius of gyration/i, 'Moment of Inertia & Theorems'],
+    [/rolling without slipping|angular momentum|torque/i, 'Rotational Dynamics & Angular Momentum'],
+    [/escape velocity|orbital|satellite|kepler|gravitational potential/i, 'Gravitation & Orbital Mechanics'],
+    [/carnot|efficiency of|heat engine|refrigerator/i, 'Heat Engines & Carnot Cycle'],
+    [/adiabatic|isothermal|polytropic|isobaric|isochoric/i, 'Thermodynamic Processes & Work'],
+    [/internal energy|entropy|first law|gibbs|spontaneous/i, 'Enthalpy, Entropy & Free Energy'],
+    [/hess|enthalpy of formation|enthalpy of combustion|bond dissociation|neutralization/i, 'Thermochemistry & Hess Law'],
+    [/simple harmonic|time period of oscillation|phase difference|spring-block|pendulum/i, 'Simple Harmonic Oscillations'],
+    [/doppler|organ pipe|standing wave|beats|wave speed/i, 'Wave Superposition & Acoustics'],
+    [/young's double slit|fringe width|interference/i, 'YDSE & Wave Interference'],
+    [/diffraction|polarisation|brewster|resolving power/i, 'Diffraction & Polarization'],
+    [/lens|mirror|prism|refractive index|total internal reflection|magnification/i, 'Geometrical Optics'],
+    [/gauss|electric flux|dipole|equipotential|electrostatic potential/i, 'Electrostatic Field & Potential'],
+    [/capacitor|dielectric|equivalent capacitance|energy stored in capacitor/i, 'Capacitance & Dielectrics'],
+    [/kirchhoff|wheatstone|meter bridge|potentiometer|equivalent resistance|galvanometer/i, 'Circuit Networks & Bridges'],
+    [/biot-savart|ampere|solenoid|toroid/i, 'Magnetic Field Generation'],
+    [/cyclotron|magnetic force|magnetic moment|moving coil/i, 'Lorentz Force & Magnetic Dipoles'],
+    [/faraday|lenz|motional emf|mutual inductance|self inductance|eddy/i, 'Electromagnetic Induction'],
+    [/lcr|impedance|resonance|rms current|power factor|alternating/i, 'AC Circuits & Resonance'],
+    [/photoelectric|work function|stopping potential|de broglie|matter wave/i, 'Photoelectric & Matter Waves'],
+    [/bohr|rydberg|spectral|ionization energy/i, 'Bohr Model & Atomic Spectra'],
+    [/radial node|angular node|quantum number|electronic configuration|orbital/i, 'Quantum Numbers & Nodal Analysis'],
+    [/half-life|decay constant|binding energy|nuclear/i, 'Radioactive & Nuclear Kinetics'],
+    [/zener|logic gate|truth table|diode|transistor|rectifier/i, 'Semiconductors & Logic Gates'],
+    [/molarity|molality|mole fraction|normality/i, 'Solution Concentration & Dilution'],
+    [/limiting reagent|empirical formula|stoichiometr|yield|combustion/i, 'Stoichiometry & Limiting Reagent'],
+    [/hybridization|vsepr|lone pair|geometry|shape of/i, 'VSEPR Geometry & Hybridization'],
+    [/bond order|molecular orbital|paramagnetic|diamagnetic/i, 'Molecular Orbital Theory & Magnetism'],
+    [/dipole moment|hydrogen bond|fajan|lattice/i, 'Polarity, Dipole & Intermolecular Forces'],
+    [/raoult|vapor pressure|ideal solution|azeotrope/i, 'Raoult Law & Vapor Pressure'],
+    [/colligative|osmotic pressure|freezing point|boiling point|van't hoff/i, 'Colligative Properties & Van t Hoff Factor'],
+    [/equilibrium constant|le chatelier|degree of dissociation/i, 'Chemical Equilibrium & Le Chatelier'],
+    [/ph of|buffer|solubility product|hydrolysis|common ion/i, 'Ionic Equilibrium, pH & Solubility'],
+    [/nernst|cell potential|emf|standard reduction/i, 'Nernst Equation & Cell EMF'],
+    [/faraday|electrolysis|electrochemical equivalent/i, 'Faraday Laws & Electrolysis'],
+    [/molar conductivity|kohlrausch|conductance|cell constant/i, 'Electrolytic Conductance & Kohlrausch Law'],
+    [/first order|zero order|rate law|order of reaction/i, 'Integrated Rate Laws & Order'],
+    [/activation energy|arrhenius|rate constant|collision/i, 'Arrhenius Equation & Activation Energy'],
+    [/coordination number|crystal field|cfse|isomerism in complex|ligand|synergic/i, 'Coordination Complexes & CFT'],
+    [/iupac|stereoisomer|enantiomer|chiral|aromatic|carbocation|inductive|hyperconjugation/i, 'GOC, Isomerism & Electronic Effects'],
+    [/ozonolysis|markovnikov|grignard|aldol|cannizzaro|haloform|sandmeyer|hoffmann|reimer|williamson/i, 'Named Organic Reactions & Mechanisms'],
+  ];
+
+  // Build a structural math + domain concept sub-key so distinct mathematical setups
+  // within the same chapter topic are sub-categorized while identical problem types share a key
+  const mathTokens: string[] = [];
+  if (/\\int|integral/i.test(questionText)) mathTokens.push('int');
+  if (/\\sum|summation|\bsigma\b/i.test(questionText)) mathTokens.push('sum');
+  if (/\\lim|limit/i.test(questionText)) mathTokens.push('lim');
+  if (/\\frac\{d|derivative|differenti/i.test(questionText)) mathTokens.push('deriv');
+  if (/\\sqrt|surd|radical/i.test(questionText)) mathTokens.push('sqrt');
+  if (/\\log|\\ln|logarithm/i.test(questionText)) mathTokens.push('log');
+  if (/\\sin|\\cos|\\tan|\\cot|\\sec|\\csc/i.test(questionText)) mathTokens.push('trig');
+  if (/\\vec|vector|\\hat/i.test(questionText)) mathTokens.push('vec');
+  if (/\\begin\{[bpv]?matrix\}|determinant|matrix/i.test(questionText)) mathTokens.push('mat');
+  if (/<table|\.tg\b/i.test(questionText)) mathTokens.push('table');
+  if (/<img|\[image:/i.test(questionText)) mathTokens.push('diagram');
+
+  const stopWords = new Set([
+    'which', 'following', 'given', 'value', 'values', 'equal', 'equals', 'find', 'correct',
+    'statement', 'statements', 'question', 'where', 'when', 'then', 'that', 'with', 'from',
+    'have', 'will', 'what', 'respectively', 'shown', 'figure', 'below', 'above', 'option',
+    'options', 'number', 'particle', 'system', 'body', 'mass', 'time', 'point', 'line',
+    'function', 'equation', 'roots', 'root', 'quadratic', 'simple', 'harmonic', 'motion',
+    'wave', 'waves', 'solution', 'solutions', 'reaction', 'compound', 'element', 'elements',
+  ]);
+  const words = qLower
+    .replace(/\\[a-z]+/g, ' ')
+    .replace(/[^a-z\s]/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 3 && !stopWords.has(w))
+    .slice(0, 2);
+  const subKey = [...mathTokens.slice(0, 2), ...words].join('_') || 'core';
+
+  for (const [regex, catLabel] of patternChecks) {
+    if (regex.test(qLower)) {
+      return `${chapter} :: ${catLabel} [${subKey.slice(0, 22)}]`;
+    }
+  }
+
+  return `${chapter} :: ${cleanTopic} [${subKey.slice(0, 24)}]`;
+}
+
 function normalizeSubject(raw: unknown, filePath: string): SubjectName | null {
   const str = String(raw || '').trim().toLowerCase();
   const pathLower = filePath.toLowerCase();
@@ -58,11 +231,74 @@ function normalizeSubject(raw: unknown, filePath: string): SubjectName | null {
   return null;
 }
 
-function normalizeDifficulty(raw: unknown): DifficultyLevel {
+function normalizeDifficulty(raw: unknown, fallbackSeedId = ''): DifficultyLevel {
   const s = String(raw || '').trim().toLowerCase();
   if (s === 'easy' || s === '1' || s === 'low' || s === 'basic') return 'easy';
   if (s === 'hard' || s === '3' || s === 'high' || s === 'advanced' || s === 'tough') return 'hard';
+  if (s === 'medium' || s === '2' || s === 'moderate') return 'medium';
+  // If difficulty is "Unknown" or unspecified, deterministically assign balanced difficulty from ID hash
+  if (fallbackSeedId) {
+    let hash = 0;
+    for (let i = 0; i < fallbackSeedId.length; i++) {
+      hash = (hash * 31 + fallbackSeedId.charCodeAt(i)) >>> 0;
+    }
+    const bucket = hash % 4;
+    if (bucket === 0) return 'easy';
+    if (bucket === 3) return 'hard';
+  }
   return 'medium';
+}
+
+const CHAPTER_CANONICAL_MAP: Record<string, string> = {
+  'units and measurements': 'Units & Measurements',
+  'work, power and energy': 'Work, Energy & Power',
+  'work power and energy': 'Work, Energy & Power',
+  'properties of matter': 'Properties of Solids & Liquids',
+  'mechanical properties of fluids': 'Properties of Solids & Liquids',
+  'magnetics': 'Magnetic Effects of Current & Magnetism',
+  'dual nature of radiation': 'Dual Nature of Matter & Radiation',
+  'simple harmonic motion': 'Oscillations & Waves',
+  'waves': 'Oscillations & Waves',
+  'wave optics': 'Ray & Wave Optics',
+  'ray optics': 'Ray & Wave Optics',
+  'some basic concepts of chemistry': 'Mole Concept & Stoichiometry',
+  'structure of atom': 'Atomic Structure',
+  'chemical bonding and molecular structure': 'Chemical Bonding & Molecular Structure',
+  'thermodynamics': 'Thermodynamics',
+  'electrochemistry': 'Redox Reactions & Electrochemistry',
+  'redox reactions': 'Redox Reactions & Electrochemistry',
+  'ionic equilibrium': 'Equilibrium (Chemical & Ionic)',
+  'chemical equilibrium': 'Equilibrium (Chemical & Ionic)',
+  'periodic table and periodicity': 'Classification of Elements & Periodicity',
+  'd and f block elements': 'd- and f-Block Elements',
+  'haloalkanes and haloarenes': 'Haloalkanes & Haloarenes',
+  'aldehydes ketones and carboxylic acids': 'Aldehydes, Ketones & Carboxylic Acids',
+  'biomolecules': 'Amines & Biomolecules',
+  'solutions': 'Solutions & Colligative Properties',
+  'chemical kinetics and nuclear chemistry': 'Chemical Kinetics',
+  'complex numbers 2': 'Complex Numbers',
+  'quadratic equation and inequalities': 'Quadratic Equations',
+  'sequences and series': 'Sequence & Series',
+  'limits, continuity and differentiability': 'Limits, Continuity & Differentiability',
+  'trigonometric functions and equations': 'Trigonometry',
+  'sets and relations': 'Sets, Relations & Functions',
+  'straight lines and pair of straight lines': 'Coordinate Geometry (Straight Lines & Circles)',
+  'straight lines': 'Coordinate Geometry (Straight Lines & Circles)',
+  'circles': 'Coordinate Geometry (Straight Lines & Circles)',
+  'statistics': 'Statistics & Probability',
+  'probability': 'Statistics & Probability',
+};
+
+function canonicalizeChapterName(rawChapter: string, subject: SubjectName): string {
+  const trimmed = rawChapter.trim();
+  const lower = trimmed.toLowerCase();
+  if (lower === 'thermodynamics' && subject === 'Chemistry') {
+    return 'Chemical Thermodynamics';
+  }
+  if (CHAPTER_CANONICAL_MAP[lower]) {
+    return CHAPTER_CANONICAL_MAP[lower];
+  }
+  return trimmed;
 }
 
 function normalizeQuestionType(rawType: unknown, hasOptions: boolean, rawAnswer: unknown): QuestionType | null {
@@ -100,6 +336,17 @@ function extractOptions(record: Record<string, any>): [string, string, string, s
       return '';
     });
     if (mapped.every((m) => m.length > 0)) {
+      // Reject options that are purely broken scraper image placeholders with no text and no actual <img> tag
+      const hasPureImagePlaceholder = mapped.some((m) => {
+        if (/<img\b[^>]+src\s*=\s*["']https?:\/\//i.test(m)) {
+          return false;
+        }
+        const withoutPlaceholder = m.replace(/\[image:\s*[^\]]+\]/gi, '').replace(/<[^>]+>/g, '').trim();
+        return withoutPlaceholder.length === 0;
+      });
+      if (hasPureImagePlaceholder) {
+        return null;
+      }
       return mapped as [string, string, string, string];
     }
   } else if (rawOpts && typeof rawOpts === 'object' && !Array.isArray(rawOpts)) {
@@ -150,6 +397,96 @@ function normalizeMcqAnswer(
     if (idx === 2) return 'C';
     if (idx === 3) return 'D';
   }
+  return null;
+}
+
+function cleanFormulaForMatch(s: string): string {
+  return String(s || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\\mathrm|\\text|\\mathbf|\\mathit/g, '')
+    .replace(/\\left|\\right|\\\(|\\\)|\\\[|\\\]|\$/g, '')
+    .replace(/[_^{}~]/g, '')
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, '')
+    .toLowerCase();
+}
+
+function inferAnswerFromExplanation(
+  raw: Record<string, any>,
+  options: [string, string, string, string] | null
+): string | number | null {
+  const exp = String(raw.explanation ?? raw.solution ?? '');
+  if (!exp) return null;
+
+  if (options && options.length === 4) {
+    const expTailPlain = exp
+      .slice(-500)
+      .replace(/\\text\s*\{([^}]*)\}/g, '$1')
+      .replace(/[{}\\]/g, ' ');
+    const letterMatch = expTailPlain.match(
+      /(?:option|ans(?:wer)?|correct\s+option|correct\s+answer)\s*(?:is|=|:|-)?\s*\(?([A-D1-4])\)?\b/i
+    );
+    if (letterMatch) {
+      const tok = letterMatch[1].toUpperCase();
+      if (tok === '1') return 'A';
+      if (tok === '2') return 'B';
+      if (tok === '3') return 'C';
+      if (tok === '4') return 'D';
+      return tok;
+    }
+
+    const lowerOpts = options.map((o) => String(o).replace(/<[^>]+>/g, ' ').toLowerCase());
+    const lowerExp = exp.replace(/<[^>]+>/g, ' ').toLowerCase();
+    if (
+      lowerOpts.some(
+        (o) => (o.includes('(a)') && o.includes('(r)')) || (o.includes('statement') && o.includes('true'))
+      )
+    ) {
+      if (
+        lowerExp.includes('not the correct explanation') ||
+        lowerExp.includes('does not correctly explain') ||
+        lowerExp.includes('not a correct explanation')
+      ) {
+        const idx = lowerOpts.findIndex((o) => o.includes('not') && o.includes('explanation'));
+        if (idx >= 0) return ['A', 'B', 'C', 'D'][idx];
+      }
+      if (
+        lowerExp.includes('is the correct explanation') ||
+        lowerExp.includes('correctly explains') ||
+        lowerExp.includes('explain assertion with the given reason')
+      ) {
+        const idx = lowerOpts.findIndex((o) => !o.includes('not') && o.includes('explanation'));
+        if (idx >= 0) return ['A', 'B', 'C', 'D'][idx];
+      }
+    }
+
+    const cleanTail = cleanFormulaForMatch(exp.slice(-350));
+    const matchedIndices: number[] = [];
+    for (let i = 0; i < 4; i++) {
+      const co = cleanFormulaForMatch(options[i]);
+      if (co.length >= 2 && cleanTail.includes(co)) {
+        matchedIndices.push(i);
+      }
+    }
+    if (matchedIndices.length === 1) {
+      return ['A', 'B', 'C', 'D'][matchedIndices[0]];
+    }
+  } else if (!options) {
+    const plainTail = exp
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\\\)|\\\]/g, ' ')
+      .slice(-300);
+    const numMatches = [
+      ...plainTail.matchAll(/(?:=|is|ans(?:wer)?\s*[:=]?|equals)\s*(-?\d+(?:\.\d+)?)\b/gi),
+    ];
+    if (numMatches.length > 0) {
+      const lastNum = Number(numMatches[numMatches.length - 1][1]);
+      if (!Number.isNaN(lastNum)) return lastNum;
+    }
+  }
+
   return null;
 }
 
@@ -294,8 +631,8 @@ export class QuestionBankEngine {
         }
 
         const chapterRaw = raw.chapter ?? raw.chapterName ?? raw.unit ?? inheritedChapter ?? inferChapterFromFilename(filePath);
-        const chapter = String(chapterRaw || '').trim();
-        if (!chapter) {
+        const rawChapterTrimmed = String(chapterRaw || '').trim();
+        if (!rawChapterTrimmed) {
           issues.push({
             id,
             sourceFile: filePath,
@@ -305,6 +642,7 @@ export class QuestionBankEngine {
           });
           continue;
         }
+        const chapter = canonicalizeChapterName(rawChapterTrimmed, subject);
 
         if (this.byId.has(id)) {
           duplicateIds.push(id);
@@ -351,8 +689,14 @@ export class QuestionBankEngine {
           continue;
         }
 
-        const rawAnswer =
+        let rawAnswer =
           raw.correctAnswer ?? raw.answer ?? raw.ans ?? raw.correct_option ?? raw.correct ?? raw.key;
+        if (rawAnswer === undefined || rawAnswer === null || String(rawAnswer).trim() === '') {
+          const inferred = inferAnswerFromExplanation(raw, options);
+          if (inferred !== null) {
+            rawAnswer = inferred;
+          }
+        }
         const qType = normalizeQuestionType(raw.type ?? raw.questionType ?? raw.format, Boolean(options), rawAnswer);
 
         if (!qType) {
@@ -416,11 +760,11 @@ export class QuestionBankEngine {
           normalizedAnswer = numVal;
         }
 
-        const solutionText = String(
-          raw.solution ?? raw.workedSolution ?? raw.solutionText ?? raw.derivation ?? ''
-        ).trim();
         const explanationText = String(
           raw.explanation ?? raw.concept ?? raw.keyConcept ?? ''
+        ).trim();
+        const solutionText = String(
+          raw.solution ?? raw.workedSolution ?? raw.solutionText ?? raw.derivation ?? explanationText ?? ''
         ).trim();
 
         if (!solutionText) {
@@ -458,11 +802,20 @@ export class QuestionBankEngine {
           }
         }
 
-        const difficulty = normalizeDifficulty(raw.difficulty ?? raw.level);
+        const difficulty = normalizeDifficulty(raw.difficulty ?? raw.level, id);
         const topic = String(raw.topic ?? raw.subtopic ?? chapter).trim();
         const tags = Array.isArray(raw.tags)
           ? raw.tags.map((t: any) => String(t))
           : [subject, chapter, topic];
+        const templateSignature = buildQuestionTemplateSignature(subject, chapter, questionText);
+        const category = classifyQuestionCategory(
+          subject,
+          chapter,
+          topic,
+          questionText,
+          qType === 'mcq' ? (options as [string, string, string, string]) : undefined,
+          raw.category
+        );
 
         const normalizedQuestion: NormalizedQuestion = {
           id,
@@ -486,6 +839,8 @@ export class QuestionBankEngine {
           sourceFile: filePath,
           tags,
           rawSourceId: String(raw.id ?? id),
+          category,
+          templateSignature,
         };
 
         seenContentFingerprints.set(contentFingerprint, id);

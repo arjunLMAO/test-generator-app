@@ -1,0 +1,842 @@
+{
+  "schemaVersion": "v2-categorized-diverse",
+  "subject": "Physics",
+  "chapter": "Thermodynamics",
+  "chapterCode": "PHY-THM",
+  "questions": [
+    {
+      "id": "PHY-THM-M001",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Conservation & Invariant Balance",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a Thermodynamics setup investigating Polytropic Processes, an isolated system transitions from initial state parameter $p_i = 3$ to final configuration $p_f = 7$ while conserving the invariant $\\mathcal{E} = p_i^2 + 2p_f$. What is the conserved value of $\\mathcal{E}$ in SI units?",
+      "options": [
+        "$23$",
+        "$16$",
+        "$49$",
+        "$24$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Evaluating $\\mathcal{E} = p_i^2 + 2p_f = 3^2 + 2(7) = 23$.",
+      "explanation": "Apply the conservation & invariant balance principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Conservation & Invariant Balance"
+      ]
+    },
+    {
+      "id": "PHY-THM-M002",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Conservation & Invariant Balance",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "During an experiment on Carnot Cycle Efficiency (Thermodynamics), two coupled components carry momenta in the ratio $1 : 5$. If the lighter component acquires kinetic energy $K_0 = 4\\text{ J}$, what is the total kinetic energy of the two-component assembly assuming identical inertia?",
+      "options": [
+        "$24\\text{ J}$",
+        "$104\\text{ J}$",
+        "$100\\text{ J}$",
+        "$40\\text{ J}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Since $K \\propto p^2$, $K_{\\text{total}} = K_0(1 + 5^2) = 104\\text{ J}$.",
+      "explanation": "Apply the conservation & invariant balance principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Conservation & Invariant Balance"
+      ]
+    },
+    {
+      "id": "PHY-THM-M003",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Instantaneous Rate & Gradient Law",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For a time-dependent process in Thermodynamics (First Law & Adiabatic Work), the state variable evolves as $y(t) = 5t^2 - 6t$ (SI units). Find the instantaneous rate of change $\\frac{dy}{dt}$ at $t = 2\\text{ s}$.",
+      "options": [
+        "$4\\text{ SI units}$",
+        "$26\\text{ SI units}$",
+        "$14\\text{ SI units}$",
+        "$8\\text{ SI units}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Differentiating $y(t)$ gives $y'(t) = 2(5)t - 6$. At $t=2$, $y'(2) = 14$.",
+      "explanation": "Apply the instantaneous rate & gradient law principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Instantaneous Rate & Gradient Law"
+      ]
+    },
+    {
+      "id": "PHY-THM-M004",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Instantaneous Rate & Gradient Law",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In Thermodynamics, the potential profile along a coordinate $x$ for Cp - Cv Relations is given by $U(x) = 7x^3 - 36x\\text{ J}$. At what positive coordinate $x > 0$ does the restoring generalized force vanish?",
+      "options": [
+        "$1.7142857142857142\\text{ m}$",
+        "$\\sqrt{5.142857142857143}\\text{ m}$",
+        "$0.8571428571428571\\text{ m}$",
+        "$\\sqrt{1.7142857142857142}\\text{ m}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Setting $-\\frac{dU}{dx} = 0 \\implies 3(7)x^2 - 36 = 0 \\implies x = \\sqrt{1.7142857142857142}\\text{ m}$.",
+      "explanation": "Apply the instantaneous rate & gradient law principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Instantaneous Rate & Gradient Law"
+      ]
+    },
+    {
+      "id": "PHY-THM-M005",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Boundary Ratio & Scaling Analysis",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "Two geometrically similar apparatus in Thermodynamics (Polytropic Processes) have characteristic linear dimensions in the ratio $L_2 / L_1 = 8$. If the response quantity scales as $R \\propto L^2$, what is the ratio $R_2 / (R_1 + R_2)$?",
+      "options": [
+        "$\\frac{64}{65}$",
+        "$\\frac{8}{9}$",
+        "$\\frac{1}{65}$",
+        "$\\frac{63}{64}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Since $R_2/R_1 = 8^2 = 64$, the fraction is $\\frac{64}{1 + 64}$.",
+      "explanation": "Apply the boundary ratio & scaling analysis principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Boundary Ratio & Scaling Analysis"
+      ]
+    },
+    {
+      "id": "PHY-THM-M006",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Boundary Ratio & Scaling Analysis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "When the driving parameter in a Carnot Cycle Efficiency (Thermodynamics) system is quadrupled while keeping resistance constant at $8$ units, by what factor does the quadratic power dissipation change?",
+      "options": [
+        "Increases by a factor of $4$",
+        "Increases by a factor of $16$",
+        "Increases by a factor of $8$",
+        "Decreases by a factor of $4$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Quadratic dependence on the driving parameter yields a $4^2 = 16$-fold increase.",
+      "explanation": "Apply the boundary ratio & scaling analysis principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Boundary Ratio & Scaling Analysis"
+      ]
+    },
+    {
+      "id": "PHY-THM-M007",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Graphical Slope & Area Integration",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "The linear response graph of a Thermodynamics sensor (First Law & Adiabatic Work) increases uniformly from $0$ to $18$ units over the interval $z \\in [0, 3]$. Compute the definite integral $\\int_0^{3} f(z)\\,dz$ represented by the area under the graph.",
+      "options": [
+        "$54$",
+        "$13.5$",
+        "$27$",
+        "$12$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Area of the right triangle under the linear curve is $\\frac{1}{2} \\times 3 \\times 18 = 27$.",
+      "explanation": "Apply the graphical slope & area integration principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Graphical Slope & Area Integration"
+      ]
+    },
+    {
+      "id": "PHY-THM-M008",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Graphical Slope & Area Integration",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In a Cp - Cv Relations experiment (Thermodynamics), the slope of the characteristic curve at operating point $P$ is $10$ and the intercept on the vertical axis is $-4$. Find the horizontal intercept where the net output vanishes.",
+      "options": [
+        "$-\\frac{4}{10}$",
+        "$\\frac{10}{4}$",
+        "$40$",
+        "$\\frac{4}{10}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "From $y = 10x - 4 = 0$, the horizontal intercept is $x = 4/10$.",
+      "explanation": "Apply the graphical slope & area integration principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Graphical Slope & Area Integration"
+      ]
+    },
+    {
+      "id": "PHY-THM-M009",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Dimensional & Exponent Homogeneity",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "A derived physical quantity $Z$ in Thermodynamics (Polytropic Processes) depends on measurable quantities $A$ and $B$ via $Z = A^{5} B^{-2}$. If the fractional error in $A$ is $1\\%$ and in $B$ is $11\\%$, what is the maximum percentage uncertainty in $Z$?",
+      "options": [
+        "$27\\%$",
+        "$-17\\%$",
+        "$55\\%$",
+        "$21\\%$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Maximum percentage error is $\\frac{\\Delta Z}{Z}\\times 100 = 5(1\\%) + 2(11\\%) = 27\\%$.",
+      "explanation": "Apply the dimensional & exponent homogeneity principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Dimensional & Exponent Homogeneity"
+      ]
+    },
+    {
+      "id": "PHY-THM-M010",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Dimensional & Exponent Homogeneity",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In dimensional modeling of Carnot Cycle Efficiency (Thermodynamics), a dimensionless group is formed as $\\Pi = P^x Q^{6} R^{-1}$. If the exponents must satisfy the homogeneity condition $2x - 6 + 1 = 0$, find $x$.",
+      "options": [
+        "$\\frac{7}{2}$",
+        "$\\frac{5}{2}$",
+        "$5$",
+        "$\\frac{1 - 6}{2}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Solving $2x - 6 + 1 = 0$ directly gives $x = \\frac{5}{2}$.",
+      "explanation": "Apply the dimensional & exponent homogeneity principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Dimensional & Exponent Homogeneity"
+      ]
+    },
+    {
+      "id": "PHY-THM-M011",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Two-Source Superposition & Phase",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Two coherent excitations in Thermodynamics (First Law & Adiabatic Work) of amplitudes $A_1 = 13$ and $A_2 = 7$ superpose with a phase difference of $\\pi\\text{ rad}$. What is the ratio of maximum possible intensity to this minimum resultant intensity?",
+      "options": [
+        "$\\frac{20}{6}$",
+        "$\\frac{218}{120}$",
+        "$\\left(\\frac{20}{6}\\right)^2$",
+        "$\\left(\\frac{13}{7}\\right)^2$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$I_{\\max}/I_{\\min} = (A_1 + A_2)^2 / (A_1 - A_2)^2$.",
+      "explanation": "Apply the two-source superposition & phase principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Two-Source Superposition & Phase"
+      ]
+    },
+    {
+      "id": "PHY-THM-M012",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Two-Source Superposition & Phase",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In Cp - Cv Relations (Thermodynamics), two orthogonal field vectors have magnitudes $F_x = 24$ and $F_y = 32$. What is the magnitude of their resultant vector and the cosine of the angle it makes with the $x$-axis?",
+      "options": [
+        "$40,\\; \\frac{4}{5}$",
+        "$56,\\; \\frac{3}{5}$",
+        "$40,\\; \\frac{3}{4}$",
+        "$40,\\; \\frac{3}{5}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Resultant magnitude $= \\sqrt{(3\\cdot 8)^2 + (4\\cdot 8)^2} = 40$ and $\\cos\\theta = 3/5$.",
+      "explanation": "Apply the two-source superposition & phase principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Two-Source Superposition & Phase"
+      ]
+    },
+    {
+      "id": "PHY-THM-M013",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Energy Efficiency & Dissipation",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "A conversion device operating under Thermodynamics (Polytropic Processes) absorbs $150\\text{ J}$ of input energy per cycle and rejects $30\\text{ J}$ to the sink. Determine its conversion efficiency $\\eta$.",
+      "options": [
+        "$80\\%$",
+        "$20\\%$",
+        "$75\\%$",
+        "$85\\%$"
+      ],
+      "correctAnswer": "A",
+      "solution": "$\\eta = \\frac{W_{\\text{out}}}{Q_{\\text{in}}} = \\frac{150 - 30}{150} = 0.80 = 80\\%$.",
+      "explanation": "Apply the energy efficiency & dissipation principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Energy Efficiency & Dissipation"
+      ]
+    },
+    {
+      "id": "PHY-THM-M014",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Energy Efficiency & Dissipation",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In Carnot Cycle Efficiency (Thermodynamics), an inelastic interaction reduces the active mechanical energy of a system to $\\frac{1}{3}$ of its initial value $E_0 = 48\\text{ J}$. How much energy is dissipated as losses?",
+      "options": [
+        "$16\\text{ J}$",
+        "$32\\text{ J}$",
+        "$48\\text{ J}$",
+        "$24\\text{ J}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Dissipated energy $\\Delta E = E_0 - E_0/3 = 48 - 16 = 32\\text{ J}$.",
+      "explanation": "Apply the energy efficiency & dissipation principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Energy Efficiency & Dissipation"
+      ]
+    },
+    {
+      "id": "PHY-THM-M015",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Critical Threshold & Equilibrium",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For stability in a Thermodynamics configuration (First Law & Adiabatic Work), the restoring parameter $k$ must exceed the critical threshold $k_c = \\frac{68}{4}$. If $k = 34$, what is the stability safety margin $k - k_c$?",
+      "options": [
+        "$34$",
+        "$21$",
+        "$17$",
+        "$4$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Here $k_c = 17$, so the stability margin is $k - k_c = 34 - 17 = 17$.",
+      "explanation": "Apply the critical threshold & equilibrium principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Critical Threshold & Equilibrium"
+      ]
+    },
+    {
+      "id": "PHY-THM-M016",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Critical Threshold & Equilibrium",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "Three coplanar forces in a Thermodynamics equilibrium setup (Cp - Cv Relations) maintain a particle at rest. If two mutually perpendicular forces have magnitudes $18\\text{ N}$ and $5\\text{ N}$, what must be the magnitude of the third equilibrant force?",
+      "options": [
+        "$23\\text{ N}$",
+        "$13\\text{ N}$",
+        "$90\\text{ N}$",
+        "$\\sqrt{349}\\text{ N}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "For static equilibrium, $\\vec{F}_3 = -(\\vec{F}_1 + \\vec{F}_2)$, so $|\\vec{F}_3| = \\sqrt{18^2 + 5^2} = \\sqrt{349}\\text{ N}$.",
+      "explanation": "Apply the critical threshold & equilibrium principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Critical Threshold & Equilibrium"
+      ]
+    },
+    {
+      "id": "PHY-THM-M017",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Resonance & Extremum Condition",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a Polytropic Processes study (Thermodynamics), the transfer function $H(\\omega) = \\frac{114}{\\omega + 6^2 / \\omega}$ attains its peak value at angular frequency $\\omega = \\omega_0$. Find $\\omega_0$ and $H(\\omega_0)$.",
+      "options": [
+        "$\\omega_0 = 6,\\; H_{\\max} = \\frac{19}{2}$",
+        "$\\omega_0 = 36,\\; H_{\\max} = 19$",
+        "$\\omega_0 = 6,\\; H_{\\max} = 19$",
+        "$\\omega_0 = \\sqrt{6},\\; H_{\\max} = \\frac{19}{2}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "By AM-GM, $\\omega + 6^2/\\omega \\ge 2(6)$ with equality at $\\omega_0 = 6$, giving $H_{\\max} = \\frac{114}{2\\cdot 6} = \\frac{19}{2}$.",
+      "explanation": "Apply the resonance & extremum condition principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Resonance & Extremum Condition"
+      ]
+    },
+    {
+      "id": "PHY-THM-M018",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Resonance & Extremum Condition",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For maximum power transfer in a Thermodynamics network (Carnot Cycle Efficiency) with internal impedance $Z_s = 20\\,\\Omega$, what load resistance $R_L$ maximizes power delivered for source EMF $E = 40\\text{ V}$?",
+      "options": [
+        "$R_L = 40\\,\\Omega,\\; P_{\\max} = 40\\text{ W}$",
+        "$R_L = 20\\,\\Omega,\\; P_{\\max} = 20\\text{ W}$",
+        "$R_L = 20\\,\\Omega,\\; P_{\\max} = 40\\text{ W}$",
+        "$R_L = \\frac{20}{2}\\,\\Omega,\\; P_{\\max} = 20\\text{ W}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Matching $R_L = Z_s = 20\\,\\Omega$ yields $P_{\\max} = \\frac{E^2}{4 R_L} = \\frac{4\\cdot 20^2}{4\\cdot 20} = 20\\text{ W}$.",
+      "explanation": "Apply the resonance & extremum condition principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Resonance & Extremum Condition"
+      ]
+    },
+    {
+      "id": "PHY-THM-M019",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Relative Frame & Coupling Constraint",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Two observers $S_1$ and $S_2$ in a Thermodynamics problem (First Law & Adiabatic Work) move along the same axis with velocities $+21\\text{ m/s}$ and $-8\\text{ m/s}$ relative to the lab frame. What is the speed of $S_1$ as measured from the rest frame of $S_2$?",
+      "options": [
+        "$13\\text{ m/s}$",
+        "$\\sqrt{505}\\text{ m/s}$",
+        "$29\\text{ m/s}$",
+        "$\\frac{29}{2}\\text{ m/s}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Relative velocity $v_{12} = v_1 - v_2 = 21 - (-8) = 29\\text{ m/s}$.",
+      "explanation": "Apply the relative frame & coupling constraint principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Relative Frame & Coupling Constraint"
+      ]
+    },
+    {
+      "id": "PHY-THM-M020",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Relative Frame & Coupling Constraint",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In a constrained system of Thermodynamics (Cp - Cv Relations), coordinates $x_1$ and $x_2$ satisfy the linkage relation $x_1 + 9x_2 = \\text{constant}$. If element $2$ accelerates at $+22\\text{ m/s}^2$, what is the magnitude of acceleration of element $1$?",
+      "options": [
+        "$\\frac{22}{9}\\text{ m/s}^2$",
+        "$31\\text{ m/s}^2$",
+        "$22\\text{ m/s}^2$",
+        "$198\\text{ m/s}^2$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Differentiating twice gives $a_1 + 9a_2 = 0 \\implies |a_1| = 198\\text{ m/s}^2$.",
+      "explanation": "Apply the relative frame & coupling constraint principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Relative Frame & Coupling Constraint"
+      ]
+    },
+    {
+      "id": "PHY-THM-M021",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Transient Decay & Time Constant",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "A relaxation process in Thermodynamics (Polytropic Processes) follows $N(t) = N_0 e^{-t/\\tau}$ with time constant $\\tau = 23\\text{ s}$. At what time $t$ does the quantity decay to $e^{-3}$ of its initial value $N_0$?",
+      "options": [
+        "$69\\text{ s}$",
+        "$\\frac{23}{3}\\text{ s}$",
+        "$26\\text{ s}$",
+        "$138\\text{ s}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Setting $e^{-t/23} = e^{-3}$ gives $t = 69\\text{ s}$.",
+      "explanation": "Apply the transient decay & time constant principles in Thermodynamics (Polytropic Processes).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Transient Decay & Time Constant"
+      ]
+    },
+    {
+      "id": "PHY-THM-M022",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Transient Decay & Time Constant",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "During transient charging in Carnot Cycle Efficiency (Thermodynamics), the state variable approaches its asymptote $Q_\\infty = 96$ units as $Q(t) = Q_\\infty(1 - e^{-t/\\tau})$. What is the initial rate of change $\\left.\\frac{dQ}{dt}\\right|_{t=0}$ if $\\tau = 4\\text{ s}$?",
+      "options": [
+        "$96\\text{ units/s}$",
+        "$24\\text{ units/s}$",
+        "$4\\text{ units/s}$",
+        "$\\frac{24}{4}\\text{ units/s}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "At $t=0$, $\\frac{dQ}{dt} = \\frac{Q_\\infty}{\\tau} = \\frac{96}{4} = 24\\text{ units/s}$.",
+      "explanation": "Apply the transient decay & time constant principles in Thermodynamics (Carnot Cycle Efficiency).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Transient Decay & Time Constant"
+      ]
+    },
+    {
+      "id": "PHY-THM-M023",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Flux, Field & Uncertainty Analysis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "A uniform vector field $\\vec{F} = 25\\hat{i} + 5\\hat{j}$ in Thermodynamics (First Law & Adiabatic Work) passes through a planar surface element of area vector $\\vec{A} = 2\\hat{i} + 3\\hat{j}$ (SI units). Compute the scalar flux $\\Phi = \\vec{F}\\cdot\\vec{A}$.",
+      "options": [
+        "$85$",
+        "$35$",
+        "$65$",
+        "$150$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Scalar dot product $\\Phi = 2(25) + 3(5) = 65$.",
+      "explanation": "Apply the flux, field & uncertainty analysis principles in Thermodynamics (First Law & Adiabatic Work).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Flux, Field & Uncertainty Analysis"
+      ]
+    },
+    {
+      "id": "PHY-THM-M024",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Flux, Field & Uncertainty Analysis",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In Thermodynamics (Cp - Cv Relations), the radial field intensity at distance $r$ from a localized source is $E(r) = \\frac{936}{r^2}$. Evaluate the field intensity at radial distance $r = 6\\text{ m}$.",
+      "options": [
+        "$156\\text{ SI units}$",
+        "$\\frac{26}{6}\\text{ SI units}$",
+        "$936\\text{ SI units}$",
+        "$26\\text{ SI units}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Substituting $r = 6$ into $E(r) = \\frac{936}{r^2}$ gives $E(6) = 26$.",
+      "explanation": "Apply the flux, field & uncertainty analysis principles in Thermodynamics (Cp - Cv Relations).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Flux, Field & Uncertainty Analysis"
+      ]
+    },
+    {
+      "id": "PHY-THM-I001",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Numerical Conservation Law",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "In a Thermodynamics experiment on Polytropic Processes, a conserved quantity is given by $I = m v^2$ with $m = 3$ and $v = 4$. Calculate the exact numerical value of $I$.",
+      "correctAnswer": 48,
+      "solution": "$I = 3 \\times 4^2 = 48$.",
+      "explanation": "Apply numerical conservation law in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Numerical Conservation Law"
+      ]
+    },
+    {
+      "id": "PHY-THM-I002",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Numerical Rate & Gradient Evaluation",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "For a system in Thermodynamics (Carnot Cycle Efficiency), the coordinate varies with time as $s(t) = 4t^3 + 5t$. Find the instantaneous rate $\\frac{ds}{dt}$ at $t = 2\\text{ s}$.",
+      "correctAnswer": 53,
+      "solution": "$s'(t) = 3(4)t^2 + 5$. At $t = 2$, $s'(2) = 12(4) + 5 = 53$.",
+      "explanation": "Apply numerical rate & gradient evaluation in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Numerical Rate & Gradient Evaluation"
+      ]
+    },
+    {
+      "id": "PHY-THM-I003",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "First Law & Adiabatic Work",
+      "category": "Numerical Ratio & Scaling Factor",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "Two coupled stages in Thermodynamics (First Law & Adiabatic Work) have gains $G_1 = 7$ and $G_2 = 7$. What is the combined cascade gain $G_{\\text{net}} = G_1 \\times G_2$?",
+      "correctAnswer": 49,
+      "solution": "$G_{\\text{net}} = (7) \\times (7) = 49$.",
+      "explanation": "Apply numerical ratio & scaling factor in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "First Law & Adiabatic Work",
+        "Numerical Ratio & Scaling Factor"
+      ]
+    },
+    {
+      "id": "PHY-THM-I004",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Cp - Cv Relations",
+      "category": "Numerical Work & Area Integration",
+      "difficulty": "hard",
+      "type": "integer",
+      "question": "A variable force $F(x) = 12x$ acts on a body in Thermodynamics (Cp - Cv Relations) from $x = 0$ to $x = 7\\text{ m}$. Compute the work done $\\int_0^{7} F(x)\\,dx$ in Joules.",
+      "correctAnswer": 294,
+      "solution": "$W = [ 6x^2 ]_0^{7} = 294\\text{ J}$.",
+      "explanation": "Apply numerical work & area integration in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "Cp - Cv Relations",
+        "Numerical Work & Area Integration"
+      ]
+    },
+    {
+      "id": "PHY-THM-I005",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Polytropic Processes",
+      "category": "Numerical Extremum & Threshold",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "In Thermodynamics (Polytropic Processes), the potential energy is $U(x) = (x - 15)^2 + 21\\text{ J}$. What is the minimum possible potential energy (in J) of the system?",
+      "correctAnswer": 21,
+      "solution": "Since $(x - 15)^2 \\ge 0$, the minimum potential energy is $21\\text{ J}$.",
+      "explanation": "Apply numerical extremum & threshold in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "Polytropic Processes",
+        "Numerical Extremum & Threshold"
+      ]
+    },
+    {
+      "id": "PHY-THM-I006",
+      "subject": "Physics",
+      "chapter": "Thermodynamics",
+      "topic": "Carnot Cycle Efficiency",
+      "category": "Numerical Flux & Field Magnitude",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "A field $\\vec{E} = 8\\hat{i} + 9\\hat{j} + 2\\hat{k}$ crosses a surface $\\vec{S} = 3\\hat{i} + 2\\hat{j} + 8\\hat{k}$ in Thermodynamics (Carnot Cycle Efficiency). Find the flux $\\vec{E}\\cdot\\vec{S}$.",
+      "correctAnswer": 58,
+      "solution": "$\\vec{E}\\cdot\\vec{S} = 3(8) + 2(9) + 2(8) = 58$.",
+      "explanation": "Apply numerical flux & field magnitude in Thermodynamics.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Thermodynamics",
+        "Carnot Cycle Efficiency",
+        "Numerical Flux & Field Magnitude"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "schemaVersion": "v2-categorized-diverse",
+  "subject": "Physics",
+  "chapter": "Electronic Devices",
+  "chapterCode": "PHY-ELD",
+  "questions": [
+    {
+      "id": "PHY-ELD-M001",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Zener Diode Voltage Regulator",
+      "category": "Conservation & Invariant Balance",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "In a Electronic Devices setup investigating Zener Diode Voltage Regulator, an isolated system transitions from initial state parameter $p_i = 3$ to final configuration $p_f = 7$ while conserving the invariant $\\mathcal{E} = p_i^2 + 2p_f$. What is the conserved value of $\\mathcal{E}$ in SI units?",
+      "options": [
+        "$23$",
+        "$16$",
+        "$49$",
+        "$24$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Evaluating $\\mathcal{E} = p_i^2 + 2p_f = 3^2 + 2(7) = 23$.",
+      "explanation": "Apply the conservation & invariant balance principles in Electronic Devices (Zener Diode Voltage Regulator).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Zener Diode Voltage Regulator",
+        "Conservation & Invariant Balance"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M002",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Logic Gates & De Morgan Truth Tables",
+      "category": "Conservation & Invariant Balance",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "During an experiment on Logic Gates & De Morgan Truth Tables (Electronic Devices), two coupled components carry momenta in the ratio $1 : 5$. If the lighter component acquires kinetic energy $K_0 = 4\\text{ J}$, what is the total kinetic energy of the two-component assembly assuming identical inertia?",
+      "options": [
+        "$24\\text{ J}$",
+        "$104\\text{ J}$",
+        "$100\\text{ J}$",
+        "$40\\text{ J}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Since $K \\propto p^2$, $K_{\\text{total}} = K_0(1 + 5^2) = 104\\text{ J}$.",
+      "explanation": "Apply the conservation & invariant balance principles in Electronic Devices (Logic Gates & De Morgan Truth Tables).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Logic Gates & De Morgan Truth Tables",
+        "Conservation & Invariant Balance"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M003",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "PN Junction Forward/Reverse Bias",
+      "category": "Instantaneous Rate & Gradient Law",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "For a time-dependent process in Electronic Devices (PN Junction Forward/Reverse Bias), the state variable evolves as $y(t) = 5t^2 - 6t$ (SI units). Find the instantaneous rate of change $\\frac{dy}{dt}$ at $t = 2\\text{ s}$.",
+      "options": [
+        "$4\\text{ SI units}$",
+        "$26\\text{ SI units}$",
+        "$14\\text{ SI units}$",
+        "$8\\text{ SI units}$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Differentiating $y(t)$ gives $y'(t) = 2(5)t - 6$. At $t=2$, $y'(2) = 14$.",
+      "explanation": "Apply the instantaneous rate & gradient law principles in Electronic Devices (PN Junction Forward/Reverse Bias).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "PN Junction Forward/Reverse Bias",
+        "Instantaneous Rate & Gradient Law"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M004",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Half & Full Wave Rectifiers",
+      "category": "Instantaneous Rate & Gradient Law",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In Electronic Devices, the potential profile along a coordinate $x$ for Half & Full Wave Rectifiers is given by $U(x) = 7x^3 - 36x\\text{ J}$. At what positive coordinate $x > 0$ does the restoring generalized force vanish?",
+      "options": [
+        "$1.7142857142857142\\text{ m}$",
+        "$\\sqrt{5.142857142857143}\\text{ m}$",
+        "$0.8571428571428571\\text{ m}$",
+        "$\\sqrt{1.7142857142857142}\\text{ m}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Setting $-\\frac{dU}{dx} = 0 \\implies 3(7)x^2 - 36 = 0 \\implies x = \\sqrt{1.7142857142857142}\\text{ m}$.",
+      "explanation": "Apply the instantaneous rate & gradient law principles in Electronic Devices (Half & Full Wave Rectifiers).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Half & Full Wave Rectifiers",
+        "Instantaneous Rate & Gradient Law"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M005",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Zener Diode Voltage Regulator",
+      "category": "Boundary Ratio & Scaling Analysis",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "Two geometrically similar apparatus in Electronic Devices (Zener Diode Voltage Regulator) have characteristic linear dimensions in the ratio $L_2 / L_1 = 8$. If the response quantity scales as $R \\propto L^2$, what is the ratio $R_2 / (R_1 + R_2)$?",
+      "options": [
+        "$\\frac{64}{65}$",
+        "$\\frac{8}{9}$",
+        "$\\frac{1}{65}$",
+        "$\\frac{63}{64}$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Since $R_2/R_1 = 8^2 = 64$, the fraction is $\\frac{64}{1 + 64}$.",
+      "explanation": "Apply the boundary ratio & scaling analysis principles in Electronic Devices (Zener Diode Voltage Regulator).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Zener Diode Voltage Regulator",
+        "Boundary Ratio & Scaling Analysis"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M006",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Logic Gates & De Morgan Truth Tables",
+      "category": "Boundary Ratio & Scaling Analysis",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "When the driving parameter in a Logic Gates & De Morgan Truth Tables (Electronic Devices) system is quadrupled while keeping resistance constant at $8$ units, by what factor does the quadratic power dissipation change?",
+      "options": [
+        "Increases by a factor of $4$",
+        "Increases by a factor of $16$",
+        "Increases by a factor of $8$",
+        "Decreases by a factor of $4$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Quadratic dependence on the driving parameter yields a $4^2 = 16$-fold increase.",
+      "explanation": "Apply the boundary ratio & scaling analysis principles in Electronic Devices (Logic Gates & De Morgan Truth Tables).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Logic Gates & De Morgan Truth Tables",
+        "Boundary Ratio & Scaling Analysis"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M007",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "PN Junction Forward/Reverse Bias",
+      "category": "Graphical Slope & Area Integration",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "The linear response graph of a Electronic Devices sensor (PN Junction Forward/Reverse Bias) increases uniformly from $0$ to $18$ units over the interval $z \\in [0, 3]$. Compute the definite integral $\\int_0^{3} f(z)\\,dz$ represented by the area under the graph.",
+      "options": [
+        "$54$",
+        "$13.5$",
+        "$27$",
+        "$12$"
+      ],
+      "correctAnswer": "C",
+      "solution": "Area of the right triangle under the linear curve is $\\frac{1}{2} \\times 3 \\times 18 = 27$.",
+      "explanation": "Apply the graphical slope & area integration principles in Electronic Devices (PN Junction Forward/Reverse Bias).",
+      "possibleErrorType": "Conceptual mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "PN Junction Forward/Reverse Bias",
+        "Graphical Slope & Area Integration"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M008",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Half & Full Wave Rectifiers",
+      "category": "Graphical Slope & Area Integration",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In a Half & Full Wave Rectifiers experiment (Electronic Devices), the slope of the characteristic curve at operating point $P$ is $10$ and the intercept on the vertical axis is $-4$. Find the horizontal intercept where the net output vanishes.",
+      "options": [
+        "$-\\frac{4}{10}$",
+        "$\\frac{10}{4}$",
+        "$40$",
+        "$\\frac{4}{10}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "From $y = 10x - 4 = 0$, the horizontal intercept is $x = 4/10$.",
+      "explanation": "Apply the graphical slope & area integration principles in Electronic Devices (Half & Full Wave Rectifiers).",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Half & Full Wave Rectifiers",
+        "Graphical Slope & Area Integration"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M009",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Zener Diode Voltage Regulator",
+      "category": "Dimensional & Exponent Homogeneity",
+      "difficulty": "easy",
+      "type": "mcq",
+      "question": "A derived physical quantity $Z$ in Electronic Devices (Zener Diode Voltage Regulator) depends on measurable quantities $A$ and $B$ via $Z = A^{5} B^{-2}$. If the fractional error in $A$ is $1\\%$ and in $B$ is $11\\%$, what is the maximum percentage uncertainty in $Z$?",
+      "options": [
+        "$27\\%$",
+        "$-17\\%$",
+        "$55\\%$",
+        "$21\\%$"
+      ],
+      "correctAnswer": "A",
+      "solution": "Maximum percentage error is $\\frac{\\Delta Z}{Z}\\times 100 = 5(1\\%) + 2(11\\%) = 27\\%$.",
+      "explanation": "Apply the dimensional & exponent homogeneity principles in Electronic Devices (Zener Diode Voltage Regulator).",
+      "possibleErrorType": "Formula mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Zener Diode Voltage Regulator",
+        "Dimensional & Exponent Homogeneity"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M010",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Logic Gates & De Morgan Truth Tables",
+      "category": "Dimensional & Exponent Homogeneity",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "In dimensional modeling of Logic Gates & De Morgan Truth Tables (Electronic Devices), a dimensionless group is formed as $\\Pi = P^x Q^{6} R^{-1}$. If the exponents must satisfy the homogeneity condition $2x - 6 + 1 = 0$, find $x$.",
+      "options": [
+        "$\\frac{7}{2}$",
+        "$\\frac{5}{2}$",
+        "$5$",
+        "$\\frac{1 - 6}{2}$"
+      ],
+      "correctAnswer": "B",
+      "solution": "Solving $2x - 6 + 1 = 0$ directly gives $x = \\frac{5}{2}$.",
+      "explanation": "Apply the dimensional & exponent homogeneity principles in Electronic Devices (Logic Gates & De Morgan Truth Tables).",
+      "possibleErrorType": "Reading mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Logic Gates & De Morgan Truth Tables",
+        "Dimensional & Exponent Homogeneity"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M011",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "PN Junction Forward/Reverse Bias",
+      "category": "Two-Source Superposition & Phase",
+      "difficulty": "medium",
+      "type": "mcq",
+      "question": "Two coherent excitations in Electronic Devices (PN Junction Forward/Reverse Bias) of amplitudes $A_1 = 13$ and $A_2 = 7$ superpose with a phase difference of $\\pi\\text{ rad}$. What is the ratio of maximum possible intensity to this minimum resultant intensity?",
+      "options": [
+        "$\\frac{20}{6}$",
+        "$\\frac{218}{120}$",
+        "$\\left(\\frac{20}{6}\\right)^2$",
+        "$\\left(\\frac{13}{7}\\right)^2$"
+      ],
+      "correctAnswer": "C",
+      "solution": "$I_{\\max}/I_{\\min} = (A_1 + A_2)^2 / (A_1 - A_2)^2$.",
+      "explanation": "Apply the two-source superposition & phase principles in Electronic Devices (PN Junction Forward/Reverse Bias).",
+      "possibleErrorType": "Sign/unit mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "PN Junction Forward/Reverse Bias",
+        "Two-Source Superposition & Phase"
+      ]
+    },
+    {
+      "id": "PHY-ELD-M012",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Half & Full Wave Rectifiers",
+      "category": "Two-Source Superposition & Phase",
+      "difficulty": "hard",
+      "type": "mcq",
+      "question": "In Half & Full Wave Rectifiers (Electronic Devices), two orthogonal field vectors have magnitudes $F_x = 24$ and $F_y = 32$. What is the magnitude of their resultant vector and the cosine of the angle it makes with the $x$-axis?",
+      "options": [
+        "$40,\\; \\frac{4}{5}$",
+        "$56,\\; \\frac{3}{5}$",
+        "$40,\\; \\frac{3}{4}$",
+        "$40,\\; \\frac{3}{5}$"
+      ],
+      "correctAnswer": "D",
+      "solution": "Resultant magnitude $= \\sqrt{(3\\cdot 8)^2 + (4\\cdot 8)^2} = 40$ and $\\cos\\theta = 3/5$.",
+      "explanation": "Apply the two-source superposition & phase principles in Electronic Devices (Half & Full Wave Rectifiers).",
+      "possibleErrorType": "Time-pressure error",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "JEE Advanced",
+        "Electronic Devices",
+        "Half & Full Wave Rectifiers",
+        "Two-Source Superposition & Phase"
+      ]
+    },
+    {
+      "id": "PHY-ELD-I001",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Zener Diode Voltage Regulator",
+      "category": "Numerical Conservation Law",
+      "difficulty": "easy",
+      "type": "integer",
+      "question": "In a Electronic Devices experiment on Zener Diode Voltage Regulator, a conserved quantity is given by $I = m v^2$ with $m = 3$ and $v = 4$. Calculate the exact numerical value of $I$.",
+      "correctAnswer": 48,
+      "solution": "$I = 3 \\times 4^2 = 48$.",
+      "explanation": "Apply numerical conservation law in Electronic Devices.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Electronic Devices",
+        "Zener Diode Voltage Regulator",
+        "Numerical Conservation Law"
+      ]
+    },
+    {
+      "id": "PHY-ELD-I002",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "Logic Gates & De Morgan Truth Tables",
+      "category": "Numerical Rate & Gradient Evaluation",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "For a system in Electronic Devices (Logic Gates & De Morgan Truth Tables), the coordinate varies with time as $s(t) = 4t^3 + 5t$. Find the instantaneous rate $\\frac{ds}{dt}$ at $t = 2\\text{ s}$.",
+      "correctAnswer": 53,
+      "solution": "$s'(t) = 3(4)t^2 + 5$. At $t = 2$, $s'(2) = 12(4) + 5 = 53$.",
+      "explanation": "Apply numerical rate & gradient evaluation in Electronic Devices.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Electronic Devices",
+        "Logic Gates & De Morgan Truth Tables",
+        "Numerical Rate & Gradient Evaluation"
+      ]
+    },
+    {
+      "id": "PHY-ELD-I003",
+      "subject": "Physics",
+      "chapter": "Electronic Devices",
+      "topic": "PN Junction Forward/Reverse Bias",
+      "category": "Numerical Ratio & Scaling Factor",
+      "difficulty": "medium",
+      "type": "integer",
+      "question": "Two coupled stages in Electronic Devices (PN Junction Forward/Reverse Bias) have gains $G_1 = 7$ and $G_2 = 7$. What is the combined cascade gain $G_{\\text{net}} = G_1 \\times G_2$?",
+      "correctAnswer": 49,
+      "solution": "$G_{\\text{net}} = (7) \\times (7) = 49$.",
+      "explanation": "Apply numerical ratio & scaling factor in Electronic Devices.",
+      "possibleErrorType": "Calculation mistake",
+      "image": null,
+      "source": "question_bank",
+      "tags": [
+        "JEE Main",
+        "Numerical",
+        "Electronic Devices",
+        "PN Junction Forward/Reverse Bias",
+        "Numerical Ratio & Scaling Factor"
+      ]
+    }
+  ]
+}
