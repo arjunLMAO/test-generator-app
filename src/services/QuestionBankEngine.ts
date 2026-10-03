@@ -16,6 +16,69 @@ export interface RawFilePayload {
   rawBaseUrl?: string;
 }
 
+export function detectIfReactionBased(
+  subject: string,
+  chapter: string,
+  questionText: string,
+  tags: string[] = [],
+  raw: any = {}
+): boolean {
+  if (raw.isReactionBased === true || tags.includes('reaction-based')) return true;
+  if (subject !== 'Chemistry') return false;
+  const organicChapters = [
+    'General Organic Chemistry & Isomerism',
+    'Hydrocarbons',
+    'Haloalkanes & Haloarenes',
+    'Alcohols, Phenols & Ethers',
+    'Aldehydes, Ketones & Carboxylic Acids',
+    'Amines & Biomolecules',
+  ];
+  if (!organicChapters.includes(chapter) && !tags.some((t) => t.toLowerCase().includes('organic'))) {
+    return false;
+  }
+  const qLower = questionText.toLowerCase();
+  const reactionKeywords = [
+    '\\xrightarrow',
+    '\\longrightarrow',
+    '\\rightarrow',
+    '->',
+    'major product',
+    'minor product',
+    'starting compound',
+    'reagent sequence',
+    'yields',
+    'reagent [a]',
+    'compound [a]',
+    'compound a',
+    'ozonolysis',
+    'hydrolysis',
+    'reduction',
+    'oxidation',
+    'kmno4',
+    'lialh4',
+    'nabh4',
+    'pcc',
+    'socl2',
+    'hbr',
+    'br2',
+    'alc. koh',
+    'aq. koh',
+    'mg/dry ether',
+    'hno3',
+    'h2so4',
+    'grignard',
+    'diazotization',
+    'decarboxylation',
+    'clemmensen',
+    'cannizzaro',
+    'aldol',
+    'hinsberg',
+    'coupling',
+    'friedel',
+  ];
+  return reactionKeywords.some((k) => qLower.includes(k));
+}
+
 export function buildQuestionContentFingerprint(
   subject: string,
   questionText: string,
@@ -819,6 +882,9 @@ export class QuestionBankEngine {
           raw.category
         );
 
+        const isReactionBased = detectIfReactionBased(subject, chapter, questionText, tags, raw);
+        const isMultiConcept = Boolean(raw.isMultiConcept) || tags.some((t: any) => String(t).toLowerCase().includes('multi-concept'));
+
         const normalizedQuestion: NormalizedQuestion = {
           id,
           subject,
@@ -843,6 +909,8 @@ export class QuestionBankEngine {
           rawSourceId: String(raw.id ?? id),
           category,
           templateSignature,
+          isReactionBased,
+          isMultiConcept,
         };
 
         seenContentFingerprints.set(contentFingerprint, id);

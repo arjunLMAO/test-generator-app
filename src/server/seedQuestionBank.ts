@@ -2,97 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { DifficultyLevel, ErrorCategory, SubjectName } from '../types/jee';
 
-interface ChapterBlueprint {
-  subject: SubjectName;
-  chapter: string;
-  slug: string;
-  code: string;
-  topics: string[];
-  mcqTarget: number;
-  intTarget: number;
-  curatedMcqs: Array<{
-    topic: string;
-    difficulty: DifficultyLevel;
-    question: string;
-    options: [string, string, string, string];
-    correctAnswer: 'A' | 'B' | 'C' | 'D';
-    solution: string;
-    explanation: string;
-    possibleErrorType: ErrorCategory;
-    svgDiagram?: string;
-  }>;
-  curatedInts: Array<{
-    topic: string;
-    difficulty: DifficultyLevel;
-    question: string;
-    correctAnswer: number;
-    solution: string;
-    explanation: string;
-    possibleErrorType: ErrorCategory;
-  }>;
-  parametricGenerator: (index: number, type: 'mcq' | 'integer') => {
-    topic: string;
-    difficulty: DifficultyLevel;
-    question: string;
-    options?: [string, string, string, string];
-    correctAnswer: string | number;
-    solution: string;
-    explanation: string;
-    possibleErrorType: ErrorCategory;
-  };
-}
-
-const PROJECTILE_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 180" width="420" height="180">
-  <rect width="420" height="180" fill="#0B1120" rx="8"/>
-  <line x1="30" y1="150" x2="390" y2="150" stroke="#475569" stroke-width="2"/>
-  <line x1="40" y1="150" x2="40" y2="25" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 4"/>
-  <path d="M 40 150 Q 190 15 340 150" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
-  <line x1="40" y1="150" x2="105" y2="85" stroke="#10B981" stroke-width="2"/>
-  <polygon points="105,85 95,88 102,95" fill="#10B981"/>
-  <path d="M 75 150 A 35 35 0 0 0 65 125" fill="none" stroke="#F59E0B" stroke-width="1.5"/>
-  <text x="82" y="140" fill="#F59E0B" font-family="monospace" font-size="12">θ</text>
-  <text x="95" y="78" fill="#10B981" font-family="monospace" font-size="12">u₀</text>
-  <line x1="190" y1="82" x2="190" y2="150" stroke="#94A3B8" stroke-width="1" stroke-dasharray="3 3"/>
-  <text x="196" y="120" fill="#E2E8F0" font-family="monospace" font-size="11">H_max</text>
-  <text x="330" y="168" fill="#94A3B8" font-family="monospace" font-size="11">R (Range)</text>
-</svg>
-`)}`;
-
-const PULLEY_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" width="360" height="200">
-  <rect width="360" height="200" fill="#0B1120" rx="8"/>
-  <line x1="100" y1="20" x2="260" y2="20" stroke="#64748B" stroke-width="3"/>
-  <line x1="180" y1="20" x2="180" y2="55" stroke="#94A3B8" stroke-width="2"/>
-  <circle cx="180" cy="55" r="22" fill="#1E293B" stroke="#3B82F6" stroke-width="2.5"/>
-  <circle cx="180" cy="55" r="4" fill="#94A3B8"/>
-  <line x1="158" y1="55" x2="158" y2="135" stroke="#E2E8F0" stroke-width="2"/>
-  <line x1="202" y1="55" x2="202" y2="115" stroke="#E2E8F0" stroke-width="2"/>
-  <rect x="138" y="135" width="40" height="34" fill="#1E3A8A" stroke="#60A5FA" stroke-width="1.5" rx="4"/>
-  <text x="150" y="156" fill="#F8FAFC" font-family="monospace" font-size="12">m₁</text>
-  <rect x="182" y="115" width="40" height="42" fill="#065F46" stroke="#34D399" stroke-width="1.5" rx="4"/>
-  <text x="194" y="140" fill="#F8FAFC" font-family="monospace" font-size="12">m₂</text>
-</svg>
-`)}`;
-
-const CIRCUIT_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" width="400" height="180">
-  <rect width="400" height="180" fill="#0B1120" rx="8"/>
-  <rect x="60" y="40" width="280" height="100" fill="none" stroke="#94A3B8" stroke-width="2"/>
-  <rect x="140" y="32" width="50" height="16" fill="#0B1120" stroke="#3B82F6" stroke-width="2"/>
-  <text x="155" y="25" fill="#60A5FA" font-family="monospace" font-size="12">R₁</text>
-  <line x1="255" y1="28" x2="255" y2="52" stroke="#10B981" stroke-width="2.5"/>
-  <line x1="265" y1="28" x2="265" y2="52" stroke="#10B981" stroke-width="2.5"/>
-  <rect x="256" y="35" width="8" height="10" fill="#0B1120"/>
-  <text x="252" y="22" fill="#34D399" font-family="monospace" font-size="12">C</text>
-  <line x1="190" y1="126" x2="190" y2="154" stroke="#F59E0B" stroke-width="2.5"/>
-  <line x1="200" y1="133" x2="200" y2="147" stroke="#F59E0B" stroke-width="4"/>
-  <rect x="191" y="135" width="8" height="10" fill="#0B1120"/>
-  <text x="182" y="170" fill="#FBBF24" font-family="monospace" font-size="12">E = V₀</text>
-</svg>
-`)}`;
-
-interface ChapterMeta {
+export interface ChapterMeta {
   subject: SubjectName;
   chapter: string;
   code: string;
@@ -100,67 +10,67 @@ interface ChapterMeta {
   isMinor?: boolean;
 }
 
-const ALL_55_CHAPTERS: ChapterMeta[] = [
+export const ALL_55_CHAPTERS: ChapterMeta[] = [
   // PHYSICS (19 Chapters)
-  { subject: 'Physics', chapter: 'Units & Measurements', code: 'PHY-UAM', topics: ['Dimensional Analysis', 'Significant Figures', 'Vernier Callipers & Screw Gauge', 'Error Propagation'] },
-  { subject: 'Physics', chapter: 'Kinematics', code: 'PHY-KIN', topics: ['Projectile Motion', 'Relative Velocity', 'Non-Uniform Acceleration', 'River-Boat Problems'] },
-  { subject: 'Physics', chapter: 'Laws of Motion', code: 'PHY-NLM', topics: ['Atwood Machine & Pulleys', 'Friction on Inclined Planes', 'Circular Banking', 'Pseudo Force & Wedge Constraints'] },
-  { subject: 'Physics', chapter: 'Work, Energy & Power', code: 'PHY-WEP', topics: ['Work-Energy Theorem', 'Vertical Circular Motion', 'Variable Force Integration', 'Potential Energy Equilibrium'] },
-  { subject: 'Physics', chapter: 'Rotational Motion', code: 'PHY-ROT', topics: ['Moment of Inertia & Parallel Axis', 'Rolling Without Slipping', 'Angular Momentum Conservation', 'Rigid Body Toppling'] },
-  { subject: 'Physics', chapter: 'Gravitation', code: 'PHY-GRV', topics: ['Orbital Velocity & Satellites', 'Escape Energy', 'Gravitational Potential in Shells', 'Kepler Laws'] },
-  { subject: 'Physics', chapter: 'Properties of Solids & Liquids', code: 'PHY-PSL', topics: ['Bernoulli Theorem & Efflux', 'Surface Tension & Capillary Rise', 'Terminal Velocity & Viscosity', 'Young Modulus & Elastic Energy'] },
-  { subject: 'Physics', chapter: 'Thermodynamics', code: 'PHY-THM', topics: ['Polytropic Processes', 'Carnot Cycle Efficiency', 'First Law & Adiabatic Work', 'Cp - Cv Relations'] },
-  { subject: 'Physics', chapter: 'Kinetic Theory of Gases', code: 'PHY-KTG', topics: ['RMS & Most Probable Speed', 'Degrees of Freedom & Equipartition', 'Mean Free Path', 'Gas Mixture Internal Energy'] },
-  { subject: 'Physics', chapter: 'Oscillations & Waves', code: 'PHY-OSW', topics: ['Simple Harmonic Phase & Energy', 'Spring-Block Combinations', 'Standing Waves in Organ Pipes', 'Doppler Effect & Beats'] },
-  { subject: 'Physics', chapter: 'Electrostatics', code: 'PHY-ELS', topics: ['Gauss Law & Flux', 'Electric Dipole Torque & Potential', 'Concentric Conducting Shells', 'Dielectric Capacitor Networks'] },
-  { subject: 'Physics', chapter: 'Current Electricity', code: 'PHY-CUR', topics: ['Kirchhoff Laws & Nodal Analysis', 'Wheatstone & Meter Bridge', 'RC Transient Charging', 'Maximum Power Transfer'] },
-  { subject: 'Physics', chapter: 'Magnetic Effects of Current & Magnetism', code: 'PHY-MAG', topics: ['Biot-Savart Law for Loops', 'Cyclotron Helical Trajectory', 'Ampere Circuital Law', 'Magnetic Dipole in Uniform Field'] },
-  { subject: 'Physics', chapter: 'Electromagnetic Induction & AC', code: 'PHY-EMI', topics: ['Motional EMF on Rails', 'Self & Mutual Inductance', 'Series LCR Resonance & Q-Factor', 'Induced Electric Field in Solenoid'] },
-  { subject: 'Physics', chapter: 'Electromagnetic Waves', code: 'PHY-EMW', topics: ['Poynting Vector & Intensity', 'Radiation Pressure', 'Displacement Current', 'E/B Wave Propagation'], isMinor: true },
-  { subject: 'Physics', chapter: 'Ray & Wave Optics', code: 'PHY-OPT', topics: ['Lens Maker Formula & Silvered Lenses', 'Prism Minimum Deviation', 'Young Double Slit with Thin Slab', 'Single Slit Diffraction'] },
-  { subject: 'Physics', chapter: 'Dual Nature of Matter & Radiation', code: 'PHY-DNM', topics: ['Photoelectric Stopping Potential', 'de Broglie Wavelength of Ions', 'Photon Momentum & Pressure', 'Work Function Graphs'] },
-  { subject: 'Physics', chapter: 'Atoms & Nuclei', code: 'PHY-ATN', topics: ['Bohr Orbit Radius & Rydberg Spectra', 'Radioactive Decay & Half-Life', 'Binding Energy per Nucleon', 'Simultaneous Decay Chains'] },
-  { subject: 'Physics', chapter: 'Electronic Devices', code: 'PHY-ELD', topics: ['Zener Diode Voltage Regulator', 'Logic Gates & De Morgan Truth Tables', 'PN Junction Forward/Reverse Bias', 'Half & Full Wave Rectifiers'], isMinor: true },
+  { subject: 'Physics', chapter: 'Units & Measurements', code: 'PHY-UAM', topics: ['Vernier & Screw Gauge Precision', 'Error Propagation in Experiments', 'Dimensional Equations & Constants', 'Significant Figures & Rounding'] },
+  { subject: 'Physics', chapter: 'Kinematics', code: 'PHY-KIN', topics: ['Projectile on Inclined Planes', 'Relative Motion & Closest Approach', 'Variable Acceleration Integrals', 'Constrained Coordinate Kinematics'] },
+  { subject: 'Physics', chapter: 'Laws of Motion', code: 'PHY-NLM', topics: ['Wedge-Block Accelerating Constraints', 'Friction Thresholds on Double Blocks', 'Banking & Critical Conical Angle', 'Movable Pulley Dynamic Systems'] },
+  { subject: 'Physics', chapter: 'Work, Energy & Power', code: 'PHY-WEP', topics: ['Vertical Circular Motion & Slack Conditions', 'Potential Energy Wells & Equilibrium Stability', 'Variable Force Work Integration', 'Conservation of Mechanical Energy'] },
+  { subject: 'Physics', chapter: 'Rotational Motion', code: 'PHY-ROT', topics: ['Rolling Without Slipping & Friction Conditions', 'Angular Momentum About Non-Fixed Axes', 'Rigid Body Toppling vs Sliding', 'Instantaneous Axis of Rotation'] },
+  { subject: 'Physics', chapter: 'Gravitation', code: 'PHY-GRV', topics: ['Hohmann Satellite Transfer Orbits', 'Gravitational Self-Energy & Cavities', 'Escape Velocity from Rotating Bodies', 'Kepler Elliptical Orbit Dynamics'] },
+  { subject: 'Physics', chapter: 'Properties of Solids & Liquids', code: 'PHY-PSL', topics: ['Terminal Velocity in Viscous Fluid', 'Capillary Rise & Contact Angle Variations', 'Bernoulli Efflux with Variable Heights', 'Elastic Strain Energy in Tapered Wires'] },
+  { subject: 'Physics', chapter: 'Thermodynamics', code: 'PHY-THM', topics: ['Indicator Diagram Cyclic Efficiency', 'Polytropic Processes & Molar Heat Capacity', 'Adiabatic Work vs Isothermal Free Expansion', 'Entropy Balance in Cyclic Processes'] },
+  { subject: 'Physics', chapter: 'Kinetic Theory of Gases', code: 'PHY-KTG', topics: ['Gas Mixture Equivalent Heat Capacities', 'Maxwellian Speed Distribution Ratios', 'Degrees of Freedom & Equipartition Law', 'Mean Free Path & Pressure Dependence'] },
+  { subject: 'Physics', chapter: 'Oscillations & Waves', code: 'PHY-OSW', topics: ['Spring-Mass Systems with Cut Springs', 'Perpendicular SHM Superposition & Phase', 'Organ Pipe Resonances with End Corrections', 'Doppler Effect with Moving Reflector & Wind'] },
+  { subject: 'Physics', chapter: 'Electrostatics', code: 'PHY-ELS', topics: ['Concentric Conducting Shells with Earthing', 'Gauss Law for Non-Uniform Density', 'Dielectric Insertion Forces in Capacitors', 'Electric Dipole in Inhomogeneous Fields'] },
+  { subject: 'Physics', chapter: 'Current Electricity', code: 'PHY-CUR', topics: ['Symmetric Cube & Bridge Network Resistance', 'RC Transient Charging & Discharging', 'Potentiometer Internal Resistance Accuracy', 'Nodal Analysis with Multiple Sources'] },
+  { subject: 'Physics', chapter: 'Magnetic Effects of Current & Magnetism', code: 'PHY-MAG', topics: ['Helical Motion with Pitch & Oblique Angle', 'Magnetic Force on Non-Planar Current Loops', 'Biot-Savart Law for Finite & Curved Wires', 'Magnetic Dipole Oscillation in Fields'] },
+  { subject: 'Physics', chapter: 'Electromagnetic Induction & AC', code: 'PHY-EMI', topics: ['Terminal Speed of Rail-Sliding Rods in Gravity', 'Series LCR Quality Factor & Sharpness', 'Induced Cylindrical Electric Field Torque', 'Mutual Inductance in Nested Solenoids'] },
+  { subject: 'Physics', chapter: 'Electromagnetic Waves', code: 'PHY-EMW', topics: ['Poynting Vector & Average Intensity', 'Radiation Pressure on Partial Reflectors', 'Displacement Current in Charging Capacitors', 'Polarization & Wave Vector Relations'], isMinor: true },
+  { subject: 'Physics', chapter: 'Ray & Wave Optics', code: 'PHY-OPT', topics: ['Silvered Plano-Convex Lenses as Mirrors', 'Prism Minimum Deviation & Internal Reflection', 'YDSE Fringe Shift via Variable Thin Slabs', 'Single Slit Diffraction Resolving Limit'] },
+  { subject: 'Physics', chapter: 'Dual Nature of Matter & Radiation', code: 'PHY-DNM', topics: ['Stopping Potential vs Frequency Slope', 'de Broglie Wavelength of Relativistic Particles', 'Radiation Force on Inclined Mirrors', 'Work Function & Multi-Wavelength Thresholds'] },
+  { subject: 'Physics', chapter: 'Atoms & Nuclei', code: 'PHY-ATN', topics: ['Hydrogen-Like Ion Rydberg Transitions', 'Radioactive Branching Simultaneous Decay', 'Mass Defect & Q-Value of Nuclear Reactions', 'Bohr Orbital Magnetic Dipole Moments'] },
+  { subject: 'Physics', chapter: 'Electronic Devices', code: 'PHY-ELD', topics: ['Zener Diode Dynamic Regulation Range', 'Complex Logic Gate Truth Table De Morgan', 'PN Junction Depletion Capacitance & Barrier', 'Full Wave Rectifier Ripple Factor'], isMinor: true },
 
   // CHEMISTRY (18 Chapters)
-  { subject: 'Chemistry', chapter: 'Mole Concept & Stoichiometry', code: 'CHM-MOL', topics: ['Limiting Reagent & Yield', 'Molarity & Dilution Equivalents', 'Back Titration & Oleum', 'Empirical & Vapor Density'] },
-  { subject: 'Chemistry', chapter: 'Atomic Structure', code: 'CHM-ATM', topics: ['Quantum Numbers & Radial Nodes', 'Bohr Ionization Energy', 'Heisenberg Uncertainty', 'Electronic Configuration Exceptions'] },
-  { subject: 'Chemistry', chapter: 'Chemical Bonding & Molecular Structure', code: 'CHM-BND', topics: ['VSEPR Geometry & Lone Pairs', 'Molecular Orbital Bond Order', 'Hybridization & Dipole Moment', 'Fajans Rule & Lattice Enthalpy'] },
-  { subject: 'Chemistry', chapter: 'Chemical Thermodynamics', code: 'CHM-THD', topics: ['Gibbs Free Energy & Spontaneity', 'Hess Law & Bond Dissociation', 'Entropy in Isothermal Expansion', 'Enthalpy of Neutralization'] },
-  { subject: 'Chemistry', chapter: 'Solutions & Colligative Properties', code: 'CHM-SOL', topics: ['Van t Hoff Factor & Association', 'Raoult Law & Ideal Mixtures', 'Elevation in Boiling Point', 'Osmotic Pressure of Polymers'] },
-  { subject: 'Chemistry', chapter: 'Equilibrium (Chemical & Ionic)', code: 'CHM-EQL', topics: ['Kp and Kc Degree of Dissociation', 'Henderson-Hasselbalch Buffer pH', 'Solubility Product & Common Ion', 'Salt Hydrolysis Constants'] },
-  { subject: 'Chemistry', chapter: 'Redox Reactions & Electrochemistry', code: 'CHM-ELC', topics: ['Nernst Equation & Concentration Cell', 'Faraday Laws of Electrolysis', 'Kohlrausch Law & Molar Conductance', 'Disproportionation Equivalents'] },
-  { subject: 'Chemistry', chapter: 'Chemical Kinetics', code: 'CHM-KIN', topics: ['First Order Integrated Rate Law', 'Arrhenius Activation Energy', 'Parallel First Order Reactions', 'Order Determination from Initial Rates'] },
-  { subject: 'Chemistry', chapter: 'Classification of Elements & Periodicity', code: 'CHM-PRD', topics: ['Successive Ionization Enthalpies', 'Electron Gain Enthalpy Anomalies', 'Isoelectronic Ionic Radii', 'Electronegativity & Oxide Nature'] },
-  { subject: 'Chemistry', chapter: 'p-Block Elements', code: 'CHM-PBL', topics: ['Oxoacids of Phosphorus & Sulfur', 'Interhalogen Structures', 'Boranes & Banana Bonding', 'Xenon Fluorides Hydrolysis'] },
-  { subject: 'Chemistry', chapter: 'd- and f-Block Elements', code: 'CHM-DFB', topics: ['Spin-Only Magnetic Moment', 'KMnO4 & K2Cr2O7 Oxidizing Actions', 'Lanthanoid Contraction Consequences', 'Color & d-d Transitions'] },
-  { subject: 'Chemistry', chapter: 'Coordination Compounds', code: 'CHM-CRD', topics: ['Crystal Field Splitting Energy', 'Geometrical & Optical Isomerism', 'Werner Primary & Secondary Valency', 'Synergic Bonding in Carbonyls'] },
-  { subject: 'Chemistry', chapter: 'General Organic Chemistry & Isomerism', code: 'CHM-GOC', topics: ['Carbocation & Carbanion Stability', 'Aromaticity & Huckel Rule', 'R/S Stereocenters & Enantiomers', 'Acidic & Basic Strength Order'] },
-  { subject: 'Chemistry', chapter: 'Hydrocarbons', code: 'CHM-HYD', topics: ['Ozonolysis of Alkenes', 'Markovnikov & Peroxide Effect', 'Electrophilic Aromatic Substitution', 'Conformational Analysis of Butane'] },
-  { subject: 'Chemistry', chapter: 'Haloalkanes & Haloarenes', code: 'CHM-HAL', topics: ['SN1 vs SN2 Stereochemistry', 'E2 Saytzeff vs Hofmann Elimination', 'Grignard Reagent Nucleophilic Attack', 'Aryl Halide Nucleophilic Substitution'] },
-  { subject: 'Chemistry', chapter: 'Alcohols, Phenols & Ethers', code: 'CHM-ALC', topics: ['Reimer-Tiemann & Kolbe Reactions', 'Williamson Ether Synthesis & Cleavage', 'Pinacol-Pinacolone Rearrangement', 'Lucas & Victor Meyer Tests'] },
-  { subject: 'Chemistry', chapter: 'Aldehydes, Ketones & Carboxylic Acids', code: 'CHM-ALD', topics: ['Aldol Condensation & Cannizzaro', 'Haloform & Tollens Oxidation', 'Clemmensen vs Wolff-Kishner', 'HVZ & Decarboxylation Kinetics'] },
-  { subject: 'Chemistry', chapter: 'Amines & Biomolecules', code: 'CHM-AMN', topics: ['Hoffmann Bromamide Degradation', 'Diazonium Salt Coupling', 'Hinsberg Reagent Separation', 'Isoelectric Point of Amino Acids'] },
+  { subject: 'Chemistry', chapter: 'Mole Concept & Stoichiometry', code: 'CHM-MOL', topics: ['Back Titration of Excess Reagent Mixtures', 'Combustion Analysis & Empirical Formula', 'Redox Equivalents & Disproportionation', 'Oleum Percentage Free SO3 Titration'] },
+  { subject: 'Chemistry', chapter: 'Atomic Structure', code: 'CHM-ATM', topics: ['Quantum Radial Nodes & Probability Density', 'de Broglie Wavelength Ratio of Bound States', 'Heisenberg Uncertainty in Confined Particles', 'Bohr Orbit Ionization with Nuclear Shielding'] },
+  { subject: 'Chemistry', chapter: 'Chemical Bonding & Molecular Structure', code: 'CHM-BND', topics: ['Molecular Orbital Theory Bond Orders & Magnetism', 'VSEPR Stereochemical Lone Pair Repulsion', 'Dipole Moment Vectors in Substituted Aromatics', 'Fajans Rules & Covalent Character in Halides'] },
+  { subject: 'Chemistry', chapter: 'Chemical Thermodynamics', code: 'CHM-THD', topics: ['Gibbs Free Energy & Equilibrium Quotient', 'Hess Law Enthalpy of Hydrogenation Cycles', 'Entropy of Mixing & Phase Transition Balance', 'Bond Dissociation Energies in Conjugated Bonds'] },
+  { subject: 'Chemistry', chapter: 'Solutions & Colligative Properties', code: 'CHM-SOL', topics: ['Van t Hoff Factor for Partial Dimerization', 'Raoult Law Deviations & Azeotropic Limits', 'Osmotic Pressure in Mixed Polyelectrolytes', 'Freezing Point Depression in Associated Solutes'] },
+  { subject: 'Chemistry', chapter: 'Equilibrium (Chemical & Ionic)', code: 'CHM-EQL', topics: ['Simultaneous Solubility with Common Ion Effect', 'Buffer Solution Capacity & Polyprotic Hydrolysis', 'Kp and Kc Shift under Inert Gas Injection', 'Amphiprotic Salt pH Derivation'] },
+  { subject: 'Chemistry', chapter: 'Redox Reactions & Electrochemistry', code: 'CHM-ELC', topics: ['Nernst Concentration Cell Potentials', 'Kohlrausch Law & Weak Electrolyte Dissociation', 'Faraday Electrolysis with Overpotentials', 'Cell Potential Relation to Solubility Product'] },
+  { subject: 'Chemistry', chapter: 'Chemical Kinetics', code: 'CHM-KIN', topics: ['Parallel First-Order Arrhenius Activations', 'Steady-State Intermediate Approximations', 'Rate Law Determination via Differential Rates', 'Temperature Coefficient & Collision Frequency'] },
+  { subject: 'Chemistry', chapter: 'Classification of Elements & Periodicity', code: 'CHM-PRD', topics: ['Successive Ionization Jump & Valence Shells', 'Electron Gain Enthalpy Anomalies in Chalcogens', 'Diagonal Relationship & Polarizing Powers', 'Acid-Base Amphoteric Nature Across Periods'] },
+  { subject: 'Chemistry', chapter: 'p-Block Elements', code: 'CHM-PBL', topics: ['Oxoacids of Phosphorus Basicity & Reducing Bonds', 'Diborane 3-Center 2-Electron Bridge Bonding', 'Xenon Fluoride Hydrolysis Product Ratios', 'Interhalogen T-Shaped & Pyramidal Geometries'] },
+  { subject: 'Chemistry', chapter: 'd- and f-Block Elements', code: 'CHM-DFB', topics: ['Spin-Only Magnetic Moments of High/Low Spin', 'Permanganate & Dichromate Acidic Equivalents', 'Lanthanoid Contraction Radii Consequences', 'Color & Charge-Transfer Absorption in Oxoions'] },
+  { subject: 'Chemistry', chapter: 'Coordination Compounds', code: 'CHM-CRD', topics: ['Crystal Field Splitting CFSE in Ligand Fields', 'Geometrical & Optical Isomers in Bis-Chelates', 'Synergic Metal-Carbonyl Back-Bonding Extent', 'Inner vs Outer Orbital Hybridization Complex'] },
+  { subject: 'Chemistry', chapter: 'General Organic Chemistry & Isomerism', code: 'CHM-GOC', topics: ['Aromaticity via Huckel Rule in Non-Benzenoids', 'Acidic Strength of Substituted Benzoic Acids', 'Carbocation Migratory Shifts & Stability', 'Stereoisomers & Optical Activity with Symmetry'] },
+  { subject: 'Chemistry', chapter: 'Hydrocarbons', code: 'CHM-HYD', topics: ['Ozonolysis Cleavage & Structure Elucidation', 'Anti-Markovnikov Hydroboration vs Hydration', 'Electrophilic Aromatic Bromination Directing', 'Birch Reduction of Substituted Arenes'] },
+  { subject: 'Chemistry', chapter: 'Haloalkanes & Haloarenes', code: 'CHM-HAL', topics: ['SN1 vs SN2 Inversion & Rearrangement', 'E2 Regioselectivity Saytzeff vs Hofmann Bulky', 'Grignard Reagent Multi-Step Nucleophilic Addition', 'Nucleophilic Aromatic Substitution with Nitro'] },
+  { subject: 'Chemistry', chapter: 'Alcohols, Phenols & Ethers', code: 'CHM-ALC', topics: ['Reimer-Tiemann Dichlorocarbene Intermediate', 'Kolbe-Schmitt Carboxylation to Salicylic Acid', 'Pinacol-Pinacolone Acidic Rearrangement', 'Williamson Ether Cleavage with Excess HI'] },
+  { subject: 'Chemistry', chapter: 'Aldehydes, Ketones & Carboxylic Acids', code: 'CHM-ALD', topics: ['Crossed Aldol Condensation Dehydration', 'Cannizzaro Disproportionation Kinetics', 'Clemmensen vs Wolff-Kishner Reduction Pathways', 'Haloform Reaction of Methyl Carbonyls'] },
+  { subject: 'Chemistry', chapter: 'Amines & Biomolecules', code: 'CHM-AMN', topics: ['Hoffmann Bromamide Degradation Degradation', 'Benzenediazonium Salt Coupling to Azo Dyes', 'Hinsberg Separation of Primary/Secondary Amines', 'Peptide Linkage & Isoelectric Points'] },
 
   // MATHEMATICS (18 Chapters)
-  { subject: 'Mathematics', chapter: 'Sets, Relations & Functions', code: 'MAT-SRF', topics: ['Bijective & Inverse Functions', 'Equivalence Relations Counting', 'Domain & Range of Composite Functions', 'Functional Equations'] },
-  { subject: 'Mathematics', chapter: 'Complex Numbers', code: 'MAT-CMP', topics: ['De Moivre Theorem & Roots of Unity', 'Argand Plane Locus & Rotation', 'Modulus Triangle Inequality', 'Euler Form & Principal Argument'] },
-  { subject: 'Mathematics', chapter: 'Quadratic Equations', code: 'MAT-QUD', topics: ['Newton Sums & Symmetric Roots', 'Location of Roots on Real Axis', 'Common Roots Condition', 'Rational Algebraic Range'] },
-  { subject: 'Mathematics', chapter: 'Matrices', code: 'MAT-MTX', topics: ['Cayley-Hamilton Characteristic Polynomial', 'Orthogonal & Idempotent Matrices', 'Symmetric & Skew-Symmetric Decomposition', 'Adjoint Properties'] },
-  { subject: 'Mathematics', chapter: 'Determinants', code: 'MAT-DET', topics: ['Cramer Rule & System Consistency', 'Vandermonde & Cyclic Determinants', 'Determinant of Adjoint Powers', 'Differentiation of Determinants'] },
-  { subject: 'Mathematics', chapter: 'Permutations & Combinations', code: 'MAT-PNC', topics: ['Derangements & Inclusion-Exclusion', 'Beggar Method & Multinomial Integral Solutions', 'Circular Permutations with Restrictions', 'Dictionary Rank & Grid Paths'] },
-  { subject: 'Mathematics', chapter: 'Binomial Theorem', code: 'MAT-BIN', topics: ['Term Independent of x', 'Numerically Greatest Term', 'Binomial Coefficient Series Summation', 'Remainder Problems via Binomial'] },
-  { subject: 'Mathematics', chapter: 'Sequence & Series', code: 'MAT-SNS', topics: ['Arithmetico-Geometric Progression (AGP)', 'Method of Telescoping Differences', 'AM-GM-HM Inequalities', 'Harmonic Means & Special Summations'] },
-  { subject: 'Mathematics', chapter: 'Limits, Continuity & Differentiability', code: 'MAT-LCD', topics: ['L Hospital & Taylor Series Limits', '1^infinity Indeterminate Forms', 'Non-Differentiable Points with Modulus', 'Rolle & Lagrange Mean Value Theorem'] },
-  { subject: 'Mathematics', chapter: 'Integral Calculus', code: 'MAT-INT', topics: ['King Property in Definite Integrals', 'Leibniz Rule for Variable Limits', 'Area Bounded by Curves', 'Reduction Formulas & Walli Integral'] },
-  { subject: 'Mathematics', chapter: 'Differential Equations', code: 'MAT-DFE', topics: ['Linear Differential Equation Integrating Factor', 'Homogeneous Substitution y = vx', 'Exact Differentials Inspection', 'Orthogonal Trajectories'] },
-  { subject: 'Mathematics', chapter: 'Coordinate Geometry (Straight Lines & Circles)', code: 'MAT-CRD', topics: ['Family of Circles & Radical Axis', 'Image of Point & Orthocenter', 'Director Circle & Chord of Contact', 'Orthogonal Circles Condition'] },
-  { subject: 'Mathematics', chapter: 'Conic Sections (Parabola, Ellipse, Hyperbola)', code: 'MAT-CNC', topics: ['Focal Chord of Parabola', 'Eccentricity of Conjugate Hyperbola', 'Normal & Tangent Locus on Ellipse', 'Auxiliary Circle & Director Circle'] },
-  { subject: 'Mathematics', chapter: 'Three-Dimensional Geometry', code: 'MAT-3DG', topics: ['Shortest Distance Between Skew Lines', 'Foot of Perpendicular on Plane/Line', 'Coplanarity of Lines', 'Direction Cosines & Projection'] },
-  { subject: 'Mathematics', chapter: 'Vector Algebra', code: 'MAT-VEC', topics: ['Scalar & Vector Triple Product', 'Reciprocal System of Vectors', 'Projection & Angle Bisector Vectors', 'Lagrange Identity |a x b|^2'] },
-  { subject: 'Mathematics', chapter: 'Statistics & Probability', code: 'MAT-PRB', topics: ['Bayes Theorem & Conditional Probability', 'Binomial Probability Distribution', 'Variance under Linear Transformation', 'Total Probability Theorem'] },
-  { subject: 'Mathematics', chapter: 'Trigonometry', code: 'MAT-TRG', topics: ['Trigonometric Equations General Solutions', 'Principal Value of Inverse Trig', 'Conditional Identities in Triangle', 'Maximum & Minimum of a cos x + b sin x'] },
-  { subject: 'Mathematics', chapter: 'Mathematical Reasoning & Linear Programming', code: 'MAT-MRL', topics: ['Tautology & Contrapositive Logic', 'Corner Point Feasible Region', 'Negation of Quantified Statements', 'Boolean Algebra Duality'], isMinor: true },
+  { subject: 'Mathematics', chapter: 'Sets, Relations & Functions', code: 'MAT-SRF', topics: ['Functional Equations & Invertibility', 'Composite Function Domain & Range Constraints', 'Counting Equivalence & Symmetric Relations', 'Bijective Mapping Criteria on Subsets'] },
+  { subject: 'Mathematics', chapter: 'Complex Numbers', code: 'MAT-CMP', topics: ['Argand Plane Geometry & Apollonius Circles', 'Roots of Unity Algebraic Sums & Products', 'Rotation Theorem of Vector Amplitudes', 'Triangle Inequality Extremum Moduli'] },
+  { subject: 'Mathematics', chapter: 'Quadratic Equations', code: 'MAT-QUD', topics: ['Location of Roots on Bounded Intervals', 'Common Root Elimination with Parameters', 'Newton Recurrence Sums of Higher Powers', 'Rational Algebraic Expression Range'] },
+  { subject: 'Mathematics', chapter: 'Matrices', code: 'MAT-MTX', topics: ['Cayley-Hamilton Characteristic Polynomials', 'Powers of Involutary & Idempotent Matrices', 'Symmetric & Skew-Symmetric Orthogonality', 'Matrix Adjoint Properties & Inversion'] },
+  { subject: 'Mathematics', chapter: 'Determinants', code: 'MAT-DET', topics: ['Cramer Rule Inconsistent & Infinite Systems', 'Adjoint Determinant Power Formulas', 'Circulant & Vandermonde Determinant Proofs', 'Differentiation of Parameterized Determinants'] },
+  { subject: 'Mathematics', chapter: 'Permutations & Combinations', code: 'MAT-PNC', topics: ['Derangements with Partial Matches', 'Multinomial Beggar Method with Minimum Caps', 'Restricted Circular Arrangements & Symmetry', 'Grid Path Counting with Obstacle Exclusions'] },
+  { subject: 'Mathematics', chapter: 'Binomial Theorem', code: 'MAT-BIN', topics: ['Binomial Coefficient Weighted Series Summations', 'Numerically Greatest Term in Expansions', 'Remainder Determination using Binomial Expansions', 'Fractional Power Binomial Series Approximations'] },
+  { subject: 'Mathematics', chapter: 'Sequence & Series', code: 'MAT-SNS', topics: ['Arithmetico-Geometric Infinite Series Sums', 'Telescoping Differences & Partial Fractions', 'AM-GM-HM Inequalities with Weighted Terms', 'Recurrence Relation Asymptotic Limits'] },
+  { subject: 'Mathematics', chapter: 'Limits, Continuity & Differentiability', code: 'MAT-LCD', topics: ['1 to the Infinity Indeterminate Limits', 'Non-Differentiable Points of Modulus Functions', 'Rolle & Lagrange Mean Value Intermediate Roots', 'Piecewise Junction Point Smoothness'] },
+  { subject: 'Mathematics', chapter: 'Integral Calculus', code: 'MAT-INT', topics: ['Kings Property & Symmetric Definite Integrals', 'Leibniz Differentiation under Integral Sign', 'Area Bounded by Inverse & Piecewise Curves', 'Reduction Integrals with Trigonometric Limits'] },
+  { subject: 'Mathematics', chapter: 'Differential Equations', code: 'MAT-DFE', topics: ['Linear Differential Equations & Integrating Factors', 'Homogeneous Substitution y = vx Solvability', 'Exact Differentials & Orthogonal Trajectories', 'Boundary Value Initial Rate Formulations'] },
+  { subject: 'Mathematics', chapter: 'Coordinate Geometry (Straight Lines & Circles)', code: 'MAT-CRD', topics: ['Family of Circles & Radical Axis Properties', 'Director Circles & Chords of Contact', 'Orthogonal Circles Coefficient Condition', 'Image & Orthocenter Coordinate Geometry'] },
+  { subject: 'Mathematics', chapter: 'Conic Sections (Parabola, Ellipse, Hyperbola)', code: 'MAT-CNC', topics: ['Focal Chord & Normal Parameter Relations', 'Director Circle Locus of Perpendicular Tangents', 'Conjugate Hyperbola Eccentricity Reciprocals', 'Auxiliary Circle Contact Points on Ellipse'] },
+  { subject: 'Mathematics', chapter: 'Three-Dimensional Geometry', code: 'MAT-3DG', topics: ['Shortest Distance Formula for Skew Lines', 'Foot of Perpendicular & Mirror Image in Planes', 'Plane Passing through Line of Intersection', 'Coplanar Line Condition & Normal Vectors'] },
+  { subject: 'Mathematics', chapter: 'Vector Algebra', code: 'MAT-VEC', topics: ['Scalar Triple Product Parallelepiped Volume', 'Vector Triple Product Expansion & Linear Dependency', 'Angle Bisector & Projection Vector Operations', 'Reciprocal Systems of Non-Coplanar Vectors'] },
+  { subject: 'Mathematics', chapter: 'Statistics & Probability', code: 'MAT-PRB', topics: ['Bayes Theorem with Multi-Stage Urns', 'Binomial Probability Distribution Expectation', 'Variance Transformation with Covariance', 'Total Probability Theorem with Evidence'] },
+  { subject: 'Mathematics', chapter: 'Trigonometry', code: 'MAT-TRG', topics: ['Inverse Trigonometric Principal Domains & Sums', 'General Solutions with Extraneous Root Checks', 'Extremum of Linear Sine-Cosine Combinations', 'Conditional Triangle Angle Identities'] },
+  { subject: 'Mathematics', chapter: 'Mathematical Reasoning & Linear Programming', code: 'MAT-MRL', topics: ['Contrapositive & Negation of Quantifiers', 'Tautology Verification via Truth Tables', 'Linear Programming Feasible Corner Extrema', 'Duality in Compound Propositions'], isMinor: true },
 ];
 
 const ERROR_TYPES: ErrorCategory[] = [
@@ -187,735 +97,843 @@ function makeOptionSet(
   };
 }
 
+export const ORGANIC_CHAPTER_CODES = new Set([
+  'CHM-GOC',
+  'CHM-HYD',
+  'CHM-HAL',
+  'CHM-ALC',
+  'CHM-ALD',
+  'CHM-AMN',
+]);
+
+// -------------------------------------------------------------
+// PHYSICS GENERATOR (Customized per chapter code)
+// -------------------------------------------------------------
 function buildPhysicsQuestion(meta: ChapterMeta, index: number, type: 'mcq' | 'integer') {
   const topic = meta.topics[index % meta.topics.length];
-  const difficulties: DifficultyLevel[] = ['easy', 'medium', 'medium', 'hard'];
+  // Target hard mode distribution: 50% hard, 35% medium, 15% easy
+  const difficulties: DifficultyLevel[] = ['hard', 'medium', 'hard', 'medium', 'hard', 'easy'];
   const difficulty = difficulties[index % difficulties.length];
   const errorType = ERROR_TYPES[index % ERROR_TYPES.length];
-  const chapOffset = Math.max(1, ALL_55_CHAPTERS.findIndex((c) => c.code === meta.code) + 1);
   const n = index + 1;
-  const a = 2 + n + chapOffset;
-  const b = 2 + ((n + chapOffset) % 7);
+  const k = 2 + (index % 5);
+  const m = 3 + (index % 4);
 
   if (type === 'mcq') {
-    const categories = [
-      'Conservation & Invariant Balance',
-      'Instantaneous Rate & Gradient Law',
-      'Boundary Ratio & Scaling Analysis',
-      'Graphical Slope & Area Integration',
-      'Dimensional & Exponent Homogeneity',
-      'Two-Source Superposition & Phase',
-      'Energy Efficiency & Dissipation',
-      'Critical Threshold & Equilibrium',
-      'Resonance & Extremum Condition',
-      'Relative Frame & Coupling Constraint',
-      'Transient Decay & Time Constant',
-      'Flux, Field & Uncertainty Analysis',
-    ];
-    const category = categories[Math.floor(index / 2) % categories.length];
+    let q = '';
+    let ans = '';
+    let d: [string, string, string] = ['', '', ''];
+    let sol = '';
+    const cat = `${meta.chapter} :: Multi-Concept Physical Modeling (Type ${n % 6 + 1})`;
 
-    const stems: Array<{ q: string; ans: string; d: [string, string, string]; sol: string }> = [
-      {
-        q: `An isolated physical system transitions from initial state parameter $p_i = ${a}$ to final configuration $p_f = ${a + b}$ while conserving the quantity $\\mathcal{E} = p_i^2 + 2p_f$. What is the value of $\\mathcal{E}$ in SI units?`,
-        ans: `$${a * a + 2 * (a + b)}$`,
-        d: [`$${a * a + a + b}$`, `$${(a + b) * (a + b)}$`, `$${2 * a * b}$`],
-        sol: `Evaluating $\\mathcal{E} = p_i^2 + 2p_f = ${a}^2 + 2(${a + b}) = ${a * a + 2 * (a + b)}$.`,
-      },
-      {
-        q: `Two coupled particles of equal mass carry linear momenta in the ratio $1 : ${b}$. If the slower particle has kinetic energy $K_0 = ${a}\\text{ J}$, what is the combined kinetic energy of the two-particle system?`,
-        ans: `$${a * (1 + b * b)}\\text{ J}$`,
-        d: [`$${a * (1 + b)}\\text{ J}$`, `$${a * b * b}\\text{ J}$`, `$${2 * a * b}\\text{ J}$`],
-        sol: `Since $K \\propto p^2$, $K_{\\text{total}} = K_0(1 + ${b}^2) = ${a * (1 + b * b)}\\text{ J}$.`,
-      },
-      {
-        q: `A dynamical coordinate evolves with time $t$ according to $y(t) = ${a}t^2 - ${b}t$ (in SI units). Determine the instantaneous rate of change $\\frac{dy}{dt}$ at $t = 2\\text{ s}$.`,
-        ans: `$${4 * a - b}\\text{ SI units}$`,
-        d: [`$${2 * a - b}\\text{ SI units}$`, `$${4 * a + b}\\text{ SI units}$`, `$${4 * a - 2 * b}\\text{ SI units}$`],
-        sol: `Differentiating $y(t)$ gives $y'(t) = 2(${a})t - ${b}$. At $t=2$, $y'(2) = ${4 * a - b}$.`,
-      },
-      {
-        q: `The potential energy of a particle moving along the $x$-axis is given by $U(x) = ${b}x^3 - ${6 * a}x\\text{ J}$. At what positive position $x > 0$ does the net conservative force on the particle vanish?`,
-        ans: `$\\sqrt{${(2 * a) / b}}\\text{ m}$`,
-        d: [`$${(2 * a) / b}\\text{ m}$`, `$\\sqrt{${(6 * a) / b}}\\text{ m}$`, `$${a / b}\\text{ m}$`],
-        sol: `Setting $-\\frac{dU}{dx} = 0 \\implies 3(${b})x^2 - ${6 * a} = 0 \\implies x = \\sqrt{${(2 * a) / b}}\\text{ m}$.`,
-      },
-      {
-        q: `Two geometrically similar physical elements have characteristic linear dimensions in the ratio $L_2 / L_1 = ${b}$. If a response quantity $R$ is proportional to $L^2$, find the ratio $\\frac{R_2}{R_1 + R_2}$.`,
-        ans: `$\\frac{${b * b}}{${1 + b * b}}$`,
-        d: [`$\\frac{${b}}{${1 + b}}$`, `$\\frac{1}{${1 + b * b}}$`, `$\\frac{${b * b - 1}}{${b * b}}$`],
-        sol: `Since $R_2/R_1 = ${b}^2 = ${b * b}$, the fraction is $\\frac{${b * b}}{1 + ${b * b}}$.`,
-      },
-      {
-        q: `When the amplitude of the driving excitation in a linear resistive medium (resistance $${a}$ units) is multiplied by $${b}$, by what factor does the rate of quadratic energy dissipation change?`,
-        ans: `Increases by a factor of $${b * b}$`,
-        d: [`Increases by a factor of $${b}$`, `Increases by a factor of $${2 * b}$`, `Decreases by a factor of $${b * b}$`],
-        sol: `Quadratic dependence on the excitation amplitude yields a $${b}^2 = ${b * b}$-fold increase.`,
-      },
-      {
-        q: `A physical quantity $f(z)$ increases linearly from $0$ to $${2 * a}$ units over the interval $z \\in [0, ${b}]$. Evaluate $\\int_0^{${b}} f(z)\\,dz$.`,
-        ans: `$${a * b}$`,
-        d: [`$${2 * a * b}$`, `$${(a * b) / 2}$`, `$${a + b}$`],
-        sol: `Area of the right triangle under the linear curve is $\\frac{1}{2} \\times ${b} \\times ${2 * a} = ${a * b}$.`,
-      },
-      {
-        q: `A linear calibration line has slope $${a}$ and vertical-axis intercept $-${b}$. At what value of the horizontal coordinate does the output cross zero?`,
-        ans: `$\\frac{${b}}{${a}}$`,
-        d: [`$-\\frac{${b}}{${a}}$`, `$\\frac{${a}}{${b}}$`, `$${a * b}$`],
-        sol: `From $y = ${a}x - ${b} = 0$, the horizontal intercept is $x = ${b}/${a}$.`,
-      },
-      {
-        q: `A physical observable $Z$ is related to independent measurements $A$ and $B$ by $Z = A^{${b}} B^{-2}$. If the relative error in $A$ is $1\\%$ and in $B$ is $${a}\\%$, what is the maximum percentage error in $Z$?`,
-        ans: `$${b + 2 * a}\\%$`,
-        d: [`$${b - 2 * a}\\%$`, `$${b * a}\\%$`, `$${2 * b + a}\\%$`],
-        sol: `Maximum percentage error is $\\frac{\\Delta Z}{Z}\\times 100 = ${b}(1\\%) + 2(${a}\\%) = ${b + 2 * a}\\%$.`,
-      },
-      {
-        q: `A dimensionless product is constructed as $\\Pi = P^x Q^{${b}} R^{-1}$. If dimensional consistency requires the exponent relation $2x - ${b} + 1 = 0$, find $x$.`,
-        ans: `$\\frac{${b - 1}}{2}$`,
-        d: [`$\\frac{${b + 1}}{2}$`, `$${b - 1}$`, `$\\frac{1 - ${b}}{2}$`],
-        sol: `Solving $2x - ${b} + 1 = 0$ directly gives $x = \\frac{${b - 1}}{2}$.`,
-      },
-      {
-        q: `Two coherent harmonic disturbances of amplitudes $A_1 = ${a}$ and $A_2 = ${b}$ superpose at a point. What is the ratio of the maximum possible resultant intensity to the minimum resultant intensity?`,
-        ans: `$\\left(\\frac{${a + b}}{${Math.abs(a - b) || 1}}\\right)^2$`,
-        d: [`$\\frac{${a + b}}{${Math.abs(a - b) || 1}}$`, `$\\frac{${a * a + b * b}}{${Math.abs(a * a - b * b) || 1}}$`, `$\\left(\\frac{${a}}{${b}}\\right)^2$`],
-        sol: `$I_{\\max}/I_{\\min} = (A_1 + A_2)^2 / (A_1 - A_2)^2$.`,
-      },
-      {
-        q: `Two mutually perpendicular vector components in a plane have magnitudes $F_x = ${3 * b}$ and $F_y = ${4 * b}$. Find the magnitude of their resultant vector and the cosine of its angle with the positive $x$-axis.`,
-        ans: `$${5 * b},\\; \\frac{3}{5}$`,
-        d: [`$${5 * b},\\; \\frac{4}{5}$`, `$${7 * b},\\; \\frac{3}{5}$`, `$${5 * b},\\; \\frac{3}{4}$`],
-        sol: `Resultant magnitude $= \\sqrt{(3\\cdot ${b})^2 + (4\\cdot ${b})^2} = ${5 * b}$ and $\\cos\\theta = 3/5$.`,
-      },
-      {
-        q: `A cyclic device absorbs $${10 * a}\\text{ J}$ of energy from a high-temperature source per cycle and rejects $${2 * a}\\text{ J}$ to a low-temperature sink. What is its thermal efficiency?`,
-        ans: `$80\\%$`,
-        d: [`$20\\%$`, `$75\\%$`, `$85\\%$`],
-        sol: `$\\eta = \\frac{W_{\\text{out}}}{Q_{\\text{in}}} = \\frac{${10 * a} - ${2 * a}}{${10 * a}} = 0.80 = 80\\%$.`,
-      },
-      {
-        q: `An interaction reduces the mechanical energy of a body to $\\frac{1}{${b}}$ of its initial value $E_0 = ${a * b}\\text{ J}$. How much mechanical energy is lost during the interaction?`,
-        ans: `$${a * (b - 1)}\\text{ J}$`,
-        d: [`$${a}\\text{ J}$`, `$${a * b}\\text{ J}$`, `$${(a * b) / 2}\\text{ J}$`],
-        sol: `Dissipated energy $\\Delta E = E_0 - E_0/${b} = ${a * b} - ${a} = ${a * (b - 1)}\\text{ J}$.`,
-      },
-      {
-        q: `For a mechanical assembly to remain stable, the stiffness parameter $k$ must exceed the critical value $k_c = ${a}\\text{ N/m}$. If the operating stiffness is set to $k = ${2 * a + b}\\text{ N/m}$, what is the excess stiffness margin $k - k_c$?`,
-        ans: `$${a + b}\\text{ N/m}$`,
-        d: [`$${2 * a}\\text{ N/m}$`, `$${a}\\text{ N/m}$`, `$${b}\\text{ N/m}$`],
-        sol: `The stability margin is $k - k_c = (${2 * a + b}) - ${a} = ${a + b}\\text{ N/m}$.`,
-      },
-      {
-        q: `Three coplanar forces keep a point mass in static equilibrium. If two of the forces are mutually perpendicular with magnitudes $${a}\\text{ N}$ and $${b}\\text{ N}$, what is the magnitude of the third force?`,
-        ans: `$\\sqrt{${a * a + b * b}}\\text{ N}$`,
-        d: [`$${a + b}\\text{ N}$`, `$${Math.abs(a - b)}\\text{ N}$`, `$${a * b}\\text{ N}$`],
-        sol: `For static equilibrium, $\\vec{F}_3 = -(\\vec{F}_1 + \\vec{F}_2)$, so $|\\vec{F}_3| = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a * a + b * b}}\\text{ N}$.`,
-      },
-      {
-        q: `The frequency response function $H(\\omega) = \\frac{${a * b}}{\\omega + ${b}^2 / \\omega}$ for $\\omega > 0$ reaches its maximum value at $\\omega = \\omega_0$. Determine $\\omega_0$ and $H(\\omega_0)$.`,
-        ans: `$\\omega_0 = ${b},\\; H_{\\max} = \\frac{${a}}{2}$`,
-        d: [`$\\omega_0 = ${b * b},\\; H_{\\max} = ${a}$`, `$\\omega_0 = ${b},\\; H_{\\max} = ${a}$`, `$\\omega_0 = \\sqrt{${b}},\\; H_{\\max} = \\frac{${a}}{2}$`],
-        sol: `By AM-GM, $\\omega + ${b}^2/\\omega \\ge 2(${b})$ with equality at $\\omega_0 = ${b}$, giving $H_{\\max} = \\frac{${a * b}}{2\\cdot ${b}} = \\frac{${a}}{2}$.`,
-      },
-      {
-        q: `A DC source of EMF $E = ${2 * a}\\text{ V}$ and internal resistance $r = ${a}\\,\\Omega$ is connected across a variable load resistance $R_L$. Find the value of $R_L$ and the maximum power delivered to the load.`,
-        ans: `$R_L = ${a}\\,\\Omega,\\; P_{\\max} = ${a}\\text{ W}$`,
-        d: [`$R_L = ${2 * a}\\,\\Omega,\\; P_{\\max} = ${2 * a}\\text{ W}$`, `$R_L = ${a}\\,\\Omega,\\; P_{\\max} = ${2 * a}\\text{ W}$`, `$R_L = \\frac{${a}}{2}\\,\\Omega,\\; P_{\\max} = ${a}\\text{ W}$`],
-        sol: `Matching $R_L = r = ${a}\\,\\Omega$ yields $P_{\\max} = \\frac{E^2}{4 R_L} = \\frac{4\\cdot ${a}^2}{4\\cdot ${a}} = ${a}\\text{ W}$.`,
-      },
-      {
-        q: `Two particles $P_1$ and $P_2$ move along the $x$-axis with velocities $+${a}\\text{ m/s}$ and $-${b}\\text{ m/s}$ respectively relative to the ground. What is the speed of $P_1$ relative to $P_2$?`,
-        ans: `$${a + b}\\text{ m/s}$`,
-        d: [`$${Math.abs(a - b)}\\text{ m/s}$`, `$\\sqrt{${a * a + b * b}}\\text{ m/s}$`, `$\\frac{${a + b}}{2}\\text{ m/s}$`],
-        sol: `Relative velocity $v_{12} = v_1 - v_2 = ${a} - (-${b}) = ${a + b}\\text{ m/s}$.`,
-      },
-      {
-        q: `Two bodies $A$ and $B$ are connected by an inextensible constraint such that their displacements along their respective axes satisfy $x_A + ${b}x_B = \\text{constant}$. If body $B$ has acceleration $+${a}\\text{ m/s}^2$, what is the magnitude of the acceleration of body $A$?`,
-        ans: `$${a * b}\\text{ m/s}^2$`,
-        d: [`$\\frac{${a}}{${b}}\\text{ m/s}^2$`, `$${a + b}\\text{ m/s}^2$`, `$${a}\\text{ m/s}^2$`],
-        sol: `Differentiating twice gives $a_A + ${b}a_B = 0 \\implies |a_A| = ${a * b}\\text{ m/s}^2$.`,
-      },
-      {
-        q: `A physical quantity decays exponentially with time according to $N(t) = N_0 e^{-t/\\tau}$, where $\\tau = ${a}\\text{ s}$. At what instant $t$ does $N(t)$ become equal to $N_0 e^{-${b}}$?`,
-        ans: `$${a * b}\\text{ s}$`,
-        d: [`$\\frac{${a}}{${b}}\\text{ s}$`, `$${a + b}\\text{ s}$`, `$${a * b * 2}\\text{ s}$`],
-        sol: `Setting $e^{-t/${a}} = e^{-${b}}$ gives $t = ${a * b}\\text{ s}$.`,
-      },
-      {
-        q: `A state variable approaches its steady-state value $Q_\\infty = ${a * b}$ units according to $Q(t) = Q_\\infty(1 - e^{-t/\\tau})$ with $\\tau = ${b}\\text{ s}$. Evaluate the initial rate $\\left.\\frac{dQ}{dt}\\right|_{t=0}$.`,
-        ans: `$${a}\\text{ units/s}$`,
-        d: [`$${a * b}\\text{ units/s}$`, `$${b}\\text{ units/s}$`, `$\\frac{${a}}{${b}}\\text{ units/s}$`],
-        sol: `At $t=0$, $\\frac{dQ}{dt} = \\frac{Q_\\infty}{\\tau} = \\frac{${a * b}}{${b}} = ${a}\\text{ units/s}$.`,
-      },
-      {
-        q: `A uniform vector field $\\vec{F} = ${a}\\hat{i} + ${b}\\hat{j}$ passes through a flat surface element of area vector $\\vec{A} = 2\\hat{i} + 3\\hat{j}$ (in SI units). Calculate the flux $\\Phi = \\vec{F}\\cdot\\vec{A}$.`,
-        ans: `$${2 * a + 3 * b}$`,
-        d: [`$${3 * a + 2 * b}$`, `$${2 * a - 3 * b}$`, `$${5 * (a + b)}$`],
-        sol: `Scalar dot product $\\Phi = 2(${a}) + 3(${b}) = ${2 * a + 3 * b}$.`,
-      },
-      {
-        q: `The radial field magnitude at distance $r$ from a point source is given by $E(r) = \\frac{${a * b * b}}{r^2}$ (in SI units). Find the field magnitude at $r = ${b}\\text{ m}$.`,
-        ans: `$${a}\\text{ SI units}$`,
-        d: [`$${a * b}\\text{ SI units}$`, `$\\frac{${a}}{${b}}\\text{ SI units}$`, `$${a * b * b}\\text{ SI units}$`],
-        sol: `Substituting $r = ${b}$ into $E(r) = \\frac{${a * b * b}}{r^2}$ gives $E(${b}) = ${a}$.`,
-      },
-    ];
+    switch (meta.code) {
+      case 'PHY-UAM':
+        q = `In a vernier caliper measurement in [${meta.chapter}], 10 vernier scale divisions coincide with 9 main scale divisions ($1\\text{ MSD} = 1\\text{ mm}$). When measuring a sphere of diameter with zero error $+${k * 0.02}\\text{ mm}$, the main scale reads $${k * 10}\\text{ mm}$ and the $${m}^{\\text{th}}$ vernier division coincides with a main scale mark. What is the corrected true diameter of the sphere?`;
+        ans = `$${(k * 10 + m * 0.1 - k * 0.02).toFixed(2)}\\text{ mm}$`;
+        d = [`$${(k * 10 + m * 0.1 + k * 0.02).toFixed(2)}\\text{ mm}$`, `$${(k * 10 + m * 0.1).toFixed(2)}\\text{ mm}$`, `$${(k * 10 + (m - 1) * 0.1).toFixed(2)}\\text{ mm}$`];
+        sol = `Least count is $1\\text{ MSD} - 1\\text{ VSD} = 0.1\\text{ mm}$. Observed reading $= \\text{MSR} + \\text{VSR} \\times \\text{LC} = ${k * 10} + ${m} \\times 0.1 = ${k * 10 + m * 0.1}\\text{ mm}$. True reading $= \\text{Observed} - (\\text{Zero Error}) = ${(k * 10 + m * 0.1 - k * 0.02).toFixed(2)}\\text{ mm}$.`;
+        break;
 
-    const item = stems[index % stems.length];
-    const { options, correctAnswer } = makeOptionSet(item.ans, item.d, index);
+      case 'PHY-KIN':
+        q = `A particle moving along a straight line in [${meta.chapter}] has velocity $v = \\alpha \\sqrt{x}$, where $\\alpha = ${k}\\text{ m}^{1/2}\\text{s}^{-1}$. At time $t = 0$, $x = 0$. Determine the acceleration of the particle and its velocity at $t = ${m}\\text{ s}$.`;
+        ans = `$a = ${((k * k) / 2).toFixed(1)}\\text{ m/s}^2,\\; v = ${(((k * k) / 2) * m).toFixed(1)}\\text{ m/s}$`;
+        d = [`$a = ${(k * k).toFixed(1)}\\text{ m/s}^2,\\; v = ${(k * k * m).toFixed(1)}\\text{ m/s}$`, `$a = ${k}\\text{ m/s}^2,\\; v = ${(k * m).toFixed(1)}\\text{ m/s}$`, `$a = ${(k / 2).toFixed(1)}\\text{ m/s}^2,\\; v = ${((k / 2) * m).toFixed(1)}\\text{ m/s}$`];
+        sol = `Acceleration is $a = v \\frac{dv}{dx} = (\\alpha \\sqrt{x})\\left(\\frac{\\alpha}{2\\sqrt{x}}\\right) = \\frac{\\alpha^2}{2} = \\frac{${k}^2}{2} = ${((k * k) / 2).toFixed(1)}\\text{ m/s}^2$. Since acceleration is constant, $v(t) = a t = ${(((k * k) / 2) * m).toFixed(1)}\\text{ m/s}$.`;
+        break;
+
+      case 'PHY-NLM':
+        q = `In a wedge-block system in [${meta.chapter}], a smooth wedge of mass $M = ${m}\\text{ kg}$ with incline angle $\\theta = 30^\\circ$ is free to slide horizontally on a frictionless floor. A block of mass $m_0 = 1\\text{ kg}$ slides down a distance $s = 2\\text{ m}$ along the face of the wedge relative to the incline. What is the horizontal displacement of the wedge?`;
+        ans = `$\\frac{\\sqrt{3}}{${m + 1}}\\text{ m}$`;
+        d = [`$\\frac{1}{${m + 1}}\\text{ m}$`, `$\\frac{\\sqrt{3}}{${m}}\\text{ m}$`, `$\\frac{2\\sqrt{3}}{${m + 1}}\\text{ m}$`];
+        sol = `Since horizontal net external force is zero, center of mass position is invariant horizontally: $M \\Delta x_W + m_0(\\Delta x_W - s \\cos 30^\\circ) = 0 \\implies \\Delta x_W = \\frac{m_0 s \\cos 30^\\circ}{M + m_0} = \\frac{1 \\times 2 \\times \\frac{\\sqrt{3}}{2}}{${m} + 1} = \\frac{\\sqrt{3}}{${m + 1}}\\text{ m}$.`;
+        break;
+
+      case 'PHY-WEP':
+        q = `In vertical circular motion in [${meta.chapter}], a bob of mass $m$ suspended by a light string of length $\\ell$ is projected horizontally with velocity $v_0 = \\sqrt{${k + 2} g \\ell}$ at the lowest point. If the string becomes slack before reaching the highest point, find the cosine of the angle $\\theta$ made by the string with the upward vertical at the instant of slack.`;
+        ans = `$-\\frac{${k - 1}}{3}$`;
+        d = [`$-\\frac{${k}}{3}$`, `$-\\frac{${k - 1}}{2}$`, `$-\\frac{1}{3}$`];
+        sol = `At the instant string goes slack, tension $T = 0 \\implies v^2 = g\\ell \\cos\\phi$ (where $\\phi$ is angle with upward vertical). Energy conservation gives $\\frac{1}{2}m v_0^2 = \\frac{1}{2}m v^2 + mg\\ell(1 + \\cos\\phi) \\implies (${k + 2})g\\ell = g\\ell\\cos\\phi + 2g\\ell(1+\\cos\\phi) \\implies 3\\cos\\phi = ${k - 1} \\implies \\cos\\phi = \\frac{${k - 1}}{3}$. With respect to the upward vertical vector, $\\cos\\theta = -\\frac{${k - 1}}{3}$.`;
+        break;
+
+      case 'PHY-ROT':
+        q = `A solid uniform cylinder of mass $M$ and radius $R$ in [${meta.chapter}] is placed on a rough horizontal surface with zero initial angular speed and given a forward horizontal velocity $v_0 = ${k * 3}\\text{ m/s}$. After sliding a certain distance, it transitions into pure rolling. What is the linear velocity $v_f$ when pure rolling begins?`;
+        ans = `$${((2 * k * 3) / 3).toFixed(1)}\\text{ m/s}$`;
+        d = [`$${((k * 3) / 2).toFixed(1)}\\text{ m/s}$`, `$${((3 * k * 3) / 4).toFixed(1)}\\text{ m/s}$`, `$${((4 * k * 3) / 5).toFixed(1)}\\text{ m/s}$`];
+        sol = `Friction acts through the ground contact line, so angular momentum is conserved about any point on the ground surface: $M v_0 R = M v_f R + I \\omega_f = M v_f R + \\frac{1}{2} M R^2 \\left(\\frac{v_f}{R}\\right) = \\frac{3}{2} M v_f R \\implies v_f = \\frac{2}{3}v_0 = \\frac{2 \\times ${k * 3}}{3} = ${((2 * k * 3) / 3).toFixed(1)}\\text{ m/s}$.`;
+        break;
+
+      case 'PHY-GRV':
+        q = `A planet of mass $M$ and radius $R$ in [${meta.chapter}] has a uniform mass density. A narrow tunnel is drilled through its center. A small particle of mass $m$ is released from rest at a distance $r = \\frac{R}{${k}}$ from the center. What is the period of oscillation $T$ of the particle in terms of $G$ and density $\\rho$?`;
+        ans = `$\\sqrt{\\frac{3\\pi}{G \\rho}}$`;
+        d = [`$\\sqrt{\\frac{4\\pi}{3G \\rho}}$`, `$\\sqrt{\\frac{2\\pi}{G \\rho}}$`, `$\\frac{1}{2}\\sqrt{\\frac{3\\pi}{G \\rho}}$`];
+        sol = `Inside a uniform sphere, gravitational force at radius $r$ is $F = -\\frac{G M(r) m}{r^2} = -\\frac{4}{3}\\pi G \\rho m r$. This is simple harmonic motion with $\\omega = \\sqrt{\\frac{4}{3}\\pi G \\rho}$. The time period is $T = \\frac{2\\pi}{\\omega} = \\sqrt{\\frac{3\\pi}{G\\rho}}$, independent of the initial release radius.`;
+        break;
+
+      case 'PHY-PSL':
+        q = `A spherical ball of radius $r$ and density $\\rho$ falls in a viscous liquid of density $\\sigma < \\rho$ and coefficient of viscosity $\\eta$ in [${meta.chapter}]. If its terminal velocity is $v_t$, what is the rate of heat dissipation due to viscous friction at terminal velocity?`;
+        ans = `$6\\pi \\eta r v_t^2$`;
+        d = [`$3\\pi \\eta r v_t^2$`, `$\\frac{6}{5}\\pi \\eta r v_t^2$`, `$12\\pi \\eta r v_t^2$`];
+        sol = `At terminal velocity, the net downward gravitational force minus buoyancy equals the upward viscous drag force $F_v = 6\\pi \\eta r v_t$. The rate of work done by viscous drag (which dissipates entirely as heat) is $P = F_v v_t = 6\\pi \\eta r v_t^2$.`;
+        break;
+
+      case 'PHY-THM':
+        q = `One mole of a monoatomic ideal gas $(\\gamma = 5/3)$ in [${meta.chapter}] undergoes a cycle composed of: an isobaric expansion at $P_0$ from $V_0$ to $${k}V_0$, an isochoric heating to $${m}P_0$, and an adiabatic expansion back to initial temperature. What is the total work done during the isobaric step?`;
+        ans = `$${k - 1} P_0 V_0$`;
+        d = [`$${k} P_0 V_0$`, `$\\frac{${k - 1}}{2} P_0 V_0$`, `$\\frac{3}{2}(${k - 1}) P_0 V_0$`];
+        sol = `For an isobaric expansion at constant pressure $P_0$, the work done is $W = P_0 \\Delta V = P_0 (${k}V_0 - V_0) = ${k - 1} P_0 V_0$.`;
+        break;
+
+      case 'PHY-KTG':
+        q = `A container in [${meta.chapter}] holds a mixture of $1\\text{ mole}$ of Helium (monoatomic, $C_v = \\frac{3}{2}R$) and $${k}\\text{ moles}$ of Hydrogen (diatomic, $C_v = \\frac{5}{2}R$). What is the effective molar heat capacity at constant volume $C_{v,\\text{mix}}$ of the mixture?`;
+        ans = `$\\frac{${3 + 5 * k}}{${2 * (1 + k)}} R$`;
+        d = [`$\\frac{${3 + 5 * k}}{2} R$`, `$\\frac{${4 + 5 * k}}{${2 * (1 + k)}} R$`, `$\\frac{4}{${1 + k}} R$`];
+        sol = `By thermal equipartition, $C_{v,\\text{mix}} = \\frac{n_1 C_{v1} + n_2 C_{v2}}{n_1 + n_2} = \\frac{1(\\frac{3}{2}R) + ${k}(\\frac{5}{2}R)}{1 + ${k}} = \\frac{${3 + 5 * k}}{${2 * (1 + k)}} R$.`;
+        break;
+
+      case 'PHY-OSW':
+        q = `A uniform light spring of force constant $k_s$ in [${meta.chapter}] is cut into two segments of length ratio $1:${k}$. The shorter segment is connected to a mass $m$. What is the angular frequency $\\omega$ of simple harmonic oscillations of this system?`;
+        ans = `$\\sqrt{\\frac{${k + 1} k_s}{m}}$`;
+        d = [`$\\sqrt{\\frac{k_s}{${k + 1} m}}$`, `$\\sqrt{\\frac{${k} k_s}{m}}$`, `$\\frac{1}{${k + 1}}\\sqrt{\\frac{k_s}{m}}$`];
+        sol = `Spring constant is inversely proportional to length: $k' = k_s \\times \\frac{L}{L_1} = k_s \\times \\frac{1 + ${k}}{1} = (${k + 1})k_s$. Therefore, angular frequency $\\omega = \\sqrt{\\frac{k'}{m}} = \\sqrt{\\frac{(${k + 1})k_s}{m}}$.`;
+        break;
+
+      case 'PHY-ELS':
+        q = `Two thin concentric conducting spherical shells in [${meta.chapter}] have radii $R_1$ and $R_2 = ${k}R_1$. The inner shell has charge $Q = +${m}\\,\\mu\\text{C}$ and the outer shell is earthed. What is the electrostatic potential of the inner shell?`;
+        ans = `$\\frac{${m} \\times 10^{-6} (${k - 1})}{4\\pi \\varepsilon_0 ${k} R_1}$`;
+        d = [`$\\frac{${m} \\times 10^{-6}}{4\\pi \\varepsilon_0 R_1}$`, `$\\frac{${m} \\times 10^{-6}}{4\\pi \\varepsilon_0 ${k} R_1}$`, `$0\\text{ V}$`];
+        sol = `Since outer shell is earthed, its potential is zero: $V_2 = \\frac{1}{4\\pi\\varepsilon_0}\\left(\\frac{Q}{R_2} + \\frac{Q'}{R_2}\\right) = 0 \\implies Q' = -Q$. Potential of inner shell is $V_1 = \\frac{1}{4\\pi\\varepsilon_0}\\left(\\frac{Q}{R_1} + \\frac{Q'}{R_2}\\right) = \\frac{Q}{4\\pi\\varepsilon_0}\\left(\\frac{1}{R_1} - \\frac{1}{${k}R_1}\\right) = \\frac{Q(${k - 1})}{4\\pi\\varepsilon_0 ${k} R_1}$.`;
+        break;
+
+      case 'PHY-CUR':
+        q = `Twelve identical resistors of resistance $R = ${k * 6}\\,\\Omega$ in [${meta.chapter}] form the edges of a skeleton cube. What is the equivalent resistance between two body diagonally opposite corners of the cube?`;
+        ans = `$${5 * k}\\,\\Omega$`;
+        d = [`$${6 * k}\\,\\Omega$`, `$${(4.5 * k).toFixed(1)}\\,\\Omega$`, `$${(3.5 * k).toFixed(1)}\\,\\Omega$`];
+        sol = `By path symmetry, total current $I$ entering divides into three $I/3$ currents, then six $I/6$ currents, then three $I/3$ currents. Total potential difference is $V = \\frac{I R}{3} + \\frac{I R}{6} + \\frac{I R}{3} = \\frac{5}{6} I R \\implies R_{eq} = \\frac{5}{6} R = \\frac{5}{6} \\times (${k * 6}) = ${5 * k}\\,\\Omega$.`;
+        break;
+
+      case 'PHY-MAG':
+        q = `A charged particle of mass $m$ and charge $q$ enters a uniform magnetic field $B$ at an angle $\\theta = 60^\\circ$ to the field with speed $v = ${k * 10}\\text{ m/s}$ in [${meta.chapter}]. What is the pitch of the resulting helical path?`;
+        ans = `$\\frac{\\pi m (${k * 10})}{q B}$`;
+        d = [`$\\frac{2\\pi m (${k * 10})}{q B}$`, `$\\frac{\\sqrt{3}\\pi m (${k * 10})}{q B}$`, `$\\frac{\\pi m (${k * 10})}{2 q B}$`];
+        sol = `Pitch $p = v_\\parallel T = (v \\cos 60^\\circ) \\left(\\frac{2\\pi m}{q B}\\right) = \\left(v \\times \\frac{1}{2}\\right)\\left(\\frac{2\\pi m}{q B}\\right) = \\frac{\\pi m v}{q B} = \\frac{\\pi m (${k * 10})}{q B}$.`;
+        break;
+
+      case 'PHY-EMI':
+        q = `A conducting rod of length $\\ell$, mass $m$, and resistance $R$ in [${meta.chapter}] slides down frictionless vertical rails in a horizontal uniform magnetic field $B$. What is its terminal velocity under gravity?`;
+        ans = `$\\frac{mgR}{B^2 \\ell^2}$`;
+        d = [`$\\frac{2mgR}{B^2 \\ell^2}$`, `$\\frac{mgR}{2B^2 \\ell^2}$`, `$\\frac{B^2 \\ell^2}{mgR}$`];
+        sol = `Induced EMF is $\\mathcal{E} = B \\ell v$, current is $I = \\frac{B \\ell v}{R}$, and upward magnetic Lorentz force is $F_B = I \\ell B = \\frac{B^2 \\ell^2 v}{R}$. At terminal velocity, $F_B = mg \\implies v_t = \\frac{mgR}{B^2 \\ell^2}$.`;
+        break;
+
+      case 'PHY-EMW':
+        q = `An electromagnetic wave propagating in vacuum in [${meta.chapter}] has an electric field amplitude $E_0 = ${k * 60}\\text{ V/m}$. What is the radiation pressure exerted by this beam when it is completely absorbed upon normal incidence on a surface?`;
+        ans = `$${((k * 60) ** 2 * 8.854e-12 / 2).toExponential(2)}\\text{ N/m}^2$`;
+        d = [`$${((k * 60) ** 2 * 8.854e-12).toExponential(2)}\\text{ N/m}^2$`, `$${((k * 60) ** 2 * 8.854e-12 / 4).toExponential(2)}\\text{ N/m}^2$`, `$0\\text{ N/m}^2$`];
+        sol = `Average energy density is $u_{avg} = \\frac{1}{2}\\varepsilon_0 E_0^2$. Radiation pressure on complete absorption is $P_{rad} = u_{avg} = \\frac{1}{2}\\varepsilon_0 E_0^2$.`;
+        break;
+
+      case 'PHY-OPT':
+        q = `A thin equiconvex lens of focal length $f = ${k * 10}\\text{ cm}$ and refractive index $\\mu = 1.5$ in [${meta.chapter}] has one of its surfaces silvered so that it behaves as a concave mirror. What is the magnitude of the equivalent focal length of this silvered lens system?`;
+        ans = `$${((k * 10) / 4).toFixed(1)}\\text{ cm}$`;
+        d = [`$${((k * 10) / 2).toFixed(1)}\\text{ cm}$`, `$${(k * 10).toFixed(1)}\\text{ cm}$`, `$${((k * 10) / 3).toFixed(1)}\\text{ cm}$`];
+        sol = `For an equiconvex lens with $\\mu = 1.5$, $\\frac{1}{f} = (1.5 - 1)\\left(\\frac{2}{R}\\right) = \\frac{1}{R} \\implies R = f = ${k * 10}\\text{ cm}$. Silvering one face creates a mirror of focal length $f_m = \\frac{R}{2} = \\frac{f}{2}$. Equivalent power $P = 2P_l + P_m \\implies \\frac{1}{F} = \\frac{2}{f} + \\frac{1}{f_m} = \\frac{2}{f} + \\frac{2}{f} = \\frac{4}{f} \\implies F = \\frac{f}{4} = ${((k * 10) / 4).toFixed(1)}\\text{ cm}$.`;
+        break;
+
+      case 'PHY-DNM':
+        q = `Monochromatic light of wavelength $\\lambda$ falls on a metal surface in [${meta.chapter}], causing emission of photoelectrons with maximum kinetic energy $K_1 = ${k}\\text{ eV}$. When light of wavelength $\\frac{\\lambda}{2}$ is used on the same surface, the maximum kinetic energy becomes $K_2 = ${k * 2 + 3}\\text{ eV}$. What is the work function $\\Phi$ of the metal?`;
+        ans = `$3.0\\text{ eV}$`;
+        d = [`$2.0\\text{ eV}$`, `$1.5\\text{ eV}$`, `$4.0\\text{ eV}$`];
+        sol = `Einstein's equations: $K_1 = \\frac{hc}{\\lambda} - \\Phi \\implies \\frac{hc}{\\lambda} = K_1 + \\Phi$. For $\\lambda/2$: $K_2 = \\frac{2hc}{\\lambda} - \\Phi = 2(K_1 + \\Phi) - \\Phi = 2K_1 + \\Phi \\implies \\Phi = K_2 - 2K_1 = (${k * 2 + 3}) - 2(${k}) = 3.0\\text{ eV}$.`;
+        break;
+
+      case 'PHY-ATN':
+        q = `A radioactive substance $X$ in [${meta.chapter}] decays simultaneously by two channels: $\\alpha$-decay with half-life $T_1 = ${k * 6}\\text{ hours}$ and $\\beta$-decay with half-life $T_2 = ${k * 3}\\text{ hours}$. What is the effective composite half-life of $X$?`;
+        ans = `$${k * 2}\\text{ hours}$`;
+        d = [`$${k * 4.5}\\text{ hours}$`, `$${k * 9}\\text{ hours}$`, `$${k * 1.5}\\text{ hours}$`];
+        sol = `The decay constants add directly: $\\lambda_{eff} = \\lambda_1 + \\lambda_2 \\implies \\frac{\\ln 2}{T_{eff}} = \\frac{\\ln 2}{T_1} + \\frac{\\ln 2}{T_2} \\implies \\frac{1}{T_{eff}} = \\frac{1}{${k * 6}} + \\frac{1}{${k * 3}} = \\frac{3}{${k * 6}} = \\frac{1}{${k * 2}} \\implies T_{eff} = ${k * 2}\\text{ hours}$.`;
+        break;
+
+      default: // PHY-ELD
+        q = `A Zener diode voltage regulator in [${meta.chapter}] has a breakdown voltage $V_Z = ${k * 2}\\text{ V}$ and is connected across an unregulated input source $V_{in} = ${k * 2 + 6}\\text{ V}$ with a series resistor $R_s = 200\\,\\Omega$. What is the current flowing through the series resistor $R_s$?`;
+        ans = `$30\\text{ mA}$`;
+        d = [`$15\\text{ mA}$`, `$45\\text{ mA}$`, `$60\\text{ mA}$`];
+        sol = `The voltage drop across the series resistor is $V_{Rs} = V_{in} - V_Z = (${k * 2 + 6}) - (${k * 2}) = 6\\text{ V}$. Current through $R_s$ is $I_s = \\frac{V_{Rs}}{R_s} = \\frac{6}{200} = 0.03\\text{ A} = 30\\text{ mA}$.`;
+        break;
+    }
+
+    const { options, correctAnswer } = makeOptionSet(ans, d, index);
     return {
       topic,
-      category,
+      category: cat,
       difficulty,
-      question: item.q,
+      question: q,
       options,
       correctAnswer,
-      solution: item.sol,
-      explanation: `Apply the ${category.toLowerCase()} principles in ${meta.chapter} (${topic}).`,
+      solution: sol,
+      explanation: `Analyze the physical model and equations in ${meta.chapter}.`,
       possibleErrorType: errorType,
-      image: meta.code === 'PHY-KIN' && index === 0 ? PROJECTILE_SVG : meta.code === 'PHY-NLM' && index === 0 ? PULLEY_SVG : meta.code === 'PHY-CUR' && index === 0 ? CIRCUIT_SVG : null,
+      image: null,
     };
   } else {
-    const intCategories = [
-      'Numerical Conservation Law',
-      'Numerical Rate & Gradient Evaluation',
-      'Numerical Ratio & Scaling Factor',
-      'Numerical Work & Area Integration',
-      'Numerical Extremum & Threshold',
-      'Numerical Flux & Field Magnitude',
-    ];
-    const category = intCategories[index % intCategories.length];
-    const intStems: Array<{ q: string; ans: number; sol: string }> = [
-      {
-        q: `A dynamical invariant is given by $I = m v^2$ with $m = ${a}$ and $v = ${b}$ in SI units. Calculate the numerical value of $I$.`,
-        ans: a * b * b,
-        sol: `$I = ${a} \\times ${b}^2 = ${a * b * b}$.`,
-      },
-      {
-        q: `The position coordinate of a particle varies with time as $s(t) = ${a}t^3 + ${b}t$ (in SI units). Find the instantaneous speed $\\frac{ds}{dt}$ at $t = 2\\text{ s}$.`,
-        ans: 12 * a + b,
-        sol: `$s'(t) = 3(${a})t^2 + ${b}$. At $t = 2$, $s'(2) = 12(${a}) + ${b} = ${12 * a + b}$.`,
-      },
-      {
-        q: `Two cascaded linear stages have amplification factors $G_1 = ${a + 2}$ and $G_2 = ${b + 1}$. What is the overall amplification factor $G_{\\text{net}} = G_1 G_2$?`,
-        ans: (a + 2) * (b + 1),
-        sol: `$G_{\\text{net}} = (${a + 2}) \\times (${b + 1}) = ${(a + 2) * (b + 1)}$.`,
-      },
-      {
-        q: `A position-dependent force $F(x) = ${2 * a}x\\text{ N}$ acts on a particle along the $x$-axis from $x = 0$ to $x = ${b}\\text{ m}$. Calculate the work done in Joules.`,
-        ans: a * b * b,
-        sol: `$W = \\int_0^{${b}} ${2 * a}x\\,dx = [ ${a}x^2 ]_0^{${b}} = ${a * b * b}\\text{ J}$.`,
-      },
-      {
-        q: `The potential energy of a particle along the $x$-axis is $U(x) = (x - ${a + b})^2 + ${3 * a}\\text{ J}$. What is the minimum potential energy (in J) attainable by the particle?`,
-        ans: 3 * a,
-        sol: `Since $(x - ${a + b})^2 \\ge 0$, the minimum potential energy is $${3 * a}\\text{ J}$.`,
-      },
-      {
-        q: `A uniform field $\\vec{E} = ${a}\\hat{i} + ${b}\\hat{j} + 2\\hat{k}$ crosses a planar area vector $\\vec{S} = 3\\hat{i} + 2\\hat{j} + ${a}\\hat{k}$ (in SI units). Compute the scalar flux $\\vec{E}\\cdot\\vec{S}$.`,
-        ans: 5 * a + 2 * b,
-        sol: `$\\vec{E}\\cdot\\vec{S} = 3(${a}) + 2(${b}) + 2(${a}) = ${5 * a + 2 * b}$.`,
-      },
-    ];
-    const item = intStems[index % intStems.length];
+    // Integer / Numerical Physics Problems
+    const n = index + 1;
+    const k = 2 + (index % 4);
+    let q = '';
+    let ans = 0;
+    let sol = '';
+
+    switch (meta.code) {
+      case 'PHY-ROT':
+        q = `A horizontal uniform disc of mass $M = ${k * 2}\\text{ kg}$ and radius $R = 1\\text{ m}$ is rotating with angular speed $\\omega_0 = 12\\text{ rad/s}$ about its central vertical axis in [${meta.chapter}]. A small insect of mass $m = ${k}\\text{ kg}$ lands gently on its rim. What is the new angular velocity of the disc in rad/s?`;
+        ans = 6;
+        sol = `Conservation of angular momentum: $I_i \\omega_0 = I_f \\omega_f \\implies (\\frac{1}{2} M R^2) \\omega_0 = (\\frac{1}{2} M R^2 + m R^2) \\omega_f \\implies (${k}) \\times 12 = (${k} + ${k}) \\omega_f \\implies \\omega_f = 6\\text{ rad/s}$.`;
+        break;
+
+      case 'PHY-NLM':
+        q = `A block of mass $m = 10\\text{ kg}$ rests on a rough horizontal floor with static friction coefficient $\\mu_s = 0.5$. A horizontal force of $F = ${k * 10}\\text{ N}$ is applied to the block. If $F < f_s^{\\max}$, what is the magnitude of the frictional force exerted by the floor on the block in Newtons?`;
+        ans = k * 10;
+        sol = `Maximum static friction is $f_s^{\\max} = \\mu_s m g = 0.5 \\times 10 \\times 9.8 = 49\\text{ N}$ (or $50\\text{ N}$ with $g=10$). Since applied force $F = ${k * 10}\\text{ N} \\le 40\\text{ N} < f_s^{\\max}$, the block remains at rest and static friction exactly balances the applied force: $f_s = F = ${k * 10}\\text{ N}$.`;
+        break;
+
+      case 'PHY-CUR':
+        q = `A potentiometer wire of length $L = 10\\text{ m}$ and resistance $R = 20\\,\\Omega$ is connected in series with an accumulator of EMF $E = 4\\text{ V}$ and internal resistance $0$. What is the potential gradient along the wire in $\\text{V/m}$ multiplied by $10$?`;
+        ans = 4;
+        sol = `Potential gradient is $k_g = \\frac{E}{L} = \\frac{4}{10} = 0.4\\text{ V/m}$. Multiplied by 10, the integer value is $4$.`;
+        break;
+
+      case 'PHY-ATN':
+        q = `In a hydrogen-like atom of atomic number $Z = ${k}$, what is the energy (in eV) required to excite the electron from the ground state $(n=1)$ to the first excited state $(n=2)$ divided by $10.2$?`;
+        ans = k * k;
+        sol = `Excitation energy is $\\Delta E = 13.6 \\times Z^2 \\left(1 - \\frac{1}{4}\\right) = 10.2 Z^2\\text{ eV}$. Divided by $10.2$, the integer value is $Z^2 = ${k * k}$.`;
+        break;
+
+      default:
+        q = `One mole of ideal gas undergoes a polytropic expansion $P V^2 = C$ in [${meta.chapter}] from volume $V_0 = 1\\text{ m}^3$ at pressure $P_0 = 10^5\\text{ Pa}$ to $V_1 = 2\\text{ m}^3$. Calculate the magnitude of work done by the gas in $\\text{kJ}$ rounded to nearest integer.`;
+        ans = 50;
+        sol = `Work done in polytropic process with $n=2$: $W = \\frac{P_0 V_0 - P_1 V_1}{n - 1} = P_0 V_0 \\left(1 - \\frac{V_0}{V_1}\\right) = 10^5 \\times 1 \\times (1 - 0.5) = 5 \\times 10^4\\text{ J} = 50\\text{ kJ}$.`;
+        break;
+    }
+
     return {
       topic,
-      category,
-      difficulty,
-      question: item.q,
-      correctAnswer: item.ans,
-      solution: item.sol,
-      explanation: `Apply ${category.toLowerCase()} in ${meta.chapter}.`,
+      category: `${meta.chapter} :: Numerical Derivation`,
+      difficulty: 'hard' as DifficultyLevel,
+      question: q,
+      correctAnswer: ans,
+      solution: sol,
+      explanation: `Calculate using quantitative physical laws in ${meta.chapter}.`,
       possibleErrorType: 'Calculation mistake' as ErrorCategory,
       image: null,
     };
   }
 }
 
+// -------------------------------------------------------------
+// CHEMISTRY GENERATOR (Customized per chapter code)
+// -------------------------------------------------------------
 function buildChemistryQuestion(meta: ChapterMeta, index: number, type: 'mcq' | 'integer') {
+  const isOrganic = ORGANIC_CHAPTER_CODES.has(meta.code);
   const topic = meta.topics[index % meta.topics.length];
-  const difficulties: DifficultyLevel[] = ['easy', 'medium', 'medium', 'hard'];
+  const difficulties: DifficultyLevel[] = ['hard', 'medium', 'hard', 'medium', 'hard', 'easy'];
   const difficulty = difficulties[index % difficulties.length];
   const errorType = ERROR_TYPES[(index + 1) % ERROR_TYPES.length];
-  const chapOffset = Math.max(1, ALL_55_CHAPTERS.findIndex((c) => c.code === meta.code) + 1);
-  const n = index + 1;
-  const a = 2 + n + chapOffset;
-  const b = 2 + ((n + chapOffset) % 7);
+  const k = 2 + (index % 4);
 
+  if (isOrganic) {
+    if (type === 'mcq') {
+      let q = '';
+      let ans = '';
+      let d: [string, string, string] = ['', '', ''];
+      let sol = '';
+      const cat = `${meta.chapter} :: Organic Reaction Pathway (Type ${index % 5 + 1})`;
+
+      switch (meta.code) {
+        case 'CHM-GOC':
+          q = `Consider the following carbocations in [${meta.chapter}]:
+(I) Tropylium cation $(\\text{C}_7\\text{H}_7^+)$, (II) Cyclopentadienyl cation $(\\text{C}_5\\text{H}_5^+)$, (III) Allyl cation $(\\text{CH}_2=\\text{CH}-\\text{CH}_2^+)$, and (IV) Benzyl cation $(\\text{C}_6\\text{H}_5\\text{CH}_2^+)$.
+What is the correct decreasing order of their thermodynamic stability?`;
+          ans = `$(\\text{I}) > (\\text{IV}) > (\\text{III}) > (\\text{II})$`;
+          d = [`$(\\text{IV}) > (\\text{I}) > (\\text{III}) > (\\text{II})$`, `$(\\text{I}) > (\\text{III}) > (\\text{IV}) > (\\text{II})$`, `$(\\text{II}) > (\\text{I}) > (\\text{IV}) > (\\text{III})$`];
+          sol = `Tropylium cation (I) is aromatic with $6\\pi$ electrons delocalized over 7 carbons (exceptionally stable). Cyclopentadienyl cation (II) has $4\\pi$ electrons in a planar conjugated ring and is anti-aromatic (highly unstable). Benzyl cation (IV) has extensive benzylic resonance (more stable than allyl III). Stability: I > IV > III > II.`;
+          break;
+
+        case 'CHM-HYD':
+          q = `An alkene $[X]$ of formula $\\text{C}_6\\text{H}_{12}$ in [${meta.chapter}] upon reductive ozonolysis $(\\text{O}_3 \\text{ followed by } \\text{Zn}/\\text{H}_2\\text{O})$ yields acetone and propionaldehyde in equimolar ratio. What is the IUPAC name of alkene $[X]$?`;
+          ans = `2-Methylpent-2-ene`;
+          d = [`2-Methylpent-1-ene`, `3-Methylpent-2-ene`, `Hex-2-ene`];
+          sol = `Cleaving the $\\text{C=C}$ bond gives acetone $(\\text{CH}_3)_2\\text{C=O}$ and propionaldehyde $\\text{O=CH}-\\text{CH}_2\\text{CH}_3$. Recombining: $(\\text{CH}_3)_2\\text{C}=\\text{CH}-\\text{CH}_2\\text{CH}_3$, which is 2-methylpent-2-ene.`;
+          break;
+
+        case 'CHM-HAL':
+          q = `When 1-bromo-1-methylcyclohexane is treated with potassium tert-butoxide $(t\\text{-BuOK})$ in tert-butanol at $75^\\circ\\text{C}$ in [${meta.chapter}], what is the major organic elimination product?`;
+          ans = `Methylenecyclohexane (Hofmann product)`;
+          d = [`1-Methylcyclohexene (Saytzeff product)`, `1-tert-Butoxy-1-methylcyclohexane`, `3-Methylcyclohexene`];
+          sol = `Potassium tert-butoxide is a sterically hindered bulky base. Steric repulsion impedes abstraction of the internal endocyclic hydrogen, forcing regioselective deprotonation of the accessible exocyclic methyl hydrogens to yield the less substituted Hofmann alkene: methylenecyclohexane.`;
+          break;
+
+        case 'CHM-ALC':
+          q = `In [${meta.chapter}], phenol is treated with chloroform and aqueous $\\text{NaOH}$ at $60^\\circ\\text{C}$ (Reimer-Tiemann condition) to form an intermediate that on acidification yields salicylaldehyde $[A]$. When $[A]$ is distilled with zinc dust, what is the major organic compound obtained?`;
+          ans = `Benzaldehyde`;
+          d = [`Benzene`, `Toluene`, `Benzoic acid`];
+          sol = `The Reimer-Tiemann reaction introduces an ortho-formyl $(-\\text{CHO})$ group to yield salicylaldehyde (2-hydroxybenzaldehyde). Heating with zinc dust selectively reduces the phenolic $-\\text{OH}$ group to $-\\text{H}$ while preserving the formyl group, yielding benzaldehyde.`;
+          break;
+
+        case 'CHM-ALD':
+          q = `An equimolar mixture of benzaldehyde and formaldehyde is treated with concentrated $(50\\%)$ aqueous $\\text{NaOH}$ (Crossed Cannizzaro condition) in [${meta.chapter}]. What are the major products isolated after acidification?`;
+          ans = `Benzyl alcohol and Sodium formate`;
+          d = [`Sodium benzoate and Methanol`, `Benzyl alcohol and Methanol`, `Benzoic acid and Formic acid`];
+          sol = `Formaldehyde has no $\\alpha$-hydrogens and is far more electrophilic than benzaldehyde. Nucleophilic addition of $\\text{OH}^-$ occurs rapidly on formaldehyde, forming an intermediate that transfers hydride $(\\text{H}^-)$ to benzaldehyde. Formaldehyde is oxidized to sodium formate, and benzaldehyde is reduced to benzyl alcohol.`;
+          break;
+
+        default: // CHM-AMN
+          q = `In [${meta.chapter}], aniline is subjected to diazotization with $\\text{NaNO}_2 + \\text{HCl}$ at $0-5^\\circ\\text{C}$ to form $[A]$. Reaction of $[A]$ with $\\text{CuCN}$ yields $[B]$, which upon complete acidic hydrolysis gives $[C]$. Reduction of $[C]$ with $\\text{LiAlH}_4$ yields what final product $[D]$?`;
+          ans = `Benzyl alcohol`;
+          d = [`Benzoic acid`, `Benzylamine`, `Benzaldehyde`];
+          sol = `Diazotization gives benzenediazonium chloride $[A]$. Sandmeyer cyanidation gives benzonitrile $[B]$. Acidic hydrolysis of the cyano group gives benzoic acid $[C]$. Strong reduction of benzoic acid by $\\text{LiAlH}_4$ yields benzyl alcohol $[D]$.`;
+          break;
+      }
+
+      const { options, correctAnswer } = makeOptionSet(ans, d, index);
+      return {
+        topic,
+        category: cat,
+        difficulty,
+        question: q,
+        options,
+        correctAnswer,
+        solution: sol,
+        explanation: `Deduce using established organic reaction mechanisms in ${meta.chapter}.`,
+        possibleErrorType: errorType,
+        isReactionBased: true,
+        image: null,
+      };
+    } else {
+      // Organic reaction integer question
+      const cat = `${meta.chapter} :: Stoichiometric Reaction Calculation`;
+      let q = '';
+      let ans = 0;
+      let sol = '';
+
+      switch (meta.code) {
+        case 'CHM-GOC':
+          q = `How many structural and geometrical isomers (excluding stereoisomers) exist for the acyclic alkene formula $\\text{C}_4\\text{H}_8$ in [${meta.chapter}]?`;
+          ans = 4;
+          sol = `The acyclic isomers of $\\text{C}_4\\text{H}_8$ are: but-1-ene, cis-but-2-ene, trans-but-2-ene, and 2-methylprop-1-ene (isobutylene). Total $= 4$.`;
+          break;
+
+        case 'CHM-HYD':
+          q = `How many moles of $\\text{H}_2$ gas are absorbed per mole of phenylacetylene $(\\text{C}_6\\text{H}_5-\\text{C}\\equiv\\text{CH})$ during complete catalytic hydrogenation over nickel to form ethylbenzene in [${meta.chapter}]?`;
+          ans = 2;
+          sol = `Reduction of the terminal alkyne $(-\\text{C}\\equiv\\text{CH})$ to an ethyl group $(-\\text{CH}_2\\text{CH}_3)$ consumes exactly $2\\text{ moles of }\\text{H}_2$ per mole of compound.`;
+          break;
+
+        case 'CHM-HAL':
+          q = `Addition of $\\text{HBr}$ in the presence of benzoyl peroxide to 3-methylpent-1-ene in [${meta.chapter}] gives 1-bromo-3-methylpentane. How many chiral carbon centers are present in this addition product?`;
+          ans = 1;
+          sol = `The structure is $\\text{BrCH}_2-\\text{CH}_2-\\text{C}^*\\text{H}(\\text{CH}_3)-\\text{CH}_2\\text{CH}_3$. Carbon-3 has four distinct groups $(-\\text{H}, -\\text{CH}_3, -\\text{C}_2\\text{H}_5, -\\text{CH}_2\\text{CH}_2\\text{Br})$, making it the single chiral center ($1$).`;
+          break;
+
+        case 'CHM-ALC':
+          q = `In [${meta.chapter}], one mole of glycerol $(\\text{CH}_2\\text{OH}-\\text{CHOH}-\\text{CH}_2\\text{OH})$ reacts completely with excess periodic acid $(\\text{HIO}_4)$. How many moles of formaldehyde $(\\text{HCHO})$ are formed?`;
+          ans = 2;
+          sol = `Periodic acid cleaves vicinal diols. Cleavage of the two $\\text{C-C}$ bonds consumes $2\\text{ moles of }\\text{HIO}_4$ to yield $2\\text{ moles of }\\text{HCHO}$ from the terminal carbons and $1\\text{ mole of }\\text{HCOOH}$ from the central carbon.`;
+          break;
+
+        case 'CHM-ALD':
+          q = `In [${meta.chapter}], how many moles of $\\text{NaOH}$ are consumed in the complete haloform reaction of one mole of acetone $(\\text{CH}_3\\text{COCH}_3)$ with iodine to form iodoform and sodium acetate?`;
+          ans = 4;
+          sol = `The balanced equation is: $\\text{CH}_3\\text{COCH}_3 + 3\\text{I}_2 + 4\\text{NaOH} \\longrightarrow \\text{CHI}_3\\downarrow + \\text{CH}_3\\text{COONa} + 3\\text{NaI} + 3\\text{H}_2\\text{O}$. Exactly $4$ moles of $\\text{NaOH}$ are consumed.`;
+          break;
+
+        default: // CHM-AMN
+          q = `In [${meta.chapter}], an aliphatic primary amide on treatment with bromine and aqueous $\\text{KOH}$ (Hoffmann degradation) yields an amine containing $3$ carbon atoms. How many carbon atoms were present in the precursor amide?`;
+          ans = 4;
+          sol = `Hoffmann bromamide degradation eliminates the carbonyl carbon as carbonate: $\\text{R-CONH}_2 \\to \\text{R-NH}_2$. If the product amine has 3 carbon atoms, the starting amide had $3 + 1 = 4$ carbon atoms (butanamide).`;
+          break;
+      }
+
+      return {
+        topic,
+        category: cat,
+        difficulty: 'hard' as DifficultyLevel,
+        question: q,
+        correctAnswer: ans,
+        solution: sol,
+        explanation: `Solve using reaction stoichiometry in ${meta.chapter}.`,
+        possibleErrorType: 'Conceptual mistake' as ErrorCategory,
+        isReactionBased: true,
+        image: null,
+      };
+    }
+  }
+
+  // PHYSICAL & INORGANIC CHEMISTRY
   if (type === 'mcq') {
-    const categories = [
-      'Stoichiometric & Molar Equivalence',
-      'Thermodynamic & Energetic Balance',
-      'Equilibrium & Extent of Reaction',
-      'Kinetic Rate & Half-Life Analysis',
-      'Electronic Structure & Quantum Rules',
-      'Bonding, Hybridization & Polarity',
-      'Colligative & Phase Behavior',
-      'Electrochemical Potential & Nernst',
-      'Periodic Trends & Oxidation States',
-      'Coordination & Crystal Field Theory',
-      'Stereochemistry & Isomeric Counting',
-      'Reaction Mechanism & Selectivity',
-    ];
-    const category = categories[Math.floor(index / 2) % categories.length];
+    let q = '';
+    let ans = '';
+    let d: [string, string, string] = ['', '', ''];
+    let sol = '';
+    let isRx = false;
+    const cat = `${meta.chapter} :: Quantitative & Structural Chemistry (Type ${index % 5 + 1})`;
 
-    const stems: Array<{ q: string; ans: string; d: [string, string, string]; sol: string }> = [
-      {
-        q: `If $${a}\\text{ mmol}$ of a solute is dissolved completely to form $${b * 10}\\text{ mL}$ of aqueous solution, what is the molarity of the resulting solution?`,
-        ans: `$${(a / (b * 10)).toFixed(3)}\\text{ M}$`,
-        d: [`$${((2 * a) / (b * 10)).toFixed(3)}\\text{ M}$`, `$${(a / b).toFixed(3)}\\text{ M}$`, `$${((a + b) / 100).toFixed(3)}\\text{ M}$`],
-        sol: `Molarity $M = \\frac{\\text{mmol}}{\\text{mL}} = \\frac{${a}}{${b * 10}} = ${(a / (b * 10)).toFixed(3)}\\text{ M}$.`,
-      },
-      {
-        q: `In a quantitative redox conversion, $${a}\\text{ moles}$ of a reagent undergo a change in oxidation number of $${b}$ units per formula unit. How many Faradays of electricity are required for this conversion?`,
-        ans: `$${a * b}\\text{ F}$`,
-        d: [`$${a + b}\\text{ F}$`, `$\\frac{${a}}{${b}}\\text{ F}$`, `$${2 * a * b}\\text{ F}$`],
-        sol: `Number of equivalents $= \\text{moles} \\times n\\text{-factor} = ${a} \\times ${b} = ${a * b}\\text{ F}$.`,
-      },
-      {
-        q: `For a chemical reaction at constant temperature and pressure, $\\Delta H^\\circ = -${a * 10}\\text{ kJ mol}^{-1}$ and $T\\Delta S^\\circ = +${b * 5}\\text{ kJ mol}^{-1}$. What is the standard Gibbs free energy change $\\Delta G^\\circ$?`,
-        ans: `$-${a * 10 + b * 5}\\text{ kJ mol}^{-1}$`,
-        d: [`$-${Math.abs(a * 10 - b * 5)}\\text{ kJ mol}^{-1}$`, `$+${a * 10 + b * 5}\\text{ kJ mol}^{-1}$`, `$+${a * 10 - b * 5}\\text{ kJ mol}^{-1}$`],
-        sol: `$\\Delta G^\\circ = \\Delta H^\\circ - T\\Delta S^\\circ = -${a * 10} - ${b * 5} = -${a * 10 + b * 5}\\text{ kJ mol}^{-1}$.`,
-      },
-      {
-        q: `Given two elementary thermochemical steps with $\\Delta H_1^\\circ = +${a * 4}\\text{ kJ/mol}$ and $\\Delta H_2^\\circ = -${b * 6}\\text{ kJ/mol}$, determine $\\Delta H^\\circ$ for the overall reaction obtained by $2 \\times (\\text{Step 1}) + (\\text{Step 2})$.`,
-        ans: `$${8 * a - 6 * b}\\text{ kJ/mol}$`,
-        d: [`$${4 * a - 6 * b}\\text{ kJ/mol}$`, `$${8 * a + 6 * b}\\text{ kJ/mol}$`, `$${4 * a - 12 * b}\\text{ kJ/mol}$`],
-        sol: `By Hess's law, $\\Delta H^\\circ = 2(${4 * a}) + (-${6 * b}) = ${8 * a - 6 * b}\\text{ kJ/mol}$.`,
-      },
-      {
-        q: `For a reversible elementary reaction $A \\rightleftharpoons B$, the forward rate constant is $k_f = ${a * b}\\text{ s}^{-1}$ and the reverse rate constant is $k_b = ${b}\\text{ s}^{-1}$. Find the equilibrium constant $K_c$.`,
-        ans: `$${a}$`,
-        d: [`$\\frac{1}{${a}}$`, `$${a * b}$`, `$${a + b}$`],
-        sol: `$K_c = k_f / k_b = (${a * b}) / ${b} = ${a}$.`,
-      },
-      {
-        q: `One mole of an electrolyte dissociates in solution to yield $${b}$ ions per formula unit with a degree of dissociation $\\alpha = 0.5$. Calculate its Van't Hoff factor $i$.`,
-        ans: `$${(1 + 0.5 * (b - 1)).toFixed(2)}$`,
-        d: [`$${b.toFixed(2)}$`, `$${(1 + b).toFixed(2)}$`, `$${(0.5 * b).toFixed(2)}$`],
-        sol: `Using $i = 1 + (n - 1)\\alpha = 1 + (${b} - 1)(0.5) = ${(1 + 0.5 * (b - 1)).toFixed(2)}$.`,
-      },
-      {
-        q: `A reaction has a constant half-life of $${a}\\text{ min}$ independent of initial concentration. How much time is required for the reactant concentration to fall to $\\frac{1}{2^{${b}}}$ of its initial value?`,
-        ans: `$${a * b}\\text{ min}$`,
-        d: [`$${a + b}\\text{ min}$`, `$\\frac{${a}}{${b}}\\text{ min}$`, `$${2 * a * b}\\text{ min}$`],
-        sol: `Half-life $t_{1/2} = ${a}\\text{ min}$. For ${b} half-lives, $t = ${a * b}\\text{ min}$.`,
-      },
-      {
-        q: `When the initial concentration of reactant $X$ is increased by a factor of $${b}$, the initial rate of reaction increases by a factor of $${b * b}$. What is the order of the reaction with respect to $X$?`,
-        ans: `$2$`,
-        d: [`$1$`, `$3$`, `$0.5$`],
-        sol: `Since $r \\propto [X]^n$ and $(${b})^n = ${b * b}$, the reaction order is $n = 2$.`,
-      },
-      {
-        q: `How many radial nodes are present in an atomic orbital characterized by principal quantum number $n = ${b + 2}$ and azimuthal quantum number $l = ${b - 1}$?`,
-        ans: `$2$`,
-        d: [`$1$`, `$${b}$`, `$0$`],
-        sol: `Number of radial nodes $= n - l - 1 = (${b + 2}) - (${b - 1}) - 1 = 2$.`,
-      },
-      {
-        q: `A transition metal ion in its ground state possesses $n = ${b}$ unpaired electrons. What is its spin-only magnetic moment in Bohr Magnetons ($\\text{BM}$)?`,
-        ans: `$\\sqrt{${b * (b + 2)}}\\text{ BM}$`,
-        d: [`$${b}\\text{ BM}$`, `$\\sqrt{${b * b + 1}}\\text{ BM}$`, `$${b + 2}\\text{ BM}$`],
-        sol: `Spin-only magnetic moment $\\mu_s = \\sqrt{n(n+2)} = \\sqrt{${b}(${b + 2})} = \\sqrt{${b * (b + 2)}}\\text{ BM}$.`,
-      },
-      {
-        q: `A central main-group atom forms $${b}$ $\\sigma$-bonds with surrounding monovalent atoms and retains $1$ non-bonding lone pair. What is the steric number of the central atom?`,
-        ans: `$${b + 1}$`,
-        d: [`$${b}$`, `$${b - 1}$`, `$${b + 2}$`],
-        sol: `Steric number $= (\\text{number of } \\sigma\\text{-bonds}) + (\\text{lone pairs}) = ${b} + 1 = ${b + 1}$.`,
-      },
-      {
-        q: `A homonuclear diatomic species contains $10$ electrons in bonding molecular orbitals and $${2 * (b % 3 + 1)}$ electrons in antibonding molecular orbitals. What is its bond order?`,
-        ans: `$${5 - (b % 3 + 1)}$`,
-        d: [`$${5 + (b % 3 + 1)}$`, `$${(5 - (b % 3 + 1)) * 0.5}$`, `$${10 - (b % 3 + 1)}$`],
-        sol: `Bond order $= \\frac{N_b - N_a}{2} = \\frac{10 - ${2 * (b % 3 + 1)}}{2} = ${5 - (b % 3 + 1)}$.`,
-      },
-      {
-        q: `In a binary ideal liquid mixture at constant temperature, pure liquid $A$ has vapor pressure $P_A^\\circ = ${a * 20}\\text{ Torr}$ and its mole fraction in the liquid phase is $x_A = 0.5$. Find the partial vapor pressure of $A$ above the solution.`,
-        ans: `$${a * 10}\\text{ Torr}$`,
-        d: [`$${a * 20}\\text{ Torr}$`, `$${a * 5}\\text{ Torr}$`, `$${a * 40}\\text{ Torr}$`],
-        sol: `By Raoult's law, $P_A = x_A P_A^\\circ = 0.5 \\times ${a * 20} = ${a * 10}\\text{ Torr}$.`,
-      },
-      {
-        q: `A dilute solution of a non-volatile non-electrolyte has molality $m = ${b}\\text{ mol kg}^{-1}$ in a solvent with $K_b = 0.52\\text{ K kg mol}^{-1}$. Calculate the elevation in boiling point $\\Delta T_b$.`,
-        ans: `$${(0.52 * b).toFixed(2)}\\text{ K}$`,
-        d: [`$${(1.04 * b).toFixed(2)}\\text{ K}$`, `$${(0.26 * b).toFixed(2)}\\text{ K}$`, `$${(b / 0.52).toFixed(2)}\\text{ K}$`],
-        sol: `$\\Delta T_b = K_b \\cdot m = 0.52 \\times ${b} = ${(0.52 * b).toFixed(2)}\\text{ K}$.`,
-      },
-      {
-        q: `In a galvanic cell at $298\\text{ K}$, the standard reduction potentials of the cathode and anode half-cells are $+${(a * 0.1).toFixed(2)}\\text{ V}$ and $-${(b * 0.1).toFixed(2)}\\text{ V}$ respectively. Determine $E_{\\text{cell}}^\\circ$.`,
-        ans: `$+${((a + b) * 0.1).toFixed(2)}\\text{ V}$`,
-        d: [`$+${(Math.abs(a - b) * 0.1).toFixed(2)}\\text{ V}$`, `$-${((a + b) * 0.1).toFixed(2)}\\text{ V}$`, `$+${((a * b) * 0.1).toFixed(2)}\\text{ V}$`],
-        sol: `$E_{\\text{cell}}^\\circ = E_{\\text{cathode}}^\\circ - E_{\\text{anode}}^\\circ = ${(a * 0.1).toFixed(2)} - (-${(b * 0.1).toFixed(2)}) = +${((a + b) * 0.1).toFixed(2)}\\text{ V}$.`,
-      },
-      {
-        q: `At $298\\text{ K}$ (where $\\frac{2.303 RT}{F} = 0.059\\text{ V}$), an $n$-electron redox half-reaction has $n = ${b}$. How does the electrode potential change when the reaction quotient $Q$ increases by a factor of $10^{${b}}$?`,
-        ans: `Decreases by $59\\text{ mV}$`,
-        d: [`Increases by $59\\text{ mV}$`, `Decreases by $${59 * b}\\text{ mV}$`, `Remains unchanged`],
-        sol: `$\\Delta E = -\\frac{0.059}{${b}} \\log_{10}(10^{${b}}) = -0.059\\text{ V} = -59\\text{ mV}$.`,
-      },
-      {
-        q: `In the polyatomic oxo-anion $\\text{XO}_{${b}}^{2-}$ where each oxygen atom is in the $-2$ oxidation state, what is the oxidation state of the central atom $\\text{X}$?`,
-        ans: `$+${2 * b - 2}$`,
-        d: [`$+${2 * b}$`, `$+${2 * b + 2}$`, `$+${b - 2}$`],
-        sol: `Let oxidation state of $\\text{X}$ be $x$: $x + ${b}(-2) = -2 \\implies x = +${2 * b - 2}$.`,
-      },
-      {
-        q: `If the effective nuclear charge $Z_{\\text{eff}}$ increases by $0.65$ units for each unit increase in atomic number across a period, what is the cumulative increase in $Z_{\\text{eff}}$ across $${b}$ consecutive main-group elements in that period?`,
-        ans: `$${(0.65 * (b - 1)).toFixed(2)}$`,
-        d: [`$${(0.65 * b).toFixed(2)}$`, `$${(0.35 * (b - 1)).toFixed(2)}$`, `$${(b - 1).toFixed(2)}$`],
-        sol: `Across ${b} consecutive elements there are ${b - 1} steps, giving $\\Delta Z_{\\text{eff}} = 0.65 \\times ${b - 1} = ${(0.65 * (b - 1)).toFixed(2)}$.`,
-      },
-      {
-        q: `An octahedral complex $[\\text{M}(\\text{L})_6]^{n+}$ containing a $d^1$ metal ion has an octahedral splitting parameter $\\Delta_o = ${a * 1000}\\text{ cm}^{-1}$. What is the magnitude of its Crystal Field Stabilization Energy?`,
-        ans: `$${(0.4 * a * 1000).toFixed(0)}\\text{ cm}^{-1}$`,
-        d: [`$${(0.6 * a * 1000).toFixed(0)}\\text{ cm}^{-1}$`, `$${(a * 1000).toFixed(0)}\\text{ cm}^{-1}$`, `$${(1.2 * a * 1000).toFixed(0)}\\text{ cm}^{-1}$`],
-        sol: `For $t_{2g}^1 e_g^0$ in an octahedral field, $|\\text{CFSE}| = 0.4\\Delta_o = ${0.4 * a * 1000}\\text{ cm}^{-1}$.`,
-      },
-      {
-        q: `A neutral chelating ligand of denticity $${b}$ forms a homoleptic complex with a metal ion whose coordination number is $${2 * b}$. How many ligand molecules are coordinated to the metal ion?`,
-        ans: `$2$`,
-        d: [`$${b}$`, `$${2 * b}$`, `$3$`],
-        sol: `Number of ligands $= \\frac{\\text{Coordination Number}}{\\text{Denticity}} = \\frac{${2 * b}}{${b}} = 2$.`,
-      },
-      {
-        q: `An unsymmetrical organic molecule possesses $n = ${b % 3 + 2}$ chiral centers and has no plane, center, or alternating axis of symmetry. How many optically active stereoisomers can it form?`,
-        ans: `$${Math.pow(2, b % 3 + 2)}$`,
-        d: [`$${Math.pow(2, b % 3 + 1)}$`, `$${2 * (b % 3 + 2)}$`, `$${Math.pow(2, b % 3 + 2) - 1}$`],
-        sol: `For an unsymmetrical molecule with $n = ${b % 3 + 2}$ chiral centers, total optically active isomers $= 2^n = ${Math.pow(2, b % 3 + 2)}$.`,
-      },
-      {
-        q: `What is the Degree of Unsaturation (Double Bond Equivalent) of a hydrocarbon having the molecular formula $\\text{C}_{${a}}\\text{H}_{${2 * a - 2}}$?`,
-        ans: `$2$`,
-        d: [`$1$`, `$3$`, `$0$`],
-        sol: `$\\text{DBE} = C + 1 - \\frac{H}{2} = ${a} + 1 - \\frac{${2 * a - 2}}{2} = 2$.`,
-      },
-      {
-        q: `In a two-step synthesis starting from $${a}\\text{ moles}$ of reactant, the first step has an $80\\%$ yield and the second step has a $75\\%$ yield. How many moles of final product are isolated?`,
-        ans: `$${(0.6 * a).toFixed(2)}\\text{ mol}$`,
-        d: [`$${(0.775 * a).toFixed(2)}\\text{ mol}$`, `$${(0.8 * a).toFixed(2)}\\text{ mol}$`, `$${(0.5 * a).toFixed(2)}\\text{ mol}$`],
-        sol: `Overall yield $= 0.80 \\times 0.75 = 0.60$. Moles of product $= 0.60 \\times ${a} = ${(0.6 * a).toFixed(2)}\\text{ mol}$.`,
-      },
-      {
-        q: `A chemical reaction produces two regioisomers in the molar ratio $${b} : 1$. What is the percentage composition of the major regioisomer in the product mixture?`,
-        ans: `$${((b / (b + 1)) * 100).toFixed(1)}\\%$`,
-        d: [`$${((1 / (b + 1)) * 100).toFixed(1)}\\%$`, `$${((b / (b + 2)) * 100).toFixed(1)}\\%$`, `$${(100 / b).toFixed(1)}\\%$`],
-        sol: `Percentage of major product $= \\frac{${b}}{${b} + 1} \\times 100\\% = ${((b / (b + 1)) * 100).toFixed(1)}\\%$.`,
-      },
-    ];
+    switch (meta.code) {
+      case 'CHM-MOL':
+        q = `In [${meta.chapter}], a $100\\text{ mL}$ mixture of $0.1\\text{ M } \\text{FeSO}_4$ and $0.1\\text{ M } \\text{Fe}_2(\\text{SO}_4)_3$ is completely oxidized in acidic medium. What volume (in $\\text{mL}$) of $0.02\\text{ M } \\text{KMnO}_4$ is required?`;
+        ans = `$100\\text{ mL}$`;
+        d = [`$200\\text{ mL}$`, `$50\\text{ mL}$`, `$150\\text{ mL}$`];
+        sol = `Only $\\text{Fe}^{2+}$ is oxidized by $\\text{KMnO}_4$. Moles of $\\text{Fe}^{2+} = 0.1\\text{ L} \\times 0.1\\text{ M} = 0.01\\text{ mol}$. Equivalents of $\\text{Fe}^{2+} = 0.01 \\times 1 = 0.01$. In acidic medium, $\\text{Mn}^{7+} + 5e^- \\to \\text{Mn}^{2+}$ ($n$-factor $= 5$). Normality of $\\text{KMnO}_4 = 0.02 \\times 5 = 0.1\\text{ N}$. Volume required $= \\frac{0.01\\text{ eq}}{0.1\\text{ N}} = 0.1\\text{ L} = 100\\text{ mL}$.`;
+        isRx = true;
+        break;
 
-    const item = stems[index % stems.length];
-    const { options, correctAnswer } = makeOptionSet(item.ans, item.d, index);
+      case 'CHM-ATM':
+        q = `For the $3d_{z^2}$ atomic orbital of a hydrogen-like atom in [${meta.chapter}], what are the numbers of radial nodes and angular nodes respectively?`;
+        ans = `$0$ radial nodes and $2$ angular nodes`;
+        d = [`$1$ radial node and $1$ angular node`, `$2$ radial nodes and $0$ angular nodes`, `$0$ radial nodes and $0$ angular nodes`];
+        sol = `For a $3d$ orbital: principal quantum number $n = 3$, azimuthal quantum number $l = 2$. Radial nodes $= n - l - 1 = 3 - 2 - 1 = 0$. Angular nodes $= l = 2$ (conical nodal surfaces).`;
+        break;
+
+      case 'CHM-BND':
+        q = `According to Molecular Orbital Theory in [${meta.chapter}], which of the following diatomic species has a bond order of $2.5$ and is paramagnetic with one unpaired electron?`;
+        ans = `$\\text{O}_2^+$`;
+        d = [`$\\text{N}_2^+$`, `$\\text{O}_2^{2-}$`, `$\\text{NO}^+$`];
+        sol = `$\\text{O}_2^+$ has 15 electrons. Configuration: $\\sigma_{1s}^2 \\sigma_{1s}^{*2} \\sigma_{2s}^2 \\sigma_{2s}^{*2} \\sigma_{2p_z}^2 (\\pi_{2p_x}^2 = \\pi_{2p_y}^2) (\\pi_{2p_x}^{*1})$. Bond order $= \\frac{10 - 5}{2} = 2.5$. It has one unpaired electron in $\\pi^*$ and is paramagnetic.`;
+        break;
+
+      case 'CHM-THD':
+        q = `For a reversible phase transition $\\text{H}_2\\text{O}(l) \\rightleftharpoons \\text{H}_2\\text{O}(g)$ at $100^\\circ\\text{C}$ and $1\\text{ atm}$ in [${meta.chapter}], which of the following thermodynamic statements is strictly true?`;
+        ans = `$\\Delta G = 0$ and $\\Delta S_{sys} = \\frac{\\Delta H_{vap}}{373.15}$`;
+        d = [`$\\Delta G < 0$ and $\\Delta S_{sys} > 0$`, `$\\Delta G = 0$ and $\\Delta S_{sys} = 0$`, `$\\Delta H = 0$ and $\\Delta G = 0$`];
+        sol = `At normal boiling point, liquid and vapor are in dynamic thermodynamic equilibrium at constant $T$ and $P$, so $\\Delta G = 0$. For a reversible process, $\\Delta S_{sys} = \\frac{\\Delta H_{rev}}{T} = \\frac{\\Delta H_{vap}}{373.15\\text{ K}}$.`;
+        break;
+
+      case 'CHM-SOL':
+        q = `A weak monobasic organic acid $(\\text{HA})$ undergoes partial dimerization in benzene solution in [${meta.chapter}]: $2\\text{HA} \\rightleftharpoons (\\text{HA})_2$. If the degree of association is $\\alpha = 0.60$, what is the van 't Hoff factor $i$?`;
+        ans = `$0.70$`;
+        d = [`$0.40$`, `$0.80$`, `$1.30$`];
+        sol = `For association into an $n$-mer $(n=2)$: $i = 1 - \\alpha\\left(1 - \\frac{1}{n}\\right) = 1 - 0.60\\left(1 - \\frac{1}{2}\\right) = 1 - 0.30 = 0.70$.`;
+        break;
+
+      case 'CHM-EQL':
+        q = `A buffer solution in [${meta.chapter}] contains $0.1\\text{ M}$ acetic acid $(\\text{p}K_a = 4.74)$ and $0.1\\text{ M}$ sodium acetate. If $0.02\\text{ moles}$ of solid $\\text{NaOH}$ are added to $1\\text{ L}$ of this buffer, what is the new $\\text{pH}$? $(\\log 1.5 = 0.18)$`;
+        ans = `$4.92$`;
+        d = [`$4.56$`, `$4.74$`, `$5.12$`];
+        sol = `Added $\\text{OH}^-$ neutralizes acid: $[\\text{CH}_3\\text{COOH}] = 0.1 - 0.02 = 0.08\\text{ M}$, $[\\text{CH}_3\\text{COO}^-] = 0.1 + 0.02 = 0.12\\text{ M}$. By Henderson equation: $\\text{pH} = \\text{p}K_a + \\log\\frac{[\\text{salt}]}{[\\text{acid}]} = 4.74 + \\log\\frac{0.12}{0.08} = 4.74 + \\log(1.5) = 4.74 + 0.18 = 4.92$.`;
+        break;
+
+      case 'CHM-ELC':
+        q = `In an electrochemical cell in [${meta.chapter}]: $\\text{Zn}(s) | \\text{Zn}^{2+}(0.01\\text{ M}) || \\text{Cu}^{2+}(0.1\\text{ M}) | \\text{Cu}(s)$ with $E^\\circ_{\\text{cell}} = 1.10\\text{ V}$. What is the cell potential $E_{\\text{cell}}$ at $298\\text{ K}$? $(\\text{Take } \\frac{2.303 RT}{F} = 0.059\\text{ V})$`;
+        ans = `$1.13\\text{ V}$`;
+        d = [`$1.07\\text{ V}$`, `$1.10\\text{ V}$`, `$1.16\\text{ V}$`];
+        sol = `Nernst equation: $E_{\\text{cell}} = E^\\circ_{\\text{cell}} - \\frac{0.059}{2}\\log\\frac{[\\text{Zn}^{2+}]}{[\\text{Cu}^{2+}]} = 1.10 - 0.0295\\log\\left(\\frac{0.01}{0.1}\\right) = 1.10 - 0.0295(-1) = 1.10 + 0.0295 \\approx 1.13\\text{ V}$.`;
+        isRx = true;
+        break;
+
+      case 'CHM-KIN':
+        q = `A first-order gaseous reaction $A(g) \\longrightarrow 2B(g) + C(g)$ in [${meta.chapter}] starts with pure $A$ at initial pressure $P_0$. After time $t$, total pressure is $P_t$. What is the expression for rate constant $k$?`;
+        ans = `$k = \\frac{1}{t}\\ln\\frac{2 P_0}{3 P_0 - P_t}$`;
+        d = [`$k = \\frac{1}{t}\\ln\\frac{P_0}{P_t - P_0}$`, `$k = \\frac{1}{t}\\ln\\frac{P_0}{2 P_0 - P_t}$`, `$k = \\frac{1}{t}\\ln\\frac{3 P_0}{3 P_0 - P_t}$`];
+        sol = `At time $t$: $P_A = P_0 - x$, $P_B = 2x$, $P_C = x$. Total pressure $P_t = P_0 - x + 2x + x = P_0 + 2x \\implies x = \\frac{P_t - P_0}{2}$. Then $P_A = P_0 - \\frac{P_t - P_0}{2} = \\frac{3P_0 - P_t}{2}$. For first order, $k = \\frac{1}{t}\\ln\\frac{P_0}{P_A} = \\frac{1}{t}\\ln\\frac{2P_0}{3P_0 - P_t}$.`;
+        break;
+
+      case 'CHM-CRD':
+        q = `The octahedral complex $[\\text{Co}(\\text{en})_2\\text{Cl}_2]^+$ in [${meta.chapter}] exists as cis and trans geometrical isomers. Which of the following statements is strictly correct regarding their optical activity?`;
+        ans = `The cis-isomer is chiral and optically active; the trans-isomer possesses a center of inversion and is optically inactive`;
+        d = [`Both cis and trans isomers are optically active`, `Both cis and trans isomers are optically inactive`, `The trans-isomer is optically active and cis is inactive`];
+        sol = `The trans-isomer has an inversion center (and mirror plane) and is achiral (optically inactive). The cis-isomer has no plane or center of inversion ($C_2$ symmetry) and exists as a pair of non-superimposable enantiomers (optically active).`;
+        break;
+
+      default:
+        q = `In [${meta.chapter}], how does the basicity and reducing nature of orthophosphorous acid $(\\text{H}_3\\text{PO}_3)$ compare to orthophosphoric acid $(\\text{H}_3\\text{PO}_4)$?`;
+        ans = `$\\text{H}_3\\text{PO}_3$ is dibasic and a strong reducing agent due to one $\\text{P-H}$ bond; $\\text{H}_3\\text{PO}_4$ is tribasic and non-reducing`;
+        d = [`Both are tribasic and non-reducing`, `$\\text{H}_3\\text{PO}_3$ is tribasic and reducing`, `$\\text{H}_3\\text{PO}_3$ is monobasic and non-reducing`];
+        sol = `$\\text{H}_3\\text{PO}_3$ has tetrahedral coordination with two ionizable $-\\text{OH}$ groups (dibasic) and one direct $\\text{P-H}$ bond that imparts strong reducing properties. $\\text{H}_3\\text{PO}_4$ has three $-\\text{OH}$ groups (tribasic) and no $\\text{P-H}$ bond (non-reducing).`;
+        isRx = true;
+        break;
+    }
+
+    const { options, correctAnswer } = makeOptionSet(ans, d, index);
     return {
       topic,
-      category,
+      category: cat,
       difficulty,
-      question: item.q,
+      question: q,
       options,
       correctAnswer,
-      solution: item.sol,
-      explanation: `Apply ${category.toLowerCase()} relations in ${meta.chapter} (${topic}).`,
+      solution: sol,
+      explanation: `Analyze using fundamental chemical principles in ${meta.chapter}.`,
       possibleErrorType: errorType,
+      isReactionBased: isRx,
       image: null,
     };
   } else {
-    const intCategories = [
-      'Numerical Stoichiometric Equivalents',
-      'Numerical Enthalpy & Free Energy',
-      'Numerical Quantum & Nodal Count',
-      'Numerical Oxidation & Coordination Number',
-      'Numerical Degree of Unsaturation',
-      'Numerical Kinetics & Half-Life',
-    ];
-    const category = intCategories[index % intCategories.length];
-    const intStems: Array<{ q: string; ans: number; sol: string }> = [
-      {
-        q: `When $${a}$ moles of a substance with $n$-factor $${b}$ react completely, what is the total number of chemical equivalents reacted?`,
-        ans: a * b,
-        sol: `$n_{\\text{eq}} = ${a} \\times ${b} = ${a * b}$.`,
-      },
-      {
-        q: `Three consecutive steps of a thermochemical cycle have enthalpy changes $+${4 * a}\\text{ kJ}$, $-${b}\\text{ kJ}$, and $+${2 * b}\\text{ kJ}$. Calculate the net enthalpy change $\\Delta H_{\\text{net}}$ in kJ.`,
-        ans: 4 * a + b,
-        sol: `$\\Delta H_{\\text{net}} = ${4 * a} - ${b} + ${2 * b} = ${4 * a + b}\\text{ kJ}$.`,
-      },
-      {
-        q: `How many atomic orbitals in total (excluding electron spin) belong to the principal quantum shell $n = ${b}$?`,
-        ans: b * b,
-        sol: `Total orbitals in shell $n$ is $n^2 = ${b}^2 = ${b * b}$.`,
-      },
-      {
-        q: `In the homoleptic metal carbonyl $\\text{M}(\\text{CO})_{${b}}$, each $\\text{CO}$ ligand donates $2$ electrons to the metal center. What is the total number of electrons donated by the ligands?`,
-        ans: 2 * b,
-        sol: `Total electrons donated $= 2 \\times ${b} = ${2 * b}$.`,
-      },
-      {
-        q: `Determine the Degree of Unsaturation (DBE) of an organic compound having the molecular formula $\\text{C}_{${a + b}}\\text{H}_{${2 * a}}\\text{O}_2$.`,
-        ans: b + 1,
-        sol: `$\\text{DBE} = (${a + b}) + 1 - \\frac{${2 * a}}{2} = ${b + 1}$.`,
-      },
-      {
-        q: `A zero-order reaction has rate constant $k = 2\\text{ M s}^{-1}$ and initial reactant concentration $[A]_0 = ${4 * a}\\text{ M}$. Calculate its half-life $t_{1/2}$ in seconds.`,
-        ans: a,
-        sol: `For zero-order kinetics, $t_{1/2} = \\frac{[A]_0}{2k} = \\frac{${4 * a}}{4} = ${a}\\text{ s}$.`,
-      },
-    ];
-    const item = intStems[index % intStems.length];
+    // Non-organic integer chemistry
+    let q = '';
+    let ans = 0;
+    let sol = '';
+    let isRx = false;
+
+    switch (meta.code) {
+      case 'CHM-MOL':
+        q = `How many moles of electrons are transferred per mole of dichromate ion $(\\text{Cr}_2\\text{O}_7^{2-})$ during its complete reduction to $\\text{Cr}^{3+}$ in acidic medium in [${meta.chapter}]?`;
+        ans = 6;
+        sol = `Each $\\text{Cr}$ atom changes oxidation state from $+6$ to $+3$ (3 electrons). For $\\text{Cr}_2\\text{O}_7^{2-}$ containing two chromium atoms, total electrons transferred $= 2 \\times 3 = 6$.`;
+        isRx = true;
+        break;
+
+      case 'CHM-BND':
+        q = `In [${meta.chapter}], what is the number of lone pairs of electrons located on the central xenon atom in xenon tetrafluoride $(\\text{XeF}_4)$?`;
+        ans = 2;
+        sol = `Xenon has 8 valence electrons. Four form single bonds with fluorine atoms, leaving $8 - 4 = 4$ non-bonding electrons, which correspond to $2$ lone pairs (square planar geometry, $sp^3d^2$).`;
+        break;
+
+      case 'CHM-CRD':
+        q = `What is the spin-only magnetic moment (in Bohr Magnetons, rounded to the nearest integer) of the high-spin complex ion $[\\text{Fe}(\\text{H}_2\\text{O})_6]^{3+}$ in [${meta.chapter}]? (Take $\\sqrt{35} \\approx 6$)`;
+        ans = 6;
+        sol = `$\\text{Fe}^{3+}$ has $d^5$ electron configuration. Since $\\text{H}_2\\text{O}$ is a weak-field ligand, it forms a high-spin complex with $n = 5$ unpaired electrons. $\\mu = \\sqrt{5(5 + 2)} = \\sqrt{35} \\approx 5.92\\text{ BM} \\approx 6$.`;
+        break;
+
+      default:
+        q = `What is the basicity (number of ionizable hydrogen atoms per molecule) of pyrophosphoric acid $(\\text{H}_4\\text{P}_2\\text{O}_7)$ in [${meta.chapter}]?`;
+        ans = 4;
+        sol = `Pyrophosphoric acid contains two tetrahedral phosphorus atoms connected by a $\\text{P-O-P}$ bridge, with four $-\\text{OH}$ groups attached directly to phosphorus. All four hydrogens are acidic, so its basicity is $4$.`;
+        break;
+    }
+
     return {
       topic,
-      category,
-      difficulty,
-      question: item.q,
-      correctAnswer: item.ans,
-      solution: item.sol,
-      explanation: `Apply ${category.toLowerCase()} in ${meta.chapter}.`,
-      possibleErrorType: 'Conceptual mistake' as ErrorCategory,
+      category: `${meta.chapter} :: Quantitative Chemistry`,
+      difficulty: 'hard' as DifficultyLevel,
+      question: q,
+      correctAnswer: ans,
+      solution: sol,
+      explanation: `Calculate using quantitative laws in ${meta.chapter}.`,
+      possibleErrorType: 'Calculation mistake' as ErrorCategory,
+      isReactionBased: isRx,
       image: null,
     };
   }
 }
 
+// -------------------------------------------------------------
+// MATHEMATICS GENERATOR (Customized per chapter code)
+// -------------------------------------------------------------
 function buildMathQuestion(meta: ChapterMeta, index: number, type: 'mcq' | 'integer') {
   const topic = meta.topics[index % meta.topics.length];
-  const difficulties: DifficultyLevel[] = ['easy', 'medium', 'medium', 'hard'];
+  const difficulties: DifficultyLevel[] = ['hard', 'medium', 'hard', 'medium', 'hard', 'easy'];
   const difficulty = difficulties[index % difficulties.length];
   const errorType = ERROR_TYPES[(index + 2) % ERROR_TYPES.length];
-  const chapOffset = Math.max(1, ALL_55_CHAPTERS.findIndex((c) => c.code === meta.code) + 1);
-  const n = index + 1;
-  const a = 2 + n + chapOffset;
-  const b = 2 + ((n + chapOffset) % 7);
+  const k = 2 + (index % 4);
 
+  if (meta.code === 'MAT-QUD') {
+    // Quadratic Equations ONLY in MAT-QUD
+    if (type === 'mcq') {
+      const qArchetypes = [
+        {
+          cat: 'Location of Roots Inequalities',
+          q: `In [${meta.chapter}], find the complete set of real values of parameter $a$ for which both roots of $x^2 - (a - ${k})x + a = 0$ are real and strictly greater than $2$.`,
+          ans: `$a \\in [${k * 2 + 5}, ${k * 2 + 6})$`,
+          d: [`$a \\in (${k * 2 + 5}, \\infty)$`, `$a \\in (2, ${k * 2 + 5}]$`, `$a \\in [4, ${k * 2 + 5})$`] as [string, string, string],
+          sol: `Require $\\Delta \\ge 0$, vertex $> 2$, and $f(2) > 0$. Intersection gives $a \\in [${k * 2 + 5}, ${k * 2 + 6})$.`,
+        },
+        {
+          cat: 'Common Roots Elimination',
+          q: `If the quadratic equations $x^2 + a x + ${k} = 0$ and $x^2 + ${k} x + a = 0$ have a common non-zero real root in [${meta.chapter}], find the value of $(a + ${k})^2$.`,
+          ans: `1`,
+          d: [`$${k * k}$`, `$0$`, `$4$`] as [string, string, string],
+          sol: `Subtracting the equations: $(a - ${k})x + (${k} - a) = 0 \\implies (a - ${k})(x - 1) = 0$. Since $a \\ne ${k}$, $x = 1$. Substituting into $x^2 + ax + ${k} = 0$: $1 + a + ${k} = 0 \\implies a = -(${k} + 1)$. Then $(a + ${k})^2 = (-1)^2 = 1$.`,
+        },
+        {
+          cat: 'Rational Expression Range Analysis',
+          q: `In [${meta.chapter}], if $x$ is real, what is the range of values taken by the rational function $f(x) = \\frac{x^2 - 2x + ${k * 2}}{x^2 + 2x + ${k * 2}}$?`,
+          ans: `Bounded closed interval in $\\mathbb{R}^+$`,
+          d: [`$(0, \\infty)$`, `$[-1, 1]$`, `$[0, 1]$`] as [string, string, string],
+          sol: `Set $y = \\frac{x^2 - 2x + 2k}{x^2 + 2x + 2k} \\implies (y - 1)x^2 + 2(y + 1)x + 2k(y - 1) = 0$. For real $x$, $\\Delta \\ge 0$. Solving gives the bounded range.`,
+        },
+        {
+          cat: 'Modulus Roots & Intersection Multiplicity',
+          q: `In [${meta.chapter}], find the number of distinct real roots of the equation $|x^2 - ${k * 2}x + ${k * 2 - 1}| = ${k}$.`,
+          ans: `$4$ distinct real roots`,
+          d: [`$2$ distinct real roots`, `$3$ distinct real roots`, `$0$ real roots`] as [string, string, string],
+          sol: `The vertex of the inverted parabola lies at $(k, -1)$ with height $1$. The horizontal line $y = ${k}$ intersects the outer branches twice and the inner reflected branch twice, giving exactly $4$ real roots.`,
+        },
+        {
+          cat: 'Symmetric Roots & Higher Powers',
+          q: `Let $\\alpha$ and $\\beta$ be the roots of $x^2 - ${k + 2}x + 1 = 0$ in [${meta.chapter}]. What is the exact value of $\\alpha^3 + \\beta^3$?`,
+          ans: `$${(k + 2) ** 3 - 3 * (k + 2)}$`,
+          d: [`$${(k + 2) ** 3}$`, `$${(k + 2) ** 3 - (k + 2)}$`, `$${(k + 2) ** 2 - 2}$`] as [string, string, string],
+          sol: `$\\alpha + \\beta = ${k + 2}$ and $\\alpha\\beta = 1$. $\\alpha^3 + \\beta^3 = (\\alpha + \\beta)^3 - 3\\alpha\\beta(\\alpha + \\beta) = (${k + 2})^3 - 3(1)(${k + 2}) = ${(k + 2) ** 3 - 3 * (k + 2)}$.`,
+        },
+        {
+          cat: 'Transformation of Roots Formulations',
+          q: `In [${meta.chapter}], if $\\alpha$ and $\\beta$ are the roots of $a x^2 + b x + c = 0$, which equation has roots $\\frac{1}{\\alpha + ${k}}$ and $\\frac{1}{\\beta + ${k}}$?`,
+          ans: `$c y^2 + (b - 2 a k) y + a = 0$ with shift substitution`,
+          d: [`$a y^2 + b y + c = 0$`, `$c y^2 - b y + a = 0$`, `$a k^2 y^2 + b y + c = 0$`] as [string, string, string],
+          sol: `Let $y = \\frac{1}{x + k} \\implies x = \\frac{1}{y} - k = \\frac{1 - k y}{y}$. Substituting into $a x^2 + b x + c = 0$ yields the transformed equation in $y$.`,
+        },
+      ];
+
+      const item = qArchetypes[index % qArchetypes.length];
+      const { options, correctAnswer } = makeOptionSet(item.ans, item.d, index);
+      return {
+        topic,
+        category: `${meta.chapter} :: ${item.cat}`,
+        difficulty,
+        question: item.q,
+        options,
+        correctAnswer,
+        solution: item.sol,
+        explanation: `Solve using quadratic theory in ${meta.chapter}.`,
+        possibleErrorType: errorType,
+        image: null,
+      };
+    } else {
+      const intArchetypes = [
+        {
+          cat: 'Newton Sums Recurrence',
+          q: `Let $\\alpha$ and $\\beta$ be the roots of $x^2 - 6x - 2 = 0$ in [${meta.chapter}]. If $a_n = \\alpha^n - \\beta^n$ for $n \\ge 1$, evaluate the integer value of $\\frac{a_{10} - 2 a_8}{2 a_9}$.`,
+          ans: 3,
+          sol: `$\\alpha^2 - 6\\alpha - 2 = 0 \\implies a_{10} - 6a_9 - 2a_8 = 0 \\implies a_{10} - 2a_8 = 6a_9 \\implies \\frac{a_{10} - 2a_8}{2a_9} = 3$.`,
+        },
+        {
+          cat: 'Number of Integral Values of Parameter',
+          q: `Find the number of integral values of parameter $k$ for which both roots of $x^2 - 2 k x + k^2 - 1 = 0$ lie strictly between $-2$ and $4$ in [${meta.chapter}].`,
+          ans: 3,
+          sol: `Roots are $x = k \\pm 1$. We need $-2 < k - 1$ and $k + 1 < 4 \\implies -1 < k < 3$. The integral values are $k \\in \\{0, 1, 2\\}$ (total $3$).`,
+        },
+        {
+          cat: 'Minimum Value of Quadratic on Bounded Interval',
+          q: `Find the minimum value of $f(x) = x^2 - 4x + 9$ on the closed interval $[0, 5]$ in [${meta.chapter}].`,
+          ans: 5,
+          sol: `Vertex is at $x = -b/(2a) = 2 \\in [0, 5]$. Minimum value is $f(2) = 4 - 8 + 9 = 5$.`,
+        },
+        {
+          cat: 'Count of Real Roots for Absolute Quadratic',
+          q: `Find the total number of distinct real solutions to the equation $(x - 1)^2 - 5|x - 1| + 6 = 0$ in [${meta.chapter}].`,
+          ans: 4,
+          sol: `Let $t = |x - 1| \\ge 0$. Equation is $t^2 - 5t + 6 = 0 \\implies (t - 2)(t - 3) = 0 \\implies t = 2$ or $t = 3$. For $t = 2$, $|x - 1| = 2 \\implies x = 3, -1$. For $t = 3$, $|x - 1| = 3 \\implies x = 4, -2$. Total $= 4$ real solutions.`,
+        },
+        {
+          cat: 'Common Root Magnitude Evaluation',
+          q: `If $x^2 + 3x + 2 = 0$ and $x^2 + 5x + 6 = 0$ have a common root $\\alpha$ in [${meta.chapter}], evaluate the positive integer value of $\\alpha^2$.`,
+          ans: 4,
+          sol: `Roots of $x^2 + 3x + 2 = 0$ are $-1, -2$. Roots of $x^2 + 5x + 6 = 0$ are $-2, -3$. Common root is $\\alpha = -2$. Then $\\alpha^2 = (-2)^2 = 4$.`,
+        },
+        {
+          cat: 'Discriminant Zero Tangency Condition',
+          q: `For how many integer values of $c$ does the line $y = 2x + c$ touch the parabola $y = x^2 + 4x + 5$ in [${meta.chapter}]?`,
+          ans: 1,
+          sol: `$x^2 + 4x + 5 = 2x + c \\implies x^2 + 2x + (5 - c) = 0$. For tangency $\\Delta = 0 \\implies 4 - 4(5 - c) = 0 \\implies 4 - 20 + 4c = 0 \\implies 4c = 16 \\implies c = 4$. Exactly $1$ integer value.`,
+        },
+      ];
+
+      const item = intArchetypes[index % intArchetypes.length];
+      return {
+        topic,
+        category: `${meta.chapter} :: ${item.cat}`,
+        difficulty: 'hard' as DifficultyLevel,
+        question: item.q,
+        correctAnswer: item.ans,
+        solution: item.sol,
+        explanation: `Solve using quadratic conditions in ${meta.chapter}.`,
+        possibleErrorType: 'Calculation mistake' as ErrorCategory,
+        image: null,
+      };
+    }
+  }
+
+  // Non-quadratic Mathematics chapters
   if (type === 'mcq') {
-    const categories = [
-      'Symmetric Functions & Vieta Relations',
-      'Discriminant & Nature of Roots',
-      'Common Roots & Parameter Elimination',
-      'Location of Roots on Real Axis',
-      'Transformation of Equations',
-      'Rational Range & Extremum Analysis',
-      'Functional Equations & Composition',
-      'Telescoping Series & Recurrence',
-      'Differential Rate & Tangent Locus',
-      'Definite Integration & Symmetry',
-      'Linear Systems & Determinant Rank',
-      'Combinatorial Counting & Probability',
-    ];
-    const category = categories[Math.floor(index / 2) % categories.length];
+    let q = '';
+    let ans = '';
+    let d: [string, string, string] = ['', '', ''];
+    let sol = '';
+    const cat = `${meta.chapter} :: Advanced Mathematical Structure (Type ${index % 5 + 1})`;
 
-    const stems: Array<{ q: string; ans: string; d: [string, string, string]; sol: string }> = [
-      {
-        q: `If $\\alpha$ and $\\beta$ are the roots of $x^2 - ${a + b}x + ${a * b} = 0$, what is the value of $\\alpha^2 + \\beta^2$?`,
-        ans: `$${a * a + b * b}$`,
-        d: [`$${(a + b) * (a + b)}$`, `$${a * a + b * b - 2}$`, `$${a * a + b * b + 4}$`],
-        sol: `$\\alpha + \\beta = ${a + b}$ and $\\alpha\\beta = ${a * b}$, so $\\alpha^2 + \\beta^2 = (${a + b})^2 - 2(${a * b}) = ${a * a + b * b}$.`,
-      },
-      {
-        q: `If $r_1$ and $r_2$ are the roots of the equation $x^2 - ${a}x + ${b} = 0$, evaluate the sum $\\frac{1}{r_1} + \\frac{1}{r_2}$.`,
-        ans: `$\\frac{${a}}{${b}}$`,
-        d: [`$\\frac{${b}}{${a}}$`, `$\\frac{${a * a}}{${b}}$`, `$-\\frac{${a}}{${b}}$`],
-        sol: `$\\frac{1}{r_1} + \\frac{1}{r_2} = \\frac{r_1 + r_2}{r_1 r_2} = \\frac{${a}}{${b}}$.`,
-      },
-      {
-        q: `For what positive value of the real parameter $k$ does the equation $x^2 - k x + ${b * b} = 0$ have equal real roots?`,
-        ans: `$${2 * b}$`,
-        d: [`$${b}$`, `$${b * b}$`, `$${4 * b}$`],
-        sol: `Setting discriminant $\\Delta = k^2 - 4(${b * b}) = 0$ for $k > 0$ gives $k = ${2 * b}$.`,
-      },
-      {
-        q: `How many distinct real roots does the equation $x^4 - ${a + b}x^2 + ${a * b} = 0$ possess?`,
-        ans: `$4$`,
-        d: [`$2$`, `$0$`, `$3$`],
-        sol: `Factoring $(x^2 - ${a})(x^2 - ${b}) = 0$ with $${a} \\neq ${b} > 0$ yields $4$ distinct real roots $\\pm\\sqrt{${a}}, \\pm\\sqrt{${b}}$.`,
-      },
-      {
-        q: `If the equations $x^2 - ${a + 1}x + ${a} = 0$ and $x^2 - ${b + 1}x + k = 0$ share the common root $x = 1$, find the value of $k$.`,
-        ans: `$${b}$`,
-        d: [`$${b + 1}$`, `$${a}$`, `$${a + b}$`],
-        sol: `Substituting the common root $x = 1$ into the second equation gives $1 - (${b + 1}) + k = 0 \\implies k = ${b}$.`,
-      },
-      {
-        q: `If the equations $2x^2 + ${2 * a}x + ${2 * b} = 0$ and $x^2 + p x + q = 0$ have both roots in common, find the value of $p + q$.`,
-        ans: `$${a + b}$`,
-        d: [`$${2 * (a + b)}$`, `$${a * b}$`, `$${Math.abs(a - b)}$`],
-        sol: `Proportionality of coefficients $\\frac{1}{2} = \\frac{p}{${2 * a}} = \\frac{q}{${2 * b}} \\implies p = ${a},\\; q = ${b} \\implies p + q = ${a + b}$.`,
-      },
-      {
-        q: `Find the largest integral value of $m$ for which the number $x = ${b}$ lies strictly between the two real roots of $f(x) = x^2 - ${2 * b}x + m = 0$.`,
-        ans: `$${b * b - 1}$`,
-        d: [`$${b * b}$`, `$${b * b + 1}$`, `$${2 * b - 1}$`],
-        sol: `For $x = ${b}$ to lie strictly between the roots, $f(${b}) < 0 \\implies ${b}^2 - 2(${b}^2) + m < 0 \\implies m < ${b * b}$, so largest integer is $${b * b - 1}$.`,
-      },
-      {
-        q: `At what value of $x$ does the real-valued function $y = x^2 - ${2 * a}x + ${b}$ attain its global minimum?`,
-        ans: `$x = ${a}$`,
-        d: [`$x = -${a}$`, `$x = ${2 * a}$`, `$x = ${b}$`],
-        sol: `Vertex abscissa $x_v = -\\frac{-${2 * a}}{2(1)} = ${a}$.`,
-      },
-      {
-        q: `If $\\alpha, \\beta$ are the roots of $x^2 - ${a}x + ${b} = 0$, what is the monic quadratic equation whose roots are $\\alpha + 1$ and $\\beta + 1$?`,
-        ans: `$x^2 - ${a + 2}x + ${a + b + 1} = 0$`,
-        d: [`$x^2 - ${a}x + ${b + 1} = 0$`, `$x^2 - ${a + 1}x + ${a + b} = 0$`, `$x^2 - ${a - 2}x + ${b - a + 1} = 0$`],
-        sol: `Replacing $x \\to x - 1$ gives $(x - 1)^2 - ${a}(x - 1) + ${b} = x^2 - ${a + 2}x + ${a + b + 1} = 0$.`,
-      },
-      {
-        q: `If one root of $x^2 + p x + q = 0$ (where $p, q \\in \\mathbb{Q}$) is $${a} + \\sqrt{3}$, what is the rational coefficient $p$?`,
-        ans: `$-${2 * a}$`,
-        d: [`$+${2 * a}$`, `$${a * a - 3}$`, `$-${a}$`],
-        sol: `Conjugate surd roots are $${a} \\pm \\sqrt{3}$, so sum of roots $= -p = ${2 * a} \\implies p = -${2 * a}$.`,
-      },
-      {
-        q: `Determine the minimum value of the expression $E(x) = x^2 - ${2 * b}x + ${b * b + a}$ over all $x \\in \\mathbb{R}$.`,
-        ans: `$${a}$`,
-        d: [`$${b * b + a}$`, `$0$`, `$${b}$`],
-        sol: `Completing the square gives $E(x) = (x - ${b})^2 + ${a} \\ge ${a}$.`,
-      },
-      {
-        q: `For $x > 0$, find the minimum value of $S(x) = x + \\frac{${a * a}}{x}$.`,
-        ans: `$${2 * a}$`,
-        d: [`$${a}$`, `$${a * a}$`, `$${a + 1}$`],
-        sol: `By AM-GM inequality, $x + \\frac{${a}^2}{x} \\ge 2\\sqrt{x \\cdot \\frac{${a}^2}{x}} = ${2 * a}$.`,
-      },
-      {
-        q: `Let $f(x) = ${a}x + ${b}$ and $g(x) = 2x - 1$ for $x \\in \\mathbb{R}$. Evaluate $(f \\circ g)(2)$.`,
-        ans: `$${3 * a + b}$`,
-        d: [`$${2 * a + b - 1}$`, `$${4 * a + b}$`, `$${3 * (a + b)}$`],
-        sol: `$g(2) = 3$, and $f(g(2)) = f(3) = 3(${a}) + ${b} = ${3 * a + b}$.`,
-      },
-      {
-        q: `If a function $f : \\mathbb{R} \\to \\mathbb{R}$ satisfies $f(x) + 2f(1 - x) = ${3 * a}x$ for all $x \\in \\mathbb{R}$, find $f(1)$.`,
-        ans: `$-${a}$`,
-        d: [`$+${a}$`, `$${2 * a}$`, `$0$`],
-        sol: `At $x = 1$: $f(1) + 2f(0) = ${3 * a}$. At $x = 0$: $f(0) + 2f(1) = 0 \\implies f(0) = -2f(1)$. Thus $-3f(1) = ${3 * a} \\implies f(1) = -${a}$.`,
-      },
-      {
-        q: `Let $\\alpha$ and $\\beta$ be the roots of $x^2 - ${a}x + ${b} = 0$. Evaluate $S_3 = \\alpha^3 + \\beta^3$.`,
-        ans: `$${a * (a * a - 3 * b)}$`,
-        d: [`$${a * a * a - b}$`, `$${a * (a * a - 2 * b)}$`, `$${a * a - 3 * b}$`],
-        sol: `$S_1 = ${a}$, $S_2 = ${a * a - 2 * b}$, and by Newton's recurrence $S_3 = ${a}S_2 - ${b}S_1 = ${a * (a * a - 3 * b)}$.`,
-      },
-      {
-        q: `Evaluate the finite sum $\\sum_{r=1}^{${a}} \\left(\\frac{1}{r} - \\frac{1}{r+1}\\right)$.`,
-        ans: `$\\frac{${a}}{${a + 1}}$`,
-        d: [`$\\frac{1}{${a + 1}}$`, `$\\frac{${a - 1}}{${a}}$`, `$\\frac{${a + 1}}{${a}}$`],
-        sol: `Telescoping cancellation leaves $1 - \\frac{1}{${a + 1}} = \\frac{${a}}{${a + 1}}$.`,
-      },
-      {
-        q: `Find the slope of the tangent to the curve $y = x^3 - ${a}x^2 + ${b}$ at the point where $x = 2$.`,
-        ans: `$${12 - 4 * a}$`,
-        d: [`$${12 - 2 * a}$`, `$${8 - 4 * a + b}$`, `$${6 - 2 * a}$`],
-        sol: `$\\frac{dy}{dx} = 3x^2 - 2(${a})x$. At $x = 2$, slope $= 12 - 4(${a}) = ${12 - 4 * a}$.`,
-      },
-      {
-        q: `At what abscissa $x$ is the normal to the curve $y = x^2 - ${2 * b}x$ parallel to the $y$-axis?`,
-        ans: `$x = ${b}$`,
-        d: [`$x = -${b}$`, `$x = ${2 * b}$`, `$x = 0$`],
-        sol: `Normal is parallel to the $y$-axis when tangent is horizontal: $y'(x) = 2x - ${2 * b} = 0 \\implies x = ${b}$.`,
-      },
-      {
-        q: `Evaluate the definite integral $I = \\int_0^{${2 * a}} \\frac{\\sqrt{x}}{\\sqrt{x} + \\sqrt{${2 * a} - x}}\\,dx$.`,
-        ans: `$${a}$`,
-        d: [`$${2 * a}$`, `$\\frac{${a}}{2}$`, `$0$`],
-        sol: `Using $\\int_0^a f(x)\\,dx = \\int_0^a f(a-x)\\,dx$, adding $2I = \\int_0^{${2 * a}} 1\\,dx = ${2 * a} \\implies I = ${a}$.`,
-      },
-      {
-        q: `Find the area of the region bounded by the line $y = ${b}x$, the $x$-axis, and the vertical line $x = 2$.`,
-        ans: `$${2 * b}$`,
-        d: [`$${4 * b}$`, `$${b}$`, `$${b * b}$`],
-        sol: `Area $= \\int_0^2 ${b}x\\,dx = \\left[ \\frac{${b}}{2}x^2 \\right]_0^2 = ${2 * b}$.`,
-      },
-      {
-        q: `For what value of $\\lambda$ is the matrix $A = \\begin{pmatrix} ${a} & ${b} \\\\ 2 & \\lambda \\end{pmatrix}$ singular?`,
-        ans: `$\\frac{${2 * b}}{${a}}$`,
-        d: [`$\\frac{${a}}{${2 * b}}$`, `$-\\frac{${2 * b}}{${a}}$`, `$${2 * a * b}$`],
-        sol: `$\\det A = ${a}\\lambda - 2(${b}) = 0 \\implies \\lambda = \\frac{${2 * b}}{${a}}$.`,
-      },
-      {
-        q: `If $A$ is a $3 \\times 3$ non-singular matrix with determinant $|A| = ${b}$, what is the value of $|\\text{adj}(A)|$?`,
-        ans: `$${b * b}$`,
-        d: [`$${b}$`, `$${b * b * b}$`, `$${3 * b}$`],
-        sol: `For an $n \\times n$ matrix, $|\\text{adj}(A)| = |A|^{n-1} = ${b}^{3-1} = ${b * b}$.`,
-      },
-      {
-        q: `How many distinct $2$-element subsets can be formed from a set containing $${a + 2}$ distinct elements?`,
-        ans: `$${((a + 2) * (a + 1)) / 2}$`,
-        d: [`$${(a + 2) * (a + 1)}$`, `$${a * (a + 1) / 2}$`, `$${2 * (a + 2)}$`],
-        sol: `$\\binom{${a + 2}}{2} = \\frac{(${a + 2})(${a + 1})}{2} = ${((a + 2) * (a + 1)) / 2}$.`,
-      },
-      {
-        q: `Two independent events $E_1$ and $E_2$ have probabilities $P(E_1) = \\frac{1}{${b}}$ and $P(E_2) = \\frac{1}{2}$. Find $P(E_1 \\cap E_2)$.`,
-        ans: `$\\frac{1}{${2 * b}}$`,
-        d: [`$\\frac{${b + 2}}{${2 * b}}$`, `$\\frac{${b + 1}}{${2 * b}}$`, `$\\frac{2}{${b}}$`],
-        sol: `For independent events, $P(E_1 \\cap E_2) = P(E_1)P(E_2) = \\frac{1}{${b}} \\times \\frac{1}{2} = \\frac{1}{${2 * b}}$.`,
-      },
-    ];
+    switch (meta.code) {
+      case 'MAT-SRF':
+        q = `If a function $f: \\mathbb{R} \\setminus \\{0\\} \\to \\mathbb{R}$ in [${meta.chapter}] satisfies the functional equation $f(x) + 2 f\\left(\\frac{1}{x}\\right) = 3x$, what is the value of $f(2)$?`;
+        ans = `$-1$`;
+        d = [`$1$`, `$3$`, `$-\\frac{1}{2}$`];
+        sol = `At $x = 2$: $f(2) + 2f(1/2) = 6$. At $x = 1/2$: $f(1/2) + 2f(2) = 3/2 \\implies 2f(1/2) + 4f(2) = 3$. Subtracting the first equation: $3f(2) = 3 - 6 = -3 \\implies f(2) = -1$.`;
+        break;
 
-    const item = stems[index % stems.length];
-    const { options, correctAnswer } = makeOptionSet(item.ans, item.d, index);
+      case 'MAT-CMP':
+        q = `In [${meta.chapter}], if $|z - 3| = 2 |z + 3|$ for a complex number $z = x + iy$, what is the locus of $z$ in the complex Argand plane?`;
+        ans = `A circle with center $(-5, 0)$ and radius $4$`;
+        d = [`A circle with center $(5, 0)$ and radius $4$`, `A straight line parallel to the imaginary axis`, `An ellipse with foci at $(3, 0)$ and $(-3, 0)$`];
+        sol = `Squaring: $(x - 3)^2 + y^2 = 4[(x + 3)^2 + y^2] \\implies x^2 - 6x + 9 + y^2 = 4(x^2 + 6x + 9 + y^2) \\implies 3x^2 + 3y^2 + 30x + 27 = 0 \\implies x^2 + y^2 + 10x + 9 = 0 \\implies (x + 5)^2 + y^2 = 16$. This is an Apollonius circle centered at $(-5, 0)$ with radius $4$.`;
+        break;
+
+      case 'MAT-MTX':
+        q = `Let $A = \\begin{pmatrix} 1 & 2 \\\\ 3 & 4 \\end{pmatrix}$ in [${meta.chapter}]. By the Cayley-Hamilton theorem, $A^2 - 5A - 2I = 0$. What is the inverse matrix $A^{-1}$ expressed in terms of $A$ and $I$?`;
+        ans = `$\\frac{1}{2}(A - 5I)$`;
+        d = [`$\\frac{1}{2}(5I - A)$`, `$\\frac{1}{5}(A - 2I)$`, `$2(A - 5I)$`];
+        sol = `Multiplying $A^2 - 5A - 2I = 0$ by $A^{-1}$ yields $A - 5I - 2A^{-1} = 0 \\implies 2A^{-1} = A - 5I \\implies A^{-1} = \\frac{1}{2}(A - 5I)$.`;
+        break;
+
+      case 'MAT-DET':
+        q = `In [${meta.chapter}], consider the system of linear equations:
+$x + y + z = 6,\\; x + 2y + 3z = 10,\\; x + 2y + \\lambda z = \\mu$.
+For what values of parameters $\\lambda$ and $\\mu$ does this system have infinitely many solutions?`;
+        ans = `$\\lambda = 3$ and $\\mu = 10$`;
+        d = [`$\\lambda = 3$ and $\\mu \\ne 10$`, `$\\lambda \\ne 3$ and $\\mu = 10$`, `$\\lambda = 2$ and $\\mu = 8$`];
+        sol = `Coefficient determinant is $\\Delta = \\begin{vmatrix} 1 & 1 & 1 \\\\ 1 & 2 & 3 \\\\ 1 & 2 & \\lambda \\end{vmatrix} = \\lambda - 3$. For infinite solutions, $\\Delta = 0 \\implies \\lambda = 3$. With $\\lambda = 3$, the third equation becomes identical to the second only if $\\mu = 10$.`;
+        break;
+
+      case 'MAT-PNC':
+        q = `In [${meta.chapter}], four letters are to be placed randomly into four directed envelopes. How many permutations exist such that exactly two letters are placed in the correct envelopes while the other two letters are placed into incorrect envelopes?`;
+        ans = `$6$`;
+        d = [`$12$`, `$8$`, `$4$`];
+        sol = `Number of ways to choose the two correctly placed envelopes is $\\binom{4}{2} = 6$. The remaining 2 letters must be deranged: $D_2 = 2!(1 - 1 + 1/2!) = 1$. Total outcomes $= 6 \\times 1 = 6$.`;
+        break;
+
+      case 'MAT-BIN':
+        q = `What is the remainder when $7^{103}$ is divided by $25$ in [${meta.chapter}]?`;
+        ans = `$18$`;
+        d = [`$7$`, `$1$`, `$14$`];
+        sol = `$7^2 = 49 = 50 - 1 = 2(25) - 1$. Then $7^{103} = 7 \\times (7^2)^{51} = 7 \\times (50 - 1)^{51} = 7 \\times (25k - 1) = 25k' - 7 = 25(k' - 1) + 18$. The remainder is $18$.`;
+        break;
+
+      case 'MAT-SNS':
+        q = `Find the sum of the infinite arithmetico-geometric series (AGP) in [${meta.chapter}]:
+$$S = 1 + \\frac{2}{3} + \\frac{3}{3^2} + \\frac{4}{3^3} + \\dots$$`;
+        ans = `$\\frac{9}{4}$`;
+        d = [`$\\frac{3}{2}$`, `$\\frac{9}{2}$`, `$2$`];
+        sol = `$S = 1 + \\frac{2}{3} + \\frac{3}{9} + \\dots$ and $\\frac{1}{3}S = \\frac{1}{3} + \\frac{2}{9} + \\dots$. Subtracting gives $\\frac{2}{3}S = 1 + \\frac{1}{3} + \\frac{1}{9} + \\dots = \\frac{1}{1 - 1/3} = \\frac{3}{2} \\implies S = \\frac{3}{2} \\times \\frac{3}{2} = \\frac{9}{4}$.`;
+        break;
+
+      case 'MAT-LCD':
+        q = `Evaluate the indeterminate limit in [${meta.chapter}]:
+$$L = \\lim_{x \\to 0} \\left(\\frac{\\sin x}{x}\\right)^{1/x^2}$$`;
+        ans = `$e^{-1/6}$`;
+        d = [`$e^{-1/3}$`, `$1$`, `$e^{-1/2}$`];
+        sol = `Form is $1^\\infty$. $L = \\exp\\left(\\lim_{x \\to 0} \\frac{\\frac{\\sin x}{x} - 1}{x^2}\\right) = \\exp\\left(\\lim_{x \\to 0} \\frac{\\sin x - x}{x^3}\\right)$. Taylor expansion gives $\\sin x = x - \\frac{x^3}{6} + O(x^5) \\implies \\lim \\frac{-x^3/6}{x^3} = -\\frac{1}{6}$. Hence $L = e^{-1/6}$.`;
+        break;
+
+      case 'MAT-INT':
+        q = `Evaluate the definite integral using King's property in [${meta.chapter}]:
+$$I = \\int_0^{\\pi} \\frac{x \\sin x}{1 + \\cos^2 x}\\,dx$$`;
+        ans = `$\\frac{\\pi^2}{4}$`;
+        d = [`$\\frac{\\pi^2}{2}$`, `$\\pi^2$`, `$\\frac{\\pi}{4}$`];
+        sol = `Applying King's property $\\int_0^a f(x)dx = \\int_0^a f(a-x)dx$: $I = \\int_0^\\pi \\frac{(\\pi - x)\\sin x}{1 + \\cos^2 x}dx$. Adding gives $2I = \\pi \\int_0^\\pi \\frac{\\sin x}{1 + \\cos^2 x}dx$. Let $u = \\cos x, du = -\\sin x dx$: $2I = \\pi [-\\arctan u]_{-1}^1 = \\pi [\\frac{\\pi}{4} - (-\\frac{\\pi}{4})] = \\frac{\\pi^2}{2} \\implies I = \\frac{\\pi^2}{4}$.`;
+        break;
+
+      case 'MAT-DFE':
+        q = `Find the integrating factor $\\text{IF}$ and general solution of the linear differential equation in [${meta.chapter}]:
+$$\\frac{dy}{dx} + \\frac{2x}{1 + x^2} y = \\frac{1}{(1 + x^2)^2}$$`;
+        ans = `$y(1 + x^2) = \\arctan x + C$`;
+        d = [`$y(1 + x^2)^2 = x + C$`, `$y = (1 + x^2)\\arctan x + C$`, `$y = \\frac{\\arctan x + C}{1 + x}$`];
+        sol = `Here $P(x) = \\frac{2x}{1 + x^2}$. The integrating factor is $\\text{IF} = e^{\\int \\frac{2x}{1+x^2}dx} = e^{\\ln(1 + x^2)} = 1 + x^2$. Multiplying gives $\\frac{d}{dx}[y(1 + x^2)] = \\frac{1}{1 + x^2} \\implies y(1 + x^2) = \\int \\frac{dx}{1 + x^2} = \\arctan x + C$.`;
+        break;
+
+      case 'MAT-CRD':
+        q = `In [${meta.chapter}], find the equation of the radical axis of the two circles:
+$S_1: x^2 + y^2 - 4x - 6y + 4 = 0 \\quad \\text{and} \\quad S_2: x^2 + y^2 + 2x + 4y - 6 = 0$.`;
+        ans = `$6x + 10y - 10 = 0$`;
+        d = [`$2x + 2y - 10 = 0$`, `$6x - 2y + 10 = 0$`, `$3x + 5y + 5 = 0$`];
+        sol = `The equation of the radical axis is $S_1 - S_2 = 0 \\implies (-4x - 2x) + (-6y - 4y) + (4 - (-6)) = 0 \\implies -6x - 10y + 10 = 0 \\implies 6x + 10y - 10 = 0$.`;
+        break;
+
+      case 'MAT-CNC':
+        q = `If the line $y = m x + c$ is a common tangent to the parabola $y^2 = 16x$ and the circle $x^2 + y^2 = 8$ in [${meta.chapter}], what is the value of $m^2$?`;
+        ans = `$1$`;
+        d = [`$2$`, `$\\frac{1}{2}$`, `$4$`];
+        sol = `For parabola $y^2 = 4ax$ with $a = 4$, condition for tangency is $c = \\frac{a}{m} = \\frac{4}{m}$. For circle $x^2 + y^2 = r^2$ with $r = \\sqrt{8}$, condition is $c^2 = r^2(1 + m^2) = 8(1 + m^2)$. Equating gives $\\frac{16}{m^2} = 8(1 + m^2) \\implies 2 = m^2(1 + m^2) \\implies m^4 + m^2 - 2 = 0 \\implies (m^2 + 2)(m^2 - 1) = 0 \\implies m^2 = 1$.`;
+        break;
+
+      case 'MAT-3DG':
+        q = `Find the shortest distance between the two skew lines in [${meta.chapter}]:
+$$\\vec{r}_1 = (\\hat{i} + 2\\hat{j} + 3\\hat{k}) + \\lambda(\\hat{i} - 3\\hat{j} + 2\\hat{k}) \\quad \\text{and} \\quad \\vec{r}_2 = (4\\hat{i} + 5\\hat{j} + 6\\hat{k}) + \\mu(2\\hat{i} + 3\\hat{j} + \\hat{k})$$`;
+        ans = `$\\frac{3}{\\sqrt{19}}$`;
+        d = [`$\\frac{6}{\\sqrt{19}}$`, `$\\frac{9}{\\sqrt{19}}$`, `$0$`];
+        sol = `$\\vec{a}_2 - \\vec{a}_1 = 3\\hat{i} + 3\\hat{j} + 3\\hat{k}$. Cross product $\\vec{b}_1 \\times \\vec{b}_2 = \\begin{vmatrix} \\hat{i} & \\hat{j} & \\hat{k} \\\\ 1 & -3 & 2 \\\\ 2 & 3 & 1 \\end{vmatrix} = -9\\hat{i} + 3\\hat{j} + 9\\hat{k}$. Shortest distance $d = \\frac{|(\\vec{a}_2 - \\vec{a}_1)\\cdot(\\vec{b}_1 \\times \\vec{b}_2)|}{|\\vec{b}_1 \\times \\vec{b}_2|} = \\frac{|-27 + 9 + 27|}{\\sqrt{81 + 9 + 81}} = \\frac{9}{\\sqrt{171}} = \\frac{9}{3\\sqrt{19}} = \\frac{3}{\\sqrt{19}}$.`;
+        break;
+
+      case 'MAT-VEC':
+        q = `Let $\\vec{a}, \\vec{b}, \\vec{c}$ be three non-coplanar vectors in [${meta.chapter}]. What is the simplified value of the scalar expression:
+$$[(\\vec{a} + \\vec{b}) \\; (\\vec{b} + \\vec{c}) \\; (\\vec{c} + \\vec{a})]$$`;
+        ans = `$2 [\\vec{a} \\; \\vec{b} \\; \\vec{c}]$`;
+        d = [`$[\\vec{a} \\; \\vec{b} \\; \\vec{c}]$`, `$0$`, `$4 [\\vec{a} \\; \\vec{b} \\; \\vec{c}]$`];
+        sol = `Expand the scalar triple product: $(\\vec{a} + \\vec{b}) \\cdot [(\\vec{b} + \\vec{c}) \\times (\\vec{c} + \\vec{a})] = (\\vec{a} + \\vec{b}) \\cdot [\\vec{b} \\times \\vec{c} + \\vec{b} \\times \\vec{a} + \\vec{c} \\times \\vec{a}] = [\\vec{a} \\; \\vec{b} \\; \\vec{c}] + [\\vec{b} \\; \\vec{c} \\; \\vec{a}] = 2 [\\vec{a} \\; \\vec{b} \\; \\vec{c}]$.`;
+        break;
+
+      case 'MAT-PRB':
+        q = `In [${meta.chapter}], an urn contains $4$ white and $6$ black balls. A second urn contains $5$ white and $5$ black balls. One ball is transferred at random from the first urn to the second urn, and then a ball is drawn from the second urn. What is the probability that the drawn ball is white?`;
+        ans = `$\\frac{27}{55}$`;
+        d = [`$\\frac{1}{2}$`, `$\\frac{23}{55}$`, `$\\frac{29}{55}$`];
+        sol = `By total probability: $P(W) = P(W|W_1)P(W_1) + P(W|B_1)P(B_1) = \\left(\\frac{6}{11}\\right)\\left(\\frac{4}{10}\\right) + \\left(\\frac{5}{11}\\right)\\left(\\frac{6}{10}\\right) = \\frac{24 + 30}{110} = \\frac{54}{110} = \\frac{27}{55}$.`;
+        break;
+
+      case 'MAT-TRG':
+        q = `Evaluate the exact value of the expression in [${meta.chapter}]:
+$$\\tan\\left(2 \\arctan\\left(\\frac{1}{3}\\right) + \\arctan\\left(\\frac{1}{7}\\right)\\right)$$`;
+        ans = `$1$`;
+        d = [`$\\frac{1}{\\sqrt{3}}$`, `$\\sqrt{3}$`, `$\\frac{4}{3}$`];
+        sol = `$2 \\arctan(1/3) = \\arctan\\left(\\frac{2/3}{1 - 1/9}\\right) = \\arctan\\left(\\frac{2/3}{8/9}\\right) = \\arctan\\left(\\frac{3}{4}\\right)$. Then $\\arctan(3/4) + \\arctan(1/7) = \\arctan\\left(\\frac{3/4 + 1/7}{1 - (3/4)(1/7)}\\right) = \\arctan\\left(\\frac{25/28}{25/28}\\right) = \\arctan(1) = \\frac{\\pi}{4}$. Thus the tangent is $\\tan(\\pi/4) = 1$.`;
+        break;
+
+      default: // MAT-MRL
+        q = `Which of the following compound propositions is a logical tautology in [${meta.chapter}]?`;
+        ans = `$(p \\implies q) \\lor (q \\implies p)$`;
+        d = [`$(p \\land q) \\implies (p \\lor q)$ is false`, `$(p \\implies q) \\land (q \\implies p)$`, `$p \\land \\neg p$`];
+        sol = `$(p \\implies q) \\lor (q \\implies p) \\equiv (\\neg p \\lor q) \\lor (\\neg q \\lor p) \\equiv (\\neg p \\lor p) \\lor (\\neg q \\lor q) \\equiv T \\lor T \\equiv T$. It is always true regardless of the truth values of $p$ and $q$, making it a tautology.`;
+        break;
+    }
+
+    const { options, correctAnswer } = makeOptionSet(ans, d, index);
     return {
       topic,
-      category,
+      category: cat,
       difficulty,
-      question: item.q,
+      question: q,
       options,
       correctAnswer,
-      solution: item.sol,
-      explanation: `Apply ${category.toLowerCase()} techniques in ${meta.chapter} (${topic}).`,
+      solution: sol,
+      explanation: `Solve using rigorous mathematical proofs and transformations in ${meta.chapter}.`,
       possibleErrorType: errorType,
       image: null,
     };
   } else {
-    const intCategories = [
-      'Numerical Vieta & Root Sum',
-      'Numerical Discriminant Parameter',
-      'Numerical Extremum & Minimum Value',
-      'Numerical Function & Composite Value',
-      'Numerical Definite Integral & Area',
-      'Numerical Combinatorial & Determinant Value',
-    ];
-    const category = intCategories[index % intCategories.length];
-    const intStems: Array<{ q: string; ans: number; sol: string }> = [
-      {
-        q: `If $\\alpha, \\beta$ are the roots of $x^2 - ${a}x + ${b} = 0$, compute the integer value of $(\\alpha + \\beta)^2 - \\alpha\\beta$.`,
-        ans: a * a - b,
-        sol: `$(\\alpha + \\beta)^2 - \\alpha\\beta = ${a}^2 - ${b} = ${a * a - b}$.`,
-      },
-      {
-        q: `Find the positive constant $c$ for which the equation $x^2 - ${2 * a}x + c = 0$ has two equal real roots.`,
-        ans: a * a,
-        sol: `$\\Delta = (-${2 * a})^2 - 4c = 0 \\implies c = ${a * a}$.`,
-      },
-      {
-        q: `What is the minimum value of the polynomial $P(x) = (x - ${a})^2 + (x - ${a + 2})^2 + ${b}$ over $x \\in \\mathbb{R}$?`,
-        ans: b + 2,
-        sol: `Minimum occurs at midpoint $x = ${a + 1}$, giving $1^2 + (-1)^2 + ${b} = ${b + 2}$.`,
-      },
-      {
-        q: `If $f(x) = x^2 + ${a}x + ${b}$, evaluate $f(3) - f(1)$.`,
-        ans: 8 + 2 * a,
-        sol: `$f(3) - f(1) = (9 + 3(${a}) + ${b}) - (1 + ${a} + ${b}) = ${8 + 2 * a}$.`,
-      },
-      {
-        q: `Evaluate the definite integral $\\int_0^2 (3x^2 + ${2 * a}x + ${b})\\,dx$.`,
-        ans: 8 + 4 * a + 2 * b,
-        sol: `$\\left[ x^3 + ${a}x^2 + ${b}x \\right]_0^2 = 8 + 4(${a}) + 2(${b}) = ${8 + 4 * a + 2 * b}$.`,
-      },
-      {
-        q: `Evaluate the determinant $\\begin{vmatrix} ${a} & 1 \\\\ -${b} & 2 \\end{vmatrix}$.`,
-        ans: 2 * a + b,
-        sol: `$2(${a}) - (1)(-${b}) = ${2 * a + b}$.`,
-      },
-    ];
-    const item = intStems[index % intStems.length];
+    // Non-quadratic Mathematics Integers
+    let q = '';
+    let ans = 0;
+    let sol = '';
+
+    switch (meta.code) {
+      case 'MAT-MTX':
+        q = `Let $A$ be a $3 \\times 3$ invertible matrix with determinant $|A| = 2$ in [${meta.chapter}]. What is the integer value of $|\\text{adj}(\\text{adj}(A))|$?`;
+        ans = 16;
+        sol = `For an $n \\times n$ matrix, $|\\text{adj}(\\text{adj}(A))| = |A|^{(n-1)^2}$. For $n = 3$, $(3 - 1)^2 = 4$. Thus $|A|^4 = 2^4 = 16$.`;
+        break;
+
+      case 'MAT-INT':
+        q = `Find the integer area of the region bounded by the parabola $y = 3x^2$ and the horizontal line $y = 12$ in [${meta.chapter}].`;
+        ans = 32;
+        sol = `Intersection points: $3x^2 = 12 \\implies x^2 = 4 \\implies x = \\pm 2$. Due to symmetry about the y-axis, the enclosed area is $A = 2 \\int_0^2 (12 - 3x^2)\\,dx = 2 [12x - x^3]_0^2 = 2(24 - 8) = 2(16) = 32$.`;
+        break;
+
+      case 'MAT-VEC':
+        q = `If $\\vec{a} = \\hat{i} + \\hat{j} + \\hat{k}$, $\\vec{b} = \\hat{i} - \\hat{j} + \\hat{k}$, and $\\vec{c} = \\hat{i} + 2\\hat{j} - \\hat{k}$ in [${meta.chapter}], calculate the integer scalar triple product $[\\vec{a}\\; \\vec{b}\\; \\vec{c}]$.`;
+        ans = 4;
+        sol = `$[\\vec{a}\\; \\vec{b}\\; \\vec{c}] = \\begin{vmatrix} 1 & 1 & 1 \\\\ 1 & -1 & 1 \\\\ 1 & 2 & -1 \\end{vmatrix} = 1(1 - 2) - 1(-1 - 1) + 1(2 - (-1)) = -1 + 2 + 3 = 4$.`;
+        break;
+
+      default:
+        q = `Evaluate the integer value of the limit in [${meta.chapter}]:
+$$\\lim_{x \\to 0} \\frac{x - \\sin x}{x^3} \\times 6$$`;
+        ans = 1;
+        sol = `Using Taylor series $\\sin x = x - \\frac{x^3}{6} + O(x^5)$, we have $\\frac{x - \\sin x}{x^3} = \\frac{1}{6} + O(x^2) \\to \\frac{1}{6}$. Multiplied by $6$, the value is $1$.`;
+        break;
+    }
+
     return {
       topic,
-      category,
-      difficulty,
-      question: item.q,
-      correctAnswer: item.ans,
-      solution: item.sol,
-      explanation: `Apply ${category.toLowerCase()} in ${meta.chapter}.`,
+      category: `${meta.chapter} :: Quantitative Deduction`,
+      difficulty: 'hard' as DifficultyLevel,
+      question: q,
+      correctAnswer: ans,
+      solution: sol,
+      explanation: `Derive using rigorous mathematical theorems in ${meta.chapter}.`,
       possibleErrorType: 'Calculation mistake' as ErrorCategory,
       image: null,
     };
@@ -931,12 +949,14 @@ export function ensureQuestionBankSeeded(baseDir: string): void {
   fs.mkdirSync(chemistryDir, { recursive: true });
   fs.mkdirSync(mathDir, { recursive: true });
 
-  // Check if already seeded with v3 blind exam clean questions
-  const sampleCheckFile = path.join(mathDir, 'quadratic-equations.json');
+  const SCHEMA_VERSION = 'v6-hard-mode-authentic';
+
+  // Check if already seeded with v5 hard mode questions
+  const sampleCheckFile = path.join(chemistryDir, 'aldehydes-ketones-carboxylic-acids.json');
   if (fs.existsSync(sampleCheckFile)) {
     try {
       const sampleParsed = JSON.parse(fs.readFileSync(sampleCheckFile, 'utf-8'));
-      if (sampleParsed.schemaVersion === 'v3-blind-exam-clean') {
+      if (sampleParsed.schemaVersion === SCHEMA_VERSION) {
         return;
       }
     } catch {
@@ -971,9 +991,16 @@ export function ensureQuestionBankSeeded(baseDir: string): void {
         solution: qData.solution,
         explanation: qData.explanation,
         possibleErrorType: qData.possibleErrorType,
-        image: qData.image,
+        isReactionBased: (qData as any).isReactionBased || false,
+        image: (qData as any).image || null,
         source: 'question_bank',
-        tags: ['JEE Main', 'JEE Advanced', meta.chapter, qData.topic, qData.category],
+        tags: [
+          'JEE Main',
+          'JEE Advanced',
+          meta.chapter,
+          qData.topic,
+          (qData as any).isReactionBased ? 'reaction-based' : 'conceptual',
+        ],
       });
     }
 
@@ -998,9 +1025,16 @@ export function ensureQuestionBankSeeded(baseDir: string): void {
         solution: qData.solution,
         explanation: qData.explanation,
         possibleErrorType: qData.possibleErrorType,
+        isReactionBased: (qData as any).isReactionBased || false,
         image: null,
         source: 'question_bank',
-        tags: ['JEE Main', 'Numerical', meta.chapter, qData.topic, qData.category],
+        tags: [
+          'JEE Main',
+          'Numerical',
+          meta.chapter,
+          qData.topic,
+          (qData as any).isReactionBased ? 'reaction-based' : 'numerical',
+        ],
       });
     }
 
@@ -1021,7 +1055,7 @@ export function ensureQuestionBankSeeded(baseDir: string): void {
       filePath,
       JSON.stringify(
         {
-          schemaVersion: 'v3-blind-exam-clean',
+          schemaVersion: SCHEMA_VERSION,
           subject: meta.subject,
           chapter: meta.chapter,
           chapterCode: meta.code,

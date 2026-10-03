@@ -252,6 +252,8 @@ export class ScoringAndAnalyticsService {
       const prevIncorrectCount = prevHist?.incorrectCount || 0;
       const prevAttemptCount = prevHist?.attemptCount || 0;
       const prevCorrectCount = prevHist?.correctCount || 0;
+      const previousResult = prevHist?.lastResult || null;
+      const previousAnswer = prevHist?.lastAnswer || null;
 
       let newAttemptCount = prevAttemptCount;
       let newCorrectCount = prevCorrectCount;
@@ -408,6 +410,9 @@ export class ScoringAndAnalyticsService {
           repeatedMistakeCount: resultState === 'incorrect' ? newIncorrectCount : 0,
           previouslyIncorrectNowCorrected,
           masteryState,
+          previousResult,
+          previousAnswer,
+          attemptsTimeline: updatedRecord.attempts,
         },
       });
     }
@@ -523,6 +528,7 @@ export class ScoringAndAnalyticsService {
       userId: test.userId,
       title: test.title,
       mode: test.mode,
+      sourceAttemptId: test.sourceAttemptId,
       subjects: test.subjects,
       chaptersBySubject: test.chaptersBySubject,
       submittedAt,

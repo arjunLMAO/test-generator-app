@@ -40,6 +40,71 @@
   }
 }
 
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 260ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-card-reveal {
+  animation: cardReveal 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn-interactive {
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 160ms ease,
+              border-color 160ms ease,
+              box-shadow 160ms ease,
+              color 160ms ease;
+}
+
+.btn-interactive:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-interactive:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+}
+
+.btn-interactive:focus-visible {
+  outline: 2px solid #3B82F6;
+  outline-offset: 2px;
+}
+
+.surface-card {
+  background: linear-gradient(180deg, rgba(19, 28, 46, 0.92) 0%, rgba(13, 19, 32, 0.96) 100%);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.45);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;

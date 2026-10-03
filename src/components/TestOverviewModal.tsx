@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Clock, FileCheck, Play, ShieldCheck, X } from 'lucide-react';
+import { Check, Play, ShieldCheck, Sparkles, X } from 'lucide-react';
 import { SubjectName, TestMode } from '../types/jee';
 
 interface TestOverviewModalProps {
@@ -32,42 +32,45 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
   const handleLaunch = async () => {
     setIsGenerating(true);
     setGenerationStep(1);
-    await new Promise((r) => setTimeout(r, 220));
+    await new Promise((r) => setTimeout(r, 200));
     setGenerationStep(2);
-    await new Promise((r) => setTimeout(r, 220));
+    await new Promise((r) => setTimeout(r, 200));
     setGenerationStep(3);
-    await new Promise((r) => setTimeout(r, 180));
+    await new Promise((r) => setTimeout(r, 160));
     await onConfirmStart();
     setIsGenerating(false);
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-page-enter"
       role="dialog"
       aria-modal="true"
       aria-labelledby="pretest-title"
     >
-      <div className="w-full max-w-2xl rounded-xl bg-[#111827] border border-slate-800 shadow-2xl overflow-hidden">
+      <div className="w-full max-w-2xl rounded-2xl surface-card border border-slate-800 shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-5 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between">
-          <div>
-            <div className="text-xs font-mono text-blue-400">
-              {mode === TestMode.FULL_SYLLABUS
-                ? 'FULL SYLLABUS EXAMINATION'
-                : mode === TestMode.WRONG_QUESTION_RETEST
-                  ? 'DEDICATED MISTAKE RETEST'
-                  : 'CHAPTER-CONSTRAINED TEST'}
+          <div className="space-y-0.5">
+            <div className="text-xs font-semibold text-blue-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>
+                {mode === TestMode.FULL_SYLLABUS
+                  ? 'Full Syllabus Simulation'
+                  : mode === TestMode.WRONG_QUESTION_RETEST
+                    ? 'Targeted Mistake Retest'
+                    : 'Custom Chapter Test'}
+              </span>
             </div>
-            <h2 id="pretest-title" className="text-2xl font-display text-white mt-0.5">
-              JEE Test Overview
+            <h2 id="pretest-title" className="text-2xl sm:text-3xl font-display font-semibold text-white">
+              Ready to begin?
             </h2>
           </div>
           {!isGenerating && (
             <button
               type="button"
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -76,36 +79,44 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
         </div>
 
         {isGenerating ? (
-          /* Polished Test Generation Animation (Section 75) */
+          /* Polished Test Generation Animation (Part 6 & Part 37) */
           <div className="p-10 space-y-6">
-            <div className="text-center space-y-1">
-              <div className="text-xs font-mono text-blue-400">INITIALIZING EXAM ENVIRONMENT</div>
-              <h3 className="text-xl font-semibold text-white">Preparing Your Examination</h3>
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center mx-auto">
+              <div className="w-5 h-5 rounded-full border-2 border-blue-400 border-t-transparent animate-spin" />
             </div>
 
-            <div className="max-w-md mx-auto space-y-3 text-sm font-mono">
-              <div className="p-3.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
-                <span className="text-slate-200">
-                  SELECTING QUESTIONS ({selectedSubjects.join(' · ')})
+            <div className="text-center space-y-1.5">
+              <div className="text-xs font-semibold text-blue-400">Getting everything ready</div>
+              <h3 className="text-2xl sm:text-3xl font-display text-white">
+                Generating your test...
+              </h3>
+            </div>
+
+            <div className="max-w-md mx-auto space-y-3 text-sm">
+              <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                <span className="text-slate-200 font-medium">
+                  Selecting questions ({selectedSubjects.join(' · ')})...
                 </span>
                 <Check className="w-4 h-4 text-emerald-400" />
               </div>
 
               <div
-                className={`p-3.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between transition-opacity ${
+                className={`p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between transition-opacity duration-200 ${
                   generationStep >= 2 ? 'opacity-100' : 'opacity-40'
                 }`}
               >
-                <span className="text-slate-200">BALANCING CHAPTERS & DIFFICULTY</span>
+                <span className="text-slate-200 font-medium">
+                  Balancing difficulty & problem archetypes...
+                </span>
                 {generationStep >= 2 && <Check className="w-4 h-4 text-emerald-400" />}
               </div>
 
               <div
-                className={`p-3.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between transition-opacity ${
+                className={`p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between transition-opacity duration-200 ${
                   generationStep >= 3 ? 'opacity-100' : 'opacity-40'
                 }`}
               >
-                <span className="text-slate-200">VERIFYING ANSWER KEYS & LOCKING TIMER</span>
+                <span className="text-slate-200 font-medium">Starting exam clock...</span>
                 {generationStep >= 3 && <Check className="w-4 h-4 text-emerald-400" />}
               </div>
             </div>
@@ -113,25 +124,25 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
         ) : (
           <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
             {errorMessage && (
-              <div className="p-4 rounded-lg bg-red-950/50 border border-red-500/50 text-xs text-red-200 leading-relaxed">
+              <div className="p-4 rounded-xl bg-red-950/50 border border-red-500/50 text-xs text-red-200 leading-relaxed">
                 {errorMessage}
               </div>
             )}
 
             {/* Selected Subjects & Chapters */}
             <div className="space-y-3">
-              <div className="text-xs font-semibold text-slate-300">Selected Syllabus Coverage</div>
+              <div className="text-xs font-semibold text-slate-300">Your Selected Battlefield</div>
               <div className="grid grid-cols-1 gap-3">
                 {selectedSubjects.map((sub) => {
                   const chaps = chaptersBySubject[sub] || [];
                   return (
                     <div
                       key={sub}
-                      className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800 space-y-1.5"
+                      className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1.5"
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-semibold text-white">{sub}</span>
-                        <span className="text-xs font-mono text-blue-400 tabular-nums">
+                        <span className="text-xs font-mono text-blue-400 tabular-nums font-semibold">
                           {mode === TestMode.FULL_SYLLABUS
                             ? 'All Syllabus Chapters'
                             : `${chaps.length} Chapter${chaps.length === 1 ? '' : 's'}`}
@@ -150,31 +161,31 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
 
             {/* Test Pattern & Marking Scheme */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
-                <div className="text-xs text-slate-400">Test Pattern</div>
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-xs text-slate-400">Questions</div>
                 <div className="text-lg font-mono font-semibold text-white mt-0.5 tabular-nums">
                   {mode === TestMode.WRONG_QUESTION_RETEST
                     ? 'Mistake Pool'
-                    : `${totalQuestions} Questions`}
+                    : `${totalQuestions} Qs`}
                 </div>
                 <div className="text-[11px] font-mono text-slate-400 mt-0.5 tabular-nums">
                   {mode === TestMode.WRONG_QUESTION_RETEST
-                    ? 'Excludes correct Qs'
-                    : `${totalMcq} MCQ · ${totalInt} Integer`}
+                    ? 'Wrong Qs only'
+                    : `${totalMcq} MCQ · ${totalInt} Int`}
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="text-xs text-slate-400">Duration</div>
                 <div className="text-lg font-mono font-semibold text-emerald-400 mt-0.5 tabular-nums">
                   {durationHours} {durationHours === 1 ? 'Hour' : 'Hours'}
                 </div>
-                <div className="text-[11px] font-mono text-slate-400 mt-0.5 tabular-nums">
+                <div className="text-[11px] text-slate-400 mt-0.5">
                   Auto-submits at 00:00
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="text-xs text-slate-400">Difficulty</div>
                 <div className="text-lg font-semibold text-white mt-0.5">Balanced</div>
                 <div className="text-[11px] font-mono text-slate-400 mt-0.5 tabular-nums">
@@ -182,23 +193,23 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-lg bg-slate-900/80 border border-slate-800">
-                <div className="text-xs text-slate-400">Marking Scheme</div>
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800">
+                <div className="text-xs text-slate-400">Marking</div>
                 <div className="text-sm font-mono font-semibold text-white mt-1 tabular-nums">
                   MCQ: +4 / -1
                 </div>
                 <div className="text-[11px] font-mono text-slate-400 mt-0.5 tabular-nums">
-                  Integer: +4 / 0
+                  Numerical: +4 / 0
                 </div>
               </div>
             </div>
 
-            <div className="p-3.5 rounded-lg bg-blue-950/30 border border-blue-500/30 flex items-center gap-2.5 text-xs text-blue-200">
+            <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/30 flex items-center gap-3 text-xs text-blue-200 leading-relaxed">
               <ShieldCheck className="w-4 h-4 text-blue-400 shrink-0" />
               <span>
                 {mode === TestMode.WRONG_QUESTION_RETEST
-                  ? 'Questions are generated strictly from your previously incorrect questions in the selected chapters. Previously correct questions are excluded.'
-                  : 'Questions are generated strictly from your selected question bank chapters with continuous answer autosave.'}
+                  ? 'Contains strictly your previously incorrect questions from the selected chapters. All correct questions are excluded.'
+                  : 'Every question is drawn strictly from your selected chapters, capped at 1–2 per problem archetype, with real-time answer autosave.'}
               </span>
             </div>
 
@@ -207,17 +218,17 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 text-xs font-medium text-slate-300 hover:text-white border border-slate-700 rounded-lg transition-colors cursor-pointer"
+                className="btn-interactive px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white border border-slate-700 rounded-xl cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleLaunch}
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                className="btn-interactive px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-950/50 flex items-center gap-2 cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
-                <span>START TEST</span>
+                <span>Start Test Now</span>
               </button>
             </div>
           </div>

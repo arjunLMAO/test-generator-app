@@ -358,9 +358,9 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
 
       {/* Notice Banner for Mistake Retests or Flexible Counts */}
       {test.noticeMessage && (
-        <div className="px-6 py-2 bg-blue-950/40 border-b border-blue-500/30 text-xs text-blue-200 flex items-center justify-between">
-          <span>{test.noticeMessage}</span>
-          <span className="font-medium text-[11px] text-blue-300">
+        <div className="px-6 py-2 bg-gradient-to-r from-blue-950/60 via-slate-900 to-blue-950/40 border-b border-blue-500/30 text-xs text-blue-200 flex items-center justify-between">
+          <span className="font-medium">{test.noticeMessage}</span>
+          <span className="font-semibold text-[11px] text-emerald-400">
             Autosave Active
           </span>
         </div>
@@ -370,12 +370,18 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT / MAIN QUESTION AREA */}
         <main className="flex-1 flex flex-col justify-between overflow-y-auto">
-          <div className="max-w-4xl w-full mx-auto px-6 py-7 space-y-6">
+          <div
+            key={currentAllocation.questionId}
+            className="max-w-4xl w-full mx-auto px-6 py-7 space-y-6 animate-page-enter"
+          >
             {/* Question Metadata Header (Clean exam-authentic header without chapter/topic spoilers) */}
             <div className="pb-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2.5 text-sm text-slate-400">
-                <span className="text-lg font-semibold text-white tracking-tight">
-                  Question {currentAllocation.order} <span className="text-slate-500 font-normal">of {test.questions.length}</span>
+                <span className="text-xl font-display font-semibold text-white tracking-tight">
+                  Question {currentAllocation.order}{' '}
+                  <span className="text-slate-500 font-sans font-normal text-base">
+                    of {test.questions.length}
+                  </span>
                 </span>
                 <span aria-hidden="true">·</span>
                 <span className="font-semibold text-blue-400">
@@ -417,12 +423,12 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
               </div>
             )}
 
-            {/* Question Statement */}
-            <div className="text-base sm:text-lg text-slate-100 leading-relaxed py-2 select-text">
+            {/* Question Statement Card (Part 10: Subtle depth, clear spacing, readable typography) */}
+            <div className="p-6 sm:p-7 rounded-2xl surface-card border border-slate-800/90 text-base sm:text-lg text-slate-100 leading-relaxed select-text">
               <MathText text={sanitizeStudentQuestionText(currentQuestion.question)} />
             </div>
 
-            {/* Optional Image / Scientific Diagram with Zoom & Fallback (Section 26, 116) */}
+            {/* Optional Image / Scientific Diagram with Zoom & Leak-Free Fallback */}
             {currentQuestion.image && (
               <div className="my-4">
                 {!imageLoadFailed ? (
@@ -446,15 +452,15 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                   </div>
                 ) : (
                   <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-400">
-                    Figure reference unavailable ({currentQuestion.chapter} · {currentQuestion.topic}). All required numerical parameters are provided in the problem statement above.
+                    Figure reference unavailable. All required numerical parameters are provided in the problem statement above.
                   </div>
                 )}
               </div>
             )}
 
-            {/* ANSWER INPUT AREA: MCQ vs INTEGER TYPE (Section 6, 147) */}
+            {/* ANSWER INPUT AREA: MCQ vs INTEGER TYPE (Part 11: Large, comfortable interactive answer cards) */}
             {currentQuestion.type === 'mcq' && currentQuestion.options ? (
-              <div className="space-y-3 pt-2" role="radiogroup" aria-label="MCQ Options">
+              <div className="space-y-3.5 pt-1" role="radiogroup" aria-label="MCQ Options">
                 {(['A', 'B', 'C', 'D'] as const).map((letter, idx) => {
                   const optionText = currentQuestion.options![idx];
                   const isSelected = currentResponse.answer === letter;
@@ -466,28 +472,28 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                       role="radio"
                       aria-checked={isSelected}
                       onClick={() => handleSelectMcqOption(letter)}
-                      className={`w-full p-4 rounded-xl border text-left transition-all flex items-center gap-4 cursor-pointer ${
+                      className={`btn-interactive w-full p-4 sm:p-5 rounded-2xl border text-left transition-all duration-150 flex items-center gap-4 cursor-pointer ${
                         isSelected
-                          ? 'bg-blue-950/50 border-blue-500 text-white'
-                          : 'bg-[#111827] border-slate-800 text-slate-200 hover:border-slate-700 hover:bg-slate-900/80'
+                          ? 'bg-gradient-to-r from-blue-950/70 via-blue-900/30 to-slate-900 border-blue-400 text-white shadow-lg shadow-blue-950/40 ring-1 ring-blue-400/40'
+                          : 'surface-card border-slate-800 text-slate-200 hover:border-slate-600 hover:bg-slate-900/90'
                       }`}
                     >
                       <span
-                        className={`w-8 h-8 rounded-lg font-mono text-sm font-semibold flex items-center justify-center shrink-0 border ${
+                        className={`w-10 h-10 rounded-xl font-mono text-sm font-bold flex items-center justify-center shrink-0 border transition-colors ${
                           isSelected
-                            ? 'bg-blue-600 border-blue-400 text-white'
-                            : 'bg-slate-900 border-slate-700 text-slate-400'
+                            ? 'bg-blue-500 border-blue-300 text-slate-950 shadow-sm'
+                            : 'bg-slate-900 border-slate-700 text-slate-300'
                         }`}
                       >
                         {letter}
                       </span>
-                      <span className="text-sm sm:text-base flex-1">
+                      <span className="text-sm sm:text-base flex-1 leading-relaxed">
                         <MathText text={optionText} />
                       </span>
                       {isSelected && (
-                        <span className="text-xs font-mono text-blue-400 shrink-0 flex items-center gap-1">
-                          <Check className="w-4 h-4" />
-                          Selected
+                        <span className="px-2.5 py-1 rounded-lg bg-blue-500/20 border border-blue-400/40 text-xs font-semibold text-blue-300 shrink-0 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Selected</span>
                         </span>
                       )}
                     </button>
@@ -495,8 +501,8 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                 })}
               </div>
             ) : (
-              /* INTEGER / NUMERICAL TYPE INPUT (Section 6) */
-              <div className="p-6 rounded-xl bg-[#111827] border border-slate-800 space-y-4 max-w-md">
+              /* INTEGER / NUMERICAL TYPE INPUT */
+              <div className="p-6 rounded-2xl surface-card border border-slate-800 space-y-4 max-w-md">
                 <label
                   htmlFor="integer-answer-input"
                   className="block text-sm font-semibold text-white"
@@ -510,10 +516,10 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                   value={currentResponse.answer ?? ''}
                   onChange={(e) => handleIntegerInputChange(e.target.value)}
                   placeholder="Type integer or decimal value..."
-                  className="w-full px-4 py-3 text-lg font-mono bg-[#090D16] border border-slate-700 focus:border-blue-500 rounded-lg text-white placeholder:text-slate-600 focus:outline-none tabular-nums"
+                  className="w-full px-4 py-3.5 text-lg font-mono bg-[#080C14] border border-slate-700 focus:border-blue-500 rounded-xl text-white placeholder:text-slate-600 focus:outline-none tabular-nums"
                 />
                 <p className="text-xs text-slate-400">
-                  No negative marking applies to Numerical / Integer Answer Type questions. Your response is saved automatically as you type.
+                  No negative marking applies to Numerical Value questions. Your answer saves automatically as you type.
                 </p>
               </div>
             )}
@@ -660,42 +666,42 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
       {/* SUBMIT CONFIRMATION MODAL (Section 17, 94) */}
       {showSubmitModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-page-enter"
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-md rounded-xl bg-[#111827] border border-slate-800 p-6 space-y-6 shadow-2xl">
-            <div className="space-y-1">
-              <div className="text-xs font-mono text-emerald-400">CONFIRM SUBMISSION</div>
-              <h2 className="text-xl font-semibold text-white">
-                You are about to submit your test.
+          <div className="w-full max-w-md rounded-2xl surface-card border border-slate-800 p-6 space-y-6 shadow-2xl">
+            <div className="space-y-1.5">
+              <div className="text-xs font-semibold text-emerald-400">Ready to finish?</div>
+              <h2 className="text-2xl font-display font-semibold text-white">
+                Submit your test and see your score.
               </h2>
-              <p className="text-xs text-slate-400">
-                Once submitted, answers are locked and your full performance report will be generated immediately.
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Once submitted, your answers are locked and your full breakdown, solutions, and mistake retest queue are generated right away.
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-slate-900 border border-slate-800 space-y-2.5 text-sm font-mono tabular-nums">
+            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5 text-sm font-mono tabular-nums">
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Attempted:</span>
+                <span className="font-sans text-slate-400">Attempted</span>
                 <span className="font-semibold text-emerald-400">
                   {paletteCounts.answered} / {test.questions.length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Unattempted:</span>
+                <span className="font-sans text-slate-400">Unattempted</span>
                 <span className="font-semibold text-slate-200">
                   {paletteCounts.unattempted}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-400">Marked for review:</span>
+                <span className="font-sans text-slate-400">Marked for review</span>
                 <span className="font-semibold text-amber-400">
                   {paletteCounts.markedForReviewTotal}
                 </span>
               </div>
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                <span className="text-slate-400">Time Remaining:</span>
+                <span className="font-sans text-slate-400">Time Remaining</span>
                 <span className="text-slate-300">{formatExamTimer(remainingSeconds)}</span>
               </div>
             </div>
@@ -704,9 +710,9 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
               <button
                 type="button"
                 onClick={() => setShowSubmitModal(false)}
-                className="px-4 py-2 text-xs font-medium text-slate-300 hover:text-white border border-slate-700 rounded-lg transition-colors cursor-pointer"
+                className="btn-interactive px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white border border-slate-700 rounded-xl cursor-pointer"
               >
-                Cancel
+                Keep Working
               </button>
               <button
                 type="button"
@@ -714,9 +720,9 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                   setShowSubmitModal(false);
                   onSubmitTest(false);
                 }}
-                className="px-5 py-2 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-lg transition-colors cursor-pointer"
+                className="btn-interactive px-5 py-2.5 text-xs font-semibold text-slate-950 bg-emerald-400 hover:bg-emerald-300 rounded-xl cursor-pointer"
               >
-                Submit Test
+                Submit Test Now
               </button>
             </div>
           </div>

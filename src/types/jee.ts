@@ -58,6 +58,8 @@ export interface NormalizedQuestion {
   rawSourceId?: string;
   category?: string;
   templateSignature?: string;
+  isReactionBased?: boolean;
+  isMultiConcept?: boolean;
 }
 
 export interface QuestionValidationIssue {
@@ -188,6 +190,7 @@ export interface GeneratedTest {
   activeSubject: SubjectName;
   noticeMessage?: string;
   scoringConfig: ScoringConfig;
+  sourceAttemptId?: string;
 }
 
 export interface AttemptEntry {
@@ -277,6 +280,9 @@ export interface QuestionResultDetail {
     repeatedMistakeCount: number;
     previouslyIncorrectNowCorrected: boolean;
     masteryState: MasteryState;
+    previousResult?: 'correct' | 'incorrect' | 'unattempted' | null;
+    previousAnswer?: string | null;
+    attemptsTimeline?: AttemptEntry[];
   };
 }
 
@@ -294,6 +300,7 @@ export interface TestResultReport {
   userId: string;
   title: string;
   mode: TestMode;
+  sourceAttemptId?: string;
   subjects: SubjectName[];
   chaptersBySubject: Partial<Record<SubjectName, string[]>>;
   submittedAt: string;
@@ -341,9 +348,9 @@ export const DEFAULT_ADAPTIVE_WEIGHTS: AdaptiveWeightConfig = {
   masteredWeight: 0.12,
   weakChapterBoost: 1.4,
   targetDifficultyRatio: {
-    easy: 0.25,
-    medium: 0.5,
-    hard: 0.25,
+    easy: 0.16, // 16% straightforward (15–20% target)
+    medium: 0.36, // 36% medium (30–40% target)
+    hard: 0.48, // 48% hard & challenging (40–50% target)
   },
 };
 

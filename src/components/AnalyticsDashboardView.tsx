@@ -90,20 +90,20 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
 
   if (!analytics.hasData) {
     return (
-      <div className="min-h-screen bg-[#090D16] text-slate-100 py-12 px-6">
-        <div className="max-w-4xl mx-auto p-10 rounded-2xl bg-[#111827] border border-slate-800 text-center space-y-5">
+      <div className="min-h-screen bg-[#080C14] text-slate-100 py-12 px-6">
+        <div className="max-w-4xl mx-auto p-10 rounded-2xl surface-card border border-slate-800 text-center space-y-5 animate-card-reveal">
           <div className="text-xs font-semibold text-blue-400">Long-Term Analytics</div>
-          <h1 className="text-3xl font-display text-white">
-            Your performance dashboard will appear after your first test.
+          <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white">
+            Your performance dashboard unlocks after your first test.
           </h1>
           <p className="text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
-            JEE Test Generator never populates charts with fabricated scores. Complete a Full Syllabus or Chapter Test to unlock longitudinal accuracy trends, chapter improvement deltas, and mistake-recovery queues.
+            JEE Test Generator never populates charts with placeholder scores. Complete a Full Syllabus or Chapter Test to unlock accuracy trends, chapter mastery deltas, and one-click mistake retests.
           </p>
           <div className="pt-2 flex items-center justify-center gap-3">
             <button
               type="button"
               onClick={onStartFullTest}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors cursor-pointer"
+              className="btn-interactive px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-950/50 cursor-pointer"
             >
               Take Your First Test
             </button>
@@ -117,19 +117,19 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
     trendMetric === 'score' && subjectFilter === 'ALL' ? 300 : 100;
 
   return (
-    <div className="min-h-screen bg-[#090D16] text-slate-100 py-8 px-6">
+    <div className="min-h-screen bg-[#080C14] text-slate-100 py-8 px-6">
       <div className="max-w-[1240px] mx-auto space-y-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
-          <div>
+          <div className="space-y-1">
             <div className="text-xs font-semibold text-blue-400">
-              Longitudinal Progress & Mastery Insights
+              Longitudinal Progress & Mistake Recovery
             </div>
-            <h1 className="text-3xl sm:text-4xl font-display text-white mt-1">
-              Performance & Mastery Analytics
+            <h1 className="text-3xl sm:text-5xl font-display font-semibold text-white">
+              Here&apos;s where you stand over time.
             </h1>
             <p className="text-sm text-slate-400">
-              Aggregated across {analytics.testsAttempted} completed test
+              Tracked across {analytics.testsAttempted} completed test
               {analytics.testsAttempted === 1 ? '' : 's'} and {analytics.questionsAttempted}{' '}
               question responses.
             </p>
@@ -139,11 +139,12 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             <button
               type="button"
               onClick={() => onRetestMistakes()}
-              className="px-4 py-2.5 text-xs font-semibold text-red-200 bg-red-950/60 hover:bg-red-900/70 border border-red-500/40 rounded-lg transition-colors flex items-center gap-2 self-start md:self-auto cursor-pointer"
+              className="btn-interactive px-5 py-3 text-xs font-semibold text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 border border-red-400/40 rounded-xl shadow-lg shadow-red-950/40 flex items-center gap-2 self-start md:self-auto cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
               <span>
-                Retest All Unresolved Mistakes ({analytics.questionsNeedingReviewCount})
+                Retest {analytics.questionsNeedingReviewCount} Unresolved Mistake
+                {analytics.questionsNeedingReviewCount === 1 ? '' : 's'}
               </span>
             </button>
           )}
@@ -455,21 +456,21 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
         <section className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-semibold text-white">
-                Chapter-Level Mastery & Dedicated Mistake Retests
+              <h2 className="text-2xl font-display font-semibold text-white">
+                Chapter Mastery & Targeted Mistake Retests
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Retest My Mistakes strictly selects previously incorrect questions from that chapter and excludes all correct ones.
+                Click Retest Mistakes on any chapter to launch a focused test with only the questions you missed in that chapter.
               </p>
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
+            <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl">
               {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((sub) => (
                 <button
                   key={sub}
                   type="button"
                   onClick={() => setChapterSubjectFilter(sub)}
-                  className={`px-3 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     chapterSubjectFilter === sub
                       ? 'bg-blue-600 text-white'
                       : 'text-slate-400 hover:text-slate-200'
@@ -481,17 +482,17 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             </div>
           </div>
 
-          <div className="rounded-xl bg-[#111827] border border-slate-800 overflow-x-auto">
+          <div className="rounded-2xl surface-card border border-slate-800 overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 text-xs font-mono text-slate-400 bg-slate-900/60">
-                  <th className="py-3 px-4">Chapter</th>
-                  <th className="py-3 px-4">Subject</th>
-                  <th className="py-3 px-4 text-right">Attempted</th>
-                  <th className="py-3 px-4 text-right">Accuracy</th>
-                  <th className="py-3 px-4 text-right">Cross-Test Delta</th>
-                  <th className="py-3 px-4 text-right">Mistakes in Pool</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="border-b border-slate-800 text-xs font-semibold text-slate-400 bg-slate-900/60">
+                  <th className="py-3.5 px-5">Chapter</th>
+                  <th className="py-3.5 px-5">Subject</th>
+                  <th className="py-3.5 px-5 text-right">Attempted</th>
+                  <th className="py-3.5 px-5 text-right">Accuracy</th>
+                  <th className="py-3.5 px-5 text-right">Progress Delta</th>
+                  <th className="py-3.5 px-5 text-right">Unresolved Mistakes</th>
+                  <th className="py-3.5 px-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/70 text-xs">
@@ -500,15 +501,15 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                     key={`${c.subject}::${c.chapter}`}
                     className="hover:bg-slate-900/50 transition-colors"
                   >
-                    <td className="py-3.5 px-4 font-medium text-white">{c.chapter}</td>
-                    <td className="py-3.5 px-4 text-slate-400">{c.subject}</td>
-                    <td className="py-3.5 px-4 text-right font-mono tabular-nums text-slate-300">
+                    <td className="py-4 px-5 font-semibold text-white text-sm">{c.chapter}</td>
+                    <td className="py-4 px-5 text-slate-300 font-medium">{c.subject}</td>
+                    <td className="py-4 px-5 text-right font-mono tabular-nums text-slate-300">
                       {c.attempted} ({c.correct}✓ / {c.incorrect}✗)
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono tabular-nums font-semibold text-emerald-400">
+                    <td className="py-4 px-5 text-right font-mono tabular-nums font-semibold text-emerald-400">
                       {c.accuracy}%
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono tabular-nums">
+                    <td className="py-4 px-5 text-right font-mono tabular-nums">
                       {c.improvementDeltaPoints !== null ? (
                         <span
                           className={
@@ -518,13 +519,13 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                           }
                         >
                           {c.improvementDeltaPoints >= 0 ? '+' : ''}
-                          {c.improvementDeltaPoints} percentage points
+                          {c.improvementDeltaPoints} pts
                         </span>
                       ) : (
-                        <span className="text-slate-500">1 test baseline</span>
+                        <span className="text-slate-500">Baseline</span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-right font-mono tabular-nums">
+                    <td className="py-4 px-5 text-right font-mono tabular-nums">
                       {c.activeMistakesInPool > 0 ? (
                         <span className="text-red-400 font-semibold">
                           {c.activeMistakesInPool} wrong
@@ -533,23 +534,23 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                         <span className="text-emerald-400">0 wrong</span>
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-right">
+                    <td className="py-4 px-5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         {c.activeMistakesInPool > 0 && (
                           <button
                             type="button"
                             onClick={() => onRetestMistakes(c.subject, c.chapter)}
-                            className="px-2.5 py-1.5 rounded bg-red-950/60 hover:bg-red-900/70 border border-red-500/40 text-red-200 font-semibold transition-colors whitespace-nowrap cursor-pointer"
+                            className="btn-interactive px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white font-semibold whitespace-nowrap cursor-pointer"
                           >
-                            Retest My Mistakes ({c.activeMistakesInPool})
+                            Retest Mistakes ({c.activeMistakesInPool})
                           </button>
                         )}
                         <button
                           type="button"
                           onClick={() => onPracticeChapter(c.subject, c.chapter)}
-                          className="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium transition-colors whitespace-nowrap cursor-pointer"
+                          className="btn-interactive px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold whitespace-nowrap cursor-pointer"
                         >
-                          New Practice Test
+                          Practice Chapter
                         </button>
                       </div>
                     </td>

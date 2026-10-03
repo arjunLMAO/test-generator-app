@@ -29,6 +29,8 @@ export interface TestGenerationRequest {
   scoringConfig?: ScoringConfig;
   adaptiveWeights?: AdaptiveWeightConfig;
   seed?: string;
+  targetQuestionIds?: string[];
+  sourceAttemptId?: string;
 }
 
 export interface TestGenerationOutcome {
@@ -121,7 +123,12 @@ export class TestGeneratorService {
     globalUsedIds: Set<string>,
     globalUsedFingerprints: Set<string>,
     globalUsedTemplates: Set<string> = new Set(),
-    maxPerCategory = 2
+    maxPerCategory = 2,
+    constraints?: {
+      maxQuadraticCount?: number;
+      currentQuadraticRef?: { count: number };
+      minReactionBased?: number;
+    }
   ): NormalizedQuestion[] {
     // Deduplicate candidate pool by ID, content fingerprint, AND structural equation template signature
     const uniqueTypedPool: NormalizedQuestion[] = [];
@@ -155,8 +162,23 @@ export class TestGeneratorService {
       byChap.set(q.chapter, list);
     }
 
+    const minReactionRequired = constraints?.minReactionBased || 0;
     const chapters = Array.from(byChap.keys());
-    chapters.sort(() => rng() - 0.5);
+    if (minReactionRequired > 0) {
+      chapters.sort((c1, c2) => {
+        const c1HasRx = (byChap.get(c1) || []).some(
+          (q) => q.isReactionBased || (q.tags && q.tags.includes('reaction-based'))
+        );
+        const c2HasRx = (byChap.get(c2) || []).some(
+          (q) => q.isReactionBased || (q.tags && q.tags.includes('reaction-based'))
+        );
+        if (c1HasRx && !c2HasRx) return -1;
+        if (!c1HasRx && c2HasRx) return 1;
+        return rng() - 0.5;
+      });
+    } else {
+      chapters.sort(() => rng() - 0.5);
+    }
 
     // Difficulty targets
     const targetEasy = Math.round(targetCount * weights.targetDifficultyRatio.easy);
@@ -174,6 +196,7 @@ export class TestGeneratorService {
     const selectedTemplates = new Set<string>(globalUsedTemplates);
     const categoryCounts = new Map<string, number>();
     const selected: NormalizedQuestion[] = [];
+    let reactionSelectedCount = 0;
 
     const getCategory = (q: NormalizedQuestion): string =>
       q.category ||
@@ -183,7 +206,8 @@ export class TestGeneratorService {
       q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);
 
     // Weighted picker helper that strictly enforces current category ceiling (Pass 1: max 1, Pass 2: max 2)
-    // and strictly enforces MAX 1 per structural equation template signature
+    // and strictly enforces MAX 1 per structural equation template signature,
+    // plus hard quadratic ceiling and organic reaction quota
     const pickWeightedWithCategoryCap = (
       candidates: NormalizedQuestion[],
       currentCategoryCap: number
@@ -193,6 +217,17 @@ export class TestGeneratorService {
         const tmpl = getTemplate(c);
         const cat = getCategory(c);
         const catUsed = categoryCounts.get(cat) || 0;
+
+        // Hard Quadratic constraint: exclude if limit reached
+        if (
+          constraints?.maxQuadraticCount !== undefined &&
+          constraints?.currentQuadraticRef &&
+          constraints.currentQuadraticRef.count >= constraints.maxQuadraticCount &&
+          (c.chapter === 'Quadratic Equations' || cat.includes('Quadratic Equations'))
+        ) {
+          return false;
+        }
+
         return (
           !selectedIds.has(c.id) &&
           !selectedFingerprints.has(fp) &&
@@ -202,15 +237,34 @@ export class TestGeneratorService {
       });
       if (available.length === 0) return null;
 
+      // If we still need reaction-based questions in Chemistry, prioritize reaction questions!
+      let reactionPool = available;
+      if (reactionSelectedCount < minReactionRequired) {
+        const rxOnly = available.filter(
+          (c) => c.isReactionBased || (c.tags && c.tags.includes('reaction-based'))
+        );
+        if (rxOnly.length > 0) {
+          reactionPool = rxOnly;
+        } else if (currentCategoryCap === 1) {
+          // In Pass 1, reserve slots for reaction chapters first
+          return null;
+        }
+      }
+
       // Prefer categories with 0 selected so far, then matching difficulty quota
-      const zeroCatPool = available.filter((c) => (categoryCounts.get(getCategory(c)) || 0) === 0);
-      const basePool = zeroCatPool.length > 0 ? zeroCatPool : available;
+      const zeroCatPool = reactionPool.filter((c) => (categoryCounts.get(getCategory(c)) || 0) === 0);
+      const basePool = zeroCatPool.length > 0 ? zeroCatPool : reactionPool;
       const matchingDiff = basePool.filter((c) => diffQuota[c.difficulty] > 0);
       const activePool = matchingDiff.length > 0 ? matchingDiff : basePool;
 
-      const itemWeights = activePool.map((c) =>
-        this.computeQuestionWeight(c, historyMap[c.id], chapterWeaknessMap, weights, mode)
-      );
+      const itemWeights = activePool.map((c) => {
+        let w = this.computeQuestionWeight(c, historyMap[c.id], chapterWeaknessMap, weights, mode);
+        // Conceptual boost for hard & very-hard reasoning questions
+        if (c.difficulty === 'hard') w *= 1.4;
+        if (c.isReactionBased) w *= 1.3;
+        if (c.isMultiConcept) w *= 1.25;
+        return w;
+      });
       const totalWeight = itemWeights.reduce((acc, w) => acc + w, 0);
       let roll = rng() * totalWeight;
 
@@ -249,6 +303,19 @@ export class TestGeneratorService {
             selectedTemplates.add(tmpl);
             categoryCounts.set(cat, (categoryCounts.get(cat) || 0) + 1);
 
+            if (picked.isReactionBased || (picked.tags && picked.tags.includes('reaction-based'))) {
+              reactionSelectedCount++;
+            }
+
+            if (
+              picked.chapter === 'Quadratic Equations' ||
+              cat.includes('Quadratic Equations')
+            ) {
+              if (constraints?.currentQuadraticRef) {
+                constraints.currentQuadraticRef.count++;
+              }
+            }
+
             if (diffQuota[picked.difficulty] > 0) {
               diffQuota[picked.difficulty]--;
             }
@@ -271,6 +338,135 @@ export class TestGeneratorService {
     const adaptiveWeights = request.adaptiveWeights || DEFAULT_ADAPTIVE_WEIGHTS;
     const seed = request.seed || `seed-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const rng = createSeededRandom(seed);
+    const diag = engine.getDiagnostics();
+
+    // Handle Dedicated Wrong-Question Retest Mode FIRST (Parts 16–32: Strict Exclusion of Correct Questions & Exact Attempt Mistakes)
+    if (request.mode === TestMode.WRONG_QUESTION_RETEST) {
+      let candidateMistakeIds: string[] = [];
+
+      if (request.targetQuestionIds && request.targetQuestionIds.length > 0) {
+        // Explicit list of wrong question IDs (e.g. from a completed test attempt, chapter card, or single question review)
+        candidateMistakeIds = Array.from(new Set(request.targetQuestionIds.map((id) => String(id).trim()).filter(Boolean)));
+      } else {
+        // Gather from persistent historyMap filtered by requested subjects & chapters
+        const allowedSubSet =
+          request.selectedSubjects && request.selectedSubjects.length > 0
+            ? new Set(request.selectedSubjects)
+            : null;
+
+        const activeMistakeIds: string[] = [];
+        const historicalMistakeIds: string[] = [];
+
+        for (const rec of Object.values(historyMap)) {
+          if (allowedSubSet && !allowedSubSet.has(rec.subject)) continue;
+          const allowedChaps = request.chaptersBySubject?.[rec.subject];
+          if (allowedChaps && allowedChaps.length > 0 && !allowedChaps.includes(rec.chapter)) {
+            continue;
+          }
+
+          if (rec.lastResult === 'incorrect' || rec.masteryState === 'incorrect') {
+            activeMistakeIds.push(rec.questionId);
+          } else if (rec.incorrectCount > 0 && rec.lastResult !== 'correct') {
+            historicalMistakeIds.push(rec.questionId);
+          }
+        }
+
+        candidateMistakeIds = Array.from(
+          new Set(activeMistakeIds.length > 0 ? activeMistakeIds : historicalMistakeIds)
+        );
+      }
+
+      if (candidateMistakeIds.length === 0) {
+        return {
+          success: false,
+          error: 'No mistakes to retest in this selection.',
+        };
+      }
+
+      // Validate each question exists in the question bank and deduplicate by ID + content fingerprint (Parts 31 & 32)
+      const validRetestQuestions: NormalizedQuestion[] = [];
+      const seenIds = new Set<string>();
+      const seenFingerprints = new Set<string>();
+
+      for (const qid of candidateMistakeIds) {
+        if (seenIds.has(qid)) continue;
+        const q = engine.getQuestionById(qid);
+        if (!q) {
+          // Skip unavailable question gracefully (Part 31)
+          continue;
+        }
+        const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
+        if (seenFingerprints.has(fp)) continue;
+
+        seenIds.add(q.id);
+        seenFingerprints.add(fp);
+        validRetestQuestions.push(q);
+      }
+
+      if (validRetestQuestions.length === 0) {
+        return {
+          success: false,
+          error: 'These questions are no longer available in the question bank.',
+        };
+      }
+
+      // Group and order by canonical subject order (Physics -> Chemistry -> Mathematics)
+      const retestSubjects = this.orderSubjects(
+        Array.from(new Set(validRetestQuestions.map((q) => q.subject)))
+      );
+      const retestChaptersBySub: Partial<Record<SubjectName, string[]>> = {};
+      const allocations: TestQuestionAllocation[] = [];
+      let orderCounter = 1;
+      let mcqTotal = 0;
+      let intTotal = 0;
+
+      for (const sub of retestSubjects) {
+        const subQs = validRetestQuestions.filter((q) => q.subject === sub);
+        const subMcqs = subQs.filter((q) => q.type === 'mcq');
+        const subInts = subQs.filter((q) => q.type === 'integer');
+        const orderedSubQs = [...subMcqs, ...subInts];
+
+        retestChaptersBySub[sub] = Array.from(new Set(orderedSubQs.map((q) => q.chapter)));
+
+        for (const q of orderedSubQs) {
+          if (q.type === 'mcq') mcqTotal++;
+          else intTotal++;
+
+          allocations.push({
+            questionId: q.id,
+            order: orderCounter++,
+            subject: q.subject,
+            chapter: q.chapter,
+            type: q.type,
+            difficulty: q.difficulty,
+            category: q.category,
+            templateSignature: q.templateSignature,
+          });
+        }
+      }
+
+      // Appropriate duration scaled to the exact retest questions (Part 24):
+      // 2.5 minutes (150s) per MCQ, 3 minutes (180s) per Numerical/Integer, minimum 3 minutes (180s)
+      const durationSeconds = Math.max(180, mcqTotal * 150 + intTotal * 180);
+
+      const noticeMessage = `Mistake Retest · ${allocations.length} question${
+        allocations.length === 1 ? '' : 's'
+      } you previously missed · Fresh attempt`;
+
+      const test = this.constructTestEntity(
+        request,
+        retestSubjects,
+        retestChaptersBySub,
+        allocations,
+        durationSeconds,
+        diag.version,
+        seed,
+        scoringConfig,
+        noticeMessage
+      );
+
+      return { success: true, test };
+    }
 
     const orderedSubjects = this.orderSubjects(
       request.mode === TestMode.FULL_SYLLABUS
@@ -287,7 +483,6 @@ export class TestGeneratorService {
 
     // Build chapter map per subject
     const effectiveChaptersBySubject: Partial<Record<SubjectName, string[]>> = {};
-    const diag = engine.getDiagnostics();
 
     for (const sub of orderedSubjects) {
       if (request.mode === TestMode.FULL_SYLLABUS) {
@@ -321,93 +516,6 @@ export class TestGeneratorService {
       if (val.total > 0) {
         chapterWeaknessMap.set(key, val.wrong / val.total);
       }
-    }
-
-    // Handle Dedicated Wrong-Question Retest Mode (Strict Exclusion of Correct Questions)
-    if (request.mode === TestMode.WRONG_QUESTION_RETEST) {
-      const correctQuestionIds = new Set<string>();
-      const incorrectQuestionIds = new Set<string>();
-
-      for (const rec of Object.values(historyMap)) {
-        if (rec.lastResult === 'correct' || rec.masteryState === 'corrected' || rec.masteryState === 'mastered') {
-          correctQuestionIds.add(rec.questionId);
-        } else if (rec.lastResult === 'incorrect' || rec.masteryState === 'incorrect') {
-          incorrectQuestionIds.add(rec.questionId);
-        }
-      }
-
-      const allocations: TestQuestionAllocation[] = [];
-      const retestUsedIds = new Set<string>();
-      const retestUsedFingerprints = new Set<string>();
-      let orderCounter = 1;
-
-      for (const sub of orderedSubjects) {
-        const allowedChapters = new Set(effectiveChaptersBySubject[sub] || []);
-        const subPool = engine
-          .getQuestionsBySubject(sub)
-          .filter((q) => {
-            const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
-            return (
-              allowedChapters.has(q.chapter) &&
-              incorrectQuestionIds.has(q.id) &&
-              !correctQuestionIds.has(q.id) &&
-              !retestUsedIds.has(q.id) &&
-              !retestUsedFingerprints.has(fp)
-            );
-          });
-
-        const mcqs = subPool.filter((q) => q.type === 'mcq').slice(0, scoringConfig.mcqCountPerSubject);
-        const ints = subPool.filter((q) => q.type === 'integer').slice(0, scoringConfig.integerCountPerSubject);
-
-        for (const q of [...mcqs, ...ints]) {
-          const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
-          if (retestUsedIds.has(q.id) || retestUsedFingerprints.has(fp)) continue;
-          retestUsedIds.add(q.id);
-          retestUsedFingerprints.add(fp);
-          allocations.push({
-            questionId: q.id,
-            order: orderCounter++,
-            subject: q.subject,
-            chapter: q.chapter,
-            type: q.type,
-            difficulty: q.difficulty,
-          });
-        }
-      }
-
-      if (allocations.length === 0) {
-        return {
-          success: false,
-          error:
-            'No previously incorrect questions are remaining in the selected chapters. All attempted questions in this selection have been answered correctly.',
-        };
-      }
-
-      const requestedStandardTotal =
-        orderedSubjects.length * (scoringConfig.mcqCountPerSubject + scoringConfig.integerCountPerSubject);
-      const noticeMessage =
-        allocations.length < requestedStandardTotal
-          ? `Only ${allocations.length} previous mistake${allocations.length === 1 ? ' is' : 's are'} available in the selected chapter(s). All previously correct questions have been strictly excluded.`
-          : 'Dedicated Mistake Retest: Contains only questions you previously answered incorrectly.';
-
-      const durationSeconds = Math.max(
-        900,
-        Math.round((allocations.length / 25) * scoringConfig.oneSubjectDurationSeconds)
-      );
-
-      const test = this.constructTestEntity(
-        request,
-        orderedSubjects,
-        effectiveChaptersBySubject,
-        allocations,
-        durationSeconds,
-        diag.version,
-        seed,
-        scoringConfig,
-        noticeMessage
-      );
-
-      return { success: true, test };
     }
 
     // Standard Full Syllabus, Chapter Test, or Adaptive Test
@@ -480,6 +588,24 @@ export class TestGeneratorService {
           );
         });
 
+      // Hard mode special constraints:
+      // 1. In mixed Mathematics tests, at most 1 Quadratic Equations question unless specifically testing that chapter alone.
+      const isMixedMath =
+        sub === 'Mathematics' && (effectiveChaptersBySubject[sub] || []).length > 1;
+      const quadraticRef = { count: 0 };
+      const maxQuadraticCount = isMixedMath ? 1 : undefined;
+
+      // 2. In full Chemistry mocks (or multi-chapter organic tests), ensure at least 8 reaction-based organic questions.
+      const isFullOrMultiChemistry =
+        sub === 'Chemistry' && (effectiveChaptersBySubject[sub] || []).length >= 5;
+      const targetMcqReaction = isFullOrMultiChemistry ? 7 : 0;
+
+      const subConstraints = {
+        maxQuadraticCount,
+        currentQuadraticRef: quadraticRef,
+        minReactionBased: targetMcqReaction,
+      };
+
       const selectedMcqs = this.selectBalancedQuestionsForSubject(
         subPool,
         scoringConfig.mcqCountPerSubject,
@@ -492,7 +618,8 @@ export class TestGeneratorService {
         globalUsedIds,
         globalUsedFingerprints,
         globalUsedTemplates,
-        2
+        2,
+        subConstraints
       );
 
       for (const q of selectedMcqs) {
@@ -504,6 +631,10 @@ export class TestGeneratorService {
           q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question)
         );
       }
+
+      const mcqReactionCount = selectedMcqs.filter(
+        (q) => q.isReactionBased || (q.tags && q.tags.includes('reaction-based'))
+      ).length;
 
       const selectedInts = this.selectBalancedQuestionsForSubject(
         subPool,
@@ -517,7 +648,12 @@ export class TestGeneratorService {
         globalUsedIds,
         globalUsedFingerprints,
         globalUsedTemplates,
-        2
+        2,
+        {
+          maxQuadraticCount,
+          currentQuadraticRef: quadraticRef,
+          minReactionBased: isFullOrMultiChemistry ? Math.max(2, 8 - mcqReactionCount) : 0,
+        }
       );
 
       for (const q of selectedInts) {
@@ -638,6 +774,30 @@ export class TestGeneratorService {
         return `Validation failed: Question "${q.id}" is missing a verified answer key.`;
       }
     }
+
+    // Special hard constraints validation
+    const mathChapters = chaptersBySubject['Mathematics'] || [];
+    if (mathChapters.length > 1) {
+      const quadraticCount = allocations.filter(
+        (a) => a.subject === 'Mathematics' && a.chapter === 'Quadratic Equations'
+      ).length;
+      if (quadraticCount > 1) {
+        return `Validation failed: Mixed Mathematics test cannot contain more than 1 Quadratic Equations question (found ${quadraticCount}).`;
+      }
+    }
+
+    const chemChapters = chaptersBySubject['Chemistry'] || [];
+    if (chemChapters.length >= 10) {
+      const reactionCount = allocations.filter((a) => {
+        if (a.subject !== 'Chemistry') return false;
+        const q = engine.getQuestionById(a.questionId);
+        return q && (q.isReactionBased || (q.tags && q.tags.includes('reaction-based')));
+      }).length;
+      if (reactionCount < 8) {
+        return `Validation failed: Full Chemistry mock requires at least 8 reaction-based organic chemistry questions (found ${reactionCount}).`;
+      }
+    }
+
     return null;
   }
 
@@ -681,7 +841,9 @@ export class TestGeneratorService {
       );
       title = `${orderedSubjects.join(' + ')} Chapter Test (${totalChaps} Chapter${totalChaps === 1 ? '' : 's'})`;
     } else if (request.mode === TestMode.WRONG_QUESTION_RETEST) {
-      title = `${orderedSubjects.join(' + ')} Mistake Retest`;
+      title = `${orderedSubjects.join(' + ')} Mistake Retest (${allocations.length} Question${
+        allocations.length === 1 ? '' : 's'
+      })`;
     } else if (request.mode === TestMode.ADAPTIVE_TEST) {
       title = `${orderedSubjects.join(' + ')} Adaptive Weakness Practice`;
     }
@@ -704,6 +866,7 @@ export class TestGeneratorService {
       activeSubject: orderedSubjects[0],
       noticeMessage,
       scoringConfig,
+      sourceAttemptId: request.sourceAttemptId,
     };
   }
 }

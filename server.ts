@@ -358,10 +358,35 @@ async function startServer() {
     const genReq = req.body as TestGenerationRequest;
     const user = getOrCreateUser(db, genReq.userId || 'student-arjun');
 
+    let targetQuestionIds = genReq.targetQuestionIds;
+    if (
+      genReq.mode === 'WRONG_QUESTION_RETEST' &&
+      (!targetQuestionIds || targetQuestionIds.length === 0) &&
+      genReq.sourceAttemptId
+    ) {
+      const sourceReport = user.reports.find((r) => r.testId === genReq.sourceAttemptId);
+      if (sourceReport) {
+        targetQuestionIds = sourceReport.questionResults
+          .filter((q) => {
+            if (q.result !== 'incorrect') return false;
+            if (genReq.selectedSubjects && genReq.selectedSubjects.length > 0) {
+              if (!genReq.selectedSubjects.includes(q.subject)) return false;
+            }
+            const allowedChaps = genReq.chaptersBySubject?.[q.subject];
+            if (allowedChaps && allowedChaps.length > 0 && !allowedChaps.includes(q.chapter)) {
+              return false;
+            }
+            return true;
+          })
+          .map((q) => q.questionId);
+      }
+    }
+
     const outcome = TestGeneratorService.generateTest(
       qbEngine,
       {
         ...genReq,
+        targetQuestionIds,
         scoringConfig: genReq.scoringConfig || user.scoringConfig,
       },
       user.historyMap

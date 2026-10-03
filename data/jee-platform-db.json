@@ -6,455 +6,1514 @@
       "email": "girdhar.arjun@gmail.com",
       "targetExam": "JEE Main & Advanced 2027",
       "activeTest": {
-        "id": "TEST-MUN1RH15-1RTH",
+        "id": "TEST-MUSQJAGA-334Y",
         "userId": "student-arjun",
-        "title": "Mathematics Chapter Test (2 Chapters)",
-        "mode": "CHAPTER_TEST",
+        "title": "JEE Full Syllabus Mock Examination",
+        "mode": "FULL_SYLLABUS",
         "subjects": [
+          "Physics",
+          "Chemistry",
           "Mathematics"
         ],
         "chaptersBySubject": {
+          "Physics": [
+            "Magnetic Effects of Current & Magnetism",
+            "Oscillations & Waves",
+            "Units & Measurements",
+            "Ray & Wave Optics",
+            "Work, Energy & Power",
+            "Atoms & Nuclei",
+            "Current Electricity",
+            "Dual Nature of Matter & Radiation",
+            "Electromagnetic Induction & AC",
+            "Electromagnetic Waves",
+            "Electronic Devices",
+            "Electrostatics",
+            "Gravitation",
+            "Kinematics",
+            "Kinetic Theory of Gases",
+            "Laws of Motion",
+            "Properties of Solids & Liquids",
+            "Rotational Motion",
+            "Thermodynamics"
+          ],
+          "Chemistry": [
+            "Alcohols, Phenols & Ethers",
+            "Aldehydes, Ketones & Carboxylic Acids",
+            "Amines & Biomolecules",
+            "Atomic Structure",
+            "Chemical Bonding & Molecular Structure",
+            "Chemical Kinetics",
+            "Chemical Thermodynamics",
+            "Classification of Elements & Periodicity",
+            "Coordination Compounds",
+            "d- and f-Block Elements",
+            "Equilibrium (Chemical & Ionic)",
+            "General Organic Chemistry & Isomerism",
+            "Haloalkanes & Haloarenes",
+            "Hydrocarbons",
+            "Mole Concept & Stoichiometry",
+            "p-Block Elements",
+            "Redox Reactions & Electrochemistry",
+            "Solutions & Colligative Properties"
+          ],
           "Mathematics": [
-            "Area Under The Curves",
-            "Binomial Theorem"
+            "Sequence & Series",
+            "Statistics & Probability",
+            "Coordinate Geometry (Straight Lines & Circles)",
+            "Trigonometry",
+            "Vector Algebra",
+            "Binomial Theorem",
+            "Complex Numbers",
+            "Conic Sections (Parabola, Ellipse, Hyperbola)",
+            "Determinants",
+            "Differential Equations",
+            "Integral Calculus",
+            "Limits, Continuity & Differentiability",
+            "Mathematical Reasoning & Linear Programming",
+            "Matrices",
+            "Permutations & Combinations",
+            "Quadratic Equations",
+            "Sets, Relations & Functions",
+            "Three-Dimensional Geometry"
           ]
         },
-        "startTime": "2026-09-29T19:06:03.641Z",
-        "durationSeconds": 3600,
+        "startTime": "2026-10-03T18:38:23.146Z",
+        "durationSeconds": 10800,
         "status": "IN_PROGRESS",
-        "questionBankVersion": "qb-4004-62f",
-        "generationSeed": "seed-1790708763613-fvam5x",
+        "questionBankVersion": "qb-2788-75f",
+        "generationSeed": "seed-1791052703056-ac726k",
         "questions": [
           {
-            "questionId": "BT-0102",
+            "questionId": "PHY-GRV-M004",
             "order": 1,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Gravitation",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "hard",
+            "category": "Gravitation :: Instantaneous Rate & Gradient Law",
+            "templateSignature": "physics::gravitation::the potential energy of a particle moving along the math() axis is given by math() at what positive position math() does the net conservative force on the particle vanish"
           },
           {
-            "questionId": "AUTC-0077",
+            "questionId": "PHY-THM-M006",
             "order": 2,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Thermodynamics",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Thermodynamics :: Boundary Ratio & Scaling Analysis",
+            "templateSignature": "physics::thermodynamics::when the amplitude of the driving excitation in a linear resistive medium (resistance math() units) is multiplied by math() by what factor does the rate of quadratic energy dissipa"
           },
           {
-            "questionId": "BT-0061",
+            "questionId": "PHY-ROT-M020",
             "order": 3,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Rotational Motion",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "hard",
+            "category": "Rotational Motion :: Relative Frame & Coupling Constraint",
+            "templateSignature": "physics::rotational motion::two bodies math() and math() are connected by an inextensible constraint such that their displacements along their respective axes satisfy math() if body math() has acceleration ma"
           },
           {
-            "questionId": "AUTC-0017",
+            "questionId": "PHYS_SHM_058",
             "order": 4,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Oscillations & Waves",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "hard",
+            "category": "Oscillations & Waves :: Simple Harmonic Oscillations [pendulum_released]",
+            "templateSignature": "physics::oscillations & waves::the bob of a pendulum was released from a horizontal position the length of the pendulum is math() if it dissipates math() of its initial energy against air resistance the speed wi"
           },
           {
-            "questionId": "BT-0010",
+            "questionId": "PHY-DNM-M013",
             "order": 5,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Dual Nature of Matter & Radiation",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Dual Nature of Matter & Radiation :: Energy Efficiency & Dissipation",
+            "templateSignature": "physics::dual nature of matter & radiation::a cyclic device absorbs math() of energy from a high temperature source per cycle and rejects math() to a low temperature sink what is its thermal efficiency"
           },
           {
-            "questionId": "AUTC-0058",
+            "questionId": "PHY-ATN-M018",
             "order": 6,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Atoms & Nuclei",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Atoms & Nuclei :: Resonance & Extremum Condition",
+            "templateSignature": "physics::atoms & nuclei::a dc source of emf math() and internal resistance math( omega) is connected across a variable load resistance math() find the value of math() and the maximum power delivered to the"
           },
           {
-            "questionId": "BT-0074",
+            "questionId": "PHY-CUR-M006",
             "order": 7,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Current Electricity",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Current Electricity :: Boundary Ratio & Scaling Analysis",
+            "templateSignature": "physics::current electricity::when the amplitude of the driving excitation in a linear resistive medium (resistance math() units) is multiplied by math() by what factor does the rate of quadratic energy dissipa"
           },
           {
-            "questionId": "AUTC-0081",
+            "questionId": "PHY-PSL-M007",
             "order": 8,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Properties of Solids & Liquids",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Properties of Solids & Liquids :: Graphical Slope & Area Integration",
+            "templateSignature": "physics::properties of solids & liquids::a physical quantity math() increases linearly from math() to math() units over the interval math( in) evaluate math( int)"
           },
           {
-            "questionId": "BT-0088",
+            "questionId": "PHY-KTG-M008",
             "order": 9,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Kinetic Theory of Gases",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "hard",
+            "category": "Kinetic Theory of Gases :: Graphical Slope & Area Integration",
+            "templateSignature": "physics::kinetic theory of gases::a linear calibration line has slope math() and vertical axis intercept math() at what value of the horizontal coordinate does the output cross zero"
           },
           {
-            "questionId": "AUTC-0024",
+            "questionId": "PHYS_MAG_081",
             "order": 10,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Magnetic Effects of Current & Magnetism",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Magnetic Effects of Current & Magnetism :: Lorentz Force & Magnetic Dipoles [magnetic_moments]",
+            "templateSignature": "physics::magnetic effects of current & magnetism::the magnetic moments associated with two closely wound circular coils math() and math() of radius math() math() and math() respectively are equal if (where math() and math() are nu"
           },
           {
-            "questionId": "BT-0007",
+            "questionId": "PHY-EMI-M006",
             "order": 11,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Electromagnetic Induction & AC",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Electromagnetic Induction & AC :: Boundary Ratio & Scaling Analysis",
+            "templateSignature": "physics::electromagnetic induction & ac::when the amplitude of the driving excitation in a linear resistive medium (resistance math() units) is multiplied by math() by what factor does the rate of quadratic energy dissipa"
           },
           {
-            "questionId": "AUTC-0086",
+            "questionId": "PHYS_WO_043",
             "order": 12,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Ray & Wave Optics",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Ray & Wave Optics :: YDSE & Wave Interference [young_double]",
+            "templateSignature": "physics::ray & wave optics::the young s double slit interference experiment is performed using light consisting of # nm and # nm wavelengths to form interference patterns the least number of the bright fringe"
           },
           {
-            "questionId": "BT-0120",
+            "questionId": "PHYS_UM_102",
             "order": 13,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Units & Measurements",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Units & Measurements :: Precision Instruments & Error Propagation [vernier_calipers]",
+            "templateSignature": "physics::units & measurements::in a vernier calipers # divisions of vernier scale is equal to the # divisions of main scale when both jaws of vernier calipers touch each other the zero of the vernier scale is sh"
           },
           {
-            "questionId": "AUTC-0056",
+            "questionId": "PHY-ELD-M004",
             "order": 14,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Electronic Devices",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "hard",
+            "category": "Electronic Devices :: Instantaneous Rate & Gradient Law",
+            "templateSignature": "physics::electronic devices::the potential energy of a particle moving along the math() axis is given by math() at what positive position math() does the net conservative force on the particle vanish"
           },
           {
-            "questionId": "BT-0079",
+            "questionId": "PHY-ELS-M021",
             "order": 15,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Electrostatics",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Electrostatics :: Transient Decay & Time Constant",
+            "templateSignature": "physics::electrostatics::a physical quantity decays exponentially with time according to math( tau) where math( tau) at what instant math() does math() become equal to math()"
           },
           {
-            "questionId": "AUTC-0005",
+            "questionId": "PHY-NLM-M013",
             "order": 16,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Laws of Motion",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Laws of Motion :: Energy Efficiency & Dissipation",
+            "templateSignature": "physics::laws of motion::a cyclic device absorbs math() of energy from a high temperature source per cycle and rejects math() to a low temperature sink what is its thermal efficiency"
           },
           {
-            "questionId": "BT-0080",
+            "questionId": "PHYS_WPE_002",
             "order": 17,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Work, Energy & Power",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Work, Energy & Power :: Energy [four_particles]",
+            "templateSignature": "physics::work, energy & power::four particles math() of mass math( frac) have same momentum respectively the particle with maximum kinetic energy is"
           },
           {
-            "questionId": "AUTC-0022",
+            "questionId": "PHY-KIN-M006",
             "order": 18,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Kinematics",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Kinematics :: Boundary Ratio & Scaling Analysis",
+            "templateSignature": "physics::kinematics::when the amplitude of the driving excitation in a linear resistive medium (resistance math() units) is multiplied by math() by what factor does the rate of quadratic energy dissipa"
           },
           {
-            "questionId": "BT-0035",
+            "questionId": "PHY-EMW-M010",
             "order": 19,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Electromagnetic Waves",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Electromagnetic Waves :: Dimensional & Exponent Homogeneity",
+            "templateSignature": "physics::electromagnetic waves::a dimensionless product is constructed as math( pi) if dimensional consistency requires the exponent relation math() find math()"
           },
           {
-            "questionId": "AUTC-0003",
+            "questionId": "PHY-GRV-M001",
             "order": 20,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Gravitation",
             "type": "mcq",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Gravitation :: Conservation & Invariant Balance",
+            "templateSignature": "physics::gravitation::an isolated physical system transitions from initial state parameter math() to final configuration math() while conserving the quantity math( mathcal) what is the value of math( ma"
           },
           {
-            "questionId": "BT-0105",
+            "questionId": "PHY-NLM-I002",
             "order": 21,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Laws of Motion",
             "type": "integer",
-            "difficulty": "easy"
+            "difficulty": "medium",
+            "category": "Laws of Motion :: Numerical Rate & Gradient Evaluation",
+            "templateSignature": "physics::laws of motion::the position coordinate of a particle varies with time as math() (in si units) find the instantaneous speed math( frac) at math()"
           },
           {
-            "questionId": "AUTC-0036",
+            "questionId": "PHY-KIN-I003",
             "order": 22,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Kinematics",
             "type": "integer",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Kinematics :: Numerical Ratio & Scaling Factor",
+            "templateSignature": "physics::kinematics::two cascaded linear stages have amplification factors math() and math() what is the overall amplification factor math()"
           },
           {
-            "questionId": "BT-0042",
+            "questionId": "PHY-GRV-I002",
             "order": 23,
-            "subject": "Mathematics",
-            "chapter": "Binomial Theorem",
+            "subject": "Physics",
+            "chapter": "Gravitation",
             "type": "integer",
-            "difficulty": "medium"
+            "difficulty": "medium",
+            "category": "Gravitation :: Numerical Rate & Gradient Evaluation",
+            "templateSignature": "physics::gravitation::the position coordinate of a particle varies with time as math() (in si units) find the instantaneous speed math( frac) at math()"
           },
           {
-            "questionId": "AUTC-0039",
+            "questionId": "PHY-ELD-I001",
             "order": 24,
-            "subject": "Mathematics",
-            "chapter": "Area Under The Curves",
+            "subject": "Physics",
+            "chapter": "Electronic Devices",
             "type": "integer",
-            "difficulty": "medium"
+            "difficulty": "easy",
+            "category": "Electronic Devices :: Numerical Conservation Law",
+            "templateSignature": "physics::electronic devices::a dynamical invariant is given by math() with math() and math() in si units calculate the numerical value of math()"
           },
           {
-            "questionId": "BT-0084",
+            "questionId": "PHY-PSL-I004",
             "order": 25,
+            "subject": "Physics",
+            "chapter": "Properties of Solids & Liquids",
+            "type": "integer",
+            "difficulty": "hard",
+            "category": "Properties of Solids & Liquids :: Numerical Work & Area Integration",
+            "templateSignature": "physics::properties of solids & liquids::a position dependent force math() acts on a particle along the math() axis from math() to math() calculate the work done in joules"
+          },
+          {
+            "questionId": "BIOMOLEC-0047",
+            "order": 26,
+            "subject": "Chemistry",
+            "chapter": "Amines & Biomolecules",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Amines & Biomolecules :: Ionic Equilibrium, pH & Solubility [tetrapeptide_complete]",
+            "templateSignature": "chemistry::amines & biomolecules::a tetrapeptide math() on complete hydrolysis produced glycine (gly) alanine (ala) valine (val) leucine (leu) in equimolar proportion each the number of tetrapeptides (sequences) po"
+          },
+          {
+            "questionId": "CHM-ALD-M002",
+            "order": 27,
+            "subject": "Chemistry",
+            "chapter": "Aldehydes, Ketones & Carboxylic Acids",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Aldehydes, Ketones & Carboxylic Acids :: Stoichiometric & Molar Equivalence",
+            "templateSignature": "chemistry::aldehydes, ketones & carboxylic acids::in a quantitative redox conversion math() of a reagent undergo a change in oxidation number of math() units per formula unit how many faradays of electricity are required for this "
+          },
+          {
+            "questionId": "CHM-CRD-M004",
+            "order": 28,
+            "subject": "Chemistry",
+            "chapter": "Coordination Compounds",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Coordination Compounds :: Thermodynamic & Energetic Balance",
+            "templateSignature": "chemistry::coordination compounds::given two elementary thermochemical steps with math( delta circ) and math( delta circ) determine math( delta circ) for the overall reaction obtained by math( times)"
+          },
+          {
+            "questionId": "CHM-PBL-M002",
+            "order": 29,
+            "subject": "Chemistry",
+            "chapter": "p-Block Elements",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "p-Block Elements :: Stoichiometric & Molar Equivalence",
+            "templateSignature": "chemistry::p-block elements::in a quantitative redox conversion math() of a reagent undergo a change in oxidation number of math() units per formula unit how many faradays of electricity are required for this "
+          },
+          {
+            "questionId": "CHM-HAL-M005",
+            "order": 30,
+            "subject": "Chemistry",
+            "chapter": "Haloalkanes & Haloarenes",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Haloalkanes & Haloarenes :: Equilibrium & Extent of Reaction",
+            "templateSignature": "chemistry::haloalkanes & haloarenes::for a reversible elementary reaction math( rightleftharpoons) the forward rate constant is math() and the reverse rate constant is math() find the equilibrium constant math()"
+          },
+          {
+            "questionId": "CHEM_SBC_122",
+            "order": 31,
+            "subject": "Chemistry",
+            "chapter": "Mole Concept & Stoichiometry",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Mole Concept & Stoichiometry :: Quantitative Measures In Chemical Equations [rocket_runs]",
+            "templateSignature": "chemistry::mole concept & stoichiometry::if a rocket runs on a fuel (c # h # ) and liquid oxygen the weight of oxygen required and co # released for every litre of fuel respectively are (given density of the fuel is # g m"
+          },
+          {
+            "questionId": "CHM-DFB-M013",
+            "order": 32,
+            "subject": "Chemistry",
+            "chapter": "d- and f-Block Elements",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "d- and f-Block Elements :: Colligative & Phase Behavior",
+            "templateSignature": "chemistry::d- and f-block elements::in a binary ideal liquid mixture at constant temperature pure liquid math() has vapor pressure math( circ) and its mole fraction in the liquid phase is math() find the partial vapo"
+          },
+          {
+            "questionId": "CBAMS-0093",
+            "order": 33,
+            "subject": "Chemistry",
+            "chapter": "Chemical Bonding & Molecular Structure",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Chemical Bonding & Molecular Structure :: Polarity, Dipole & Intermolecular Forces [order_increasing]",
+            "templateSignature": "chemistry::chemical bonding & molecular structure::the correct order of increasing intermolecular hydrogen bond strength is"
+          },
+          {
+            "questionId": "CHEM_SOA_025",
+            "order": 34,
+            "subject": "Chemistry",
+            "chapter": "Atomic Structure",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Atomic Structure :: Gravitation & Orbital Mechanics [radial_angular]",
+            "templateSignature": "chemistry::atomic structure::the number of radial and angular nodes in #d orbital are respectively"
+          },
+          {
+            "questionId": "ELECTROC-0053",
+            "order": 35,
+            "subject": "Chemistry",
+            "chapter": "Redox Reactions & Electrochemistry",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Redox Reactions & Electrochemistry :: Nernst Equation & Cell EMF [cell_standard]",
+            "templateSignature": "chemistry::redox reactions & electrochemistry::for the given cell math( rightarrow) the standard cell potential of the above reaction is given math( begin rightarrow theta rightarrow)"
+          },
+          {
+            "questionId": "CKANC-0017",
+            "order": 36,
+            "subject": "Chemistry",
+            "chapter": "Chemical Kinetics",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Chemical Kinetics :: Arrhenius Equation — Multi-Statement Verification",
+            "templateSignature": "chemistry::chemical kinetics::consider the following statements related to temperature dependence of rate constants identify the correct statements a the arrhenius equation holds true only for an elementary hom"
+          },
+          {
+            "questionId": "CHEM_THERMO_016",
+            "order": 37,
+            "subject": "Chemistry",
+            "chapter": "Chemical Thermodynamics",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Chemical Thermodynamics :: Enthalpy, Entropy & Free Energy [consider_endothermic]",
+            "templateSignature": "chemistry::chemical thermodynamics::let us consider an endothermic reaction which is non spontaneous at the freezing point of water however the reaction is spontaneous at boiling point of water choose the correct opt"
+          },
+          {
+            "questionId": "CHM-SOL-M013",
+            "order": 38,
+            "subject": "Chemistry",
+            "chapter": "Solutions & Colligative Properties",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Solutions & Colligative Properties :: Colligative & Phase Behavior",
+            "templateSignature": "chemistry::solutions & colligative properties::in a binary ideal liquid mixture at constant temperature pure liquid math() has vapor pressure math( circ) and its mole fraction in the liquid phase is math() find the partial vapo"
+          },
+          {
+            "questionId": "CHM-EQL-M015",
+            "order": 39,
+            "subject": "Chemistry",
+            "chapter": "Equilibrium (Chemical & Ionic)",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Equilibrium (Chemical & Ionic) :: Electrochemical Potential & Nernst",
+            "templateSignature": "chemistry::equilibrium (chemical & ionic)::in a galvanic cell at math() the standard reduction potentials of the cathode and anode half cells are math() and math() respectively determine math( circ)"
+          },
+          {
+            "questionId": "CHM-PRD-M001",
+            "order": 40,
+            "subject": "Chemistry",
+            "chapter": "Classification of Elements & Periodicity",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Classification of Elements & Periodicity :: Stoichiometric & Molar Equivalence",
+            "templateSignature": "chemistry::classification of elements & periodicity::if math() of a solute is dissolved completely to form math() of aqueous solution what is the molarity of the resulting solution"
+          },
+          {
+            "questionId": "CHM-GOC-M019",
+            "order": 41,
+            "subject": "Chemistry",
+            "chapter": "General Organic Chemistry & Isomerism",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "General Organic Chemistry & Isomerism :: Coordination & Crystal Field Theory",
+            "templateSignature": "chemistry::general organic chemistry & isomerism::an octahedral complex math() containing a math() metal ion has an octahedral splitting parameter math( delta) what is the magnitude of its crystal field stabilization energy"
+          },
+          {
+            "questionId": "CHM-ALC-M003",
+            "order": 42,
+            "subject": "Chemistry",
+            "chapter": "Alcohols, Phenols & Ethers",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Alcohols, Phenols & Ethers :: Thermodynamic & Energetic Balance",
+            "templateSignature": "chemistry::alcohols, phenols & ethers::for a chemical reaction at constant temperature and pressure math( delta circ) and math( delta circ) what is the standard gibbs free energy change math( delta circ)"
+          },
+          {
+            "questionId": "CHM-HYD-M006",
+            "order": 43,
+            "subject": "Chemistry",
+            "chapter": "Hydrocarbons",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Hydrocarbons :: Equilibrium & Extent of Reaction",
+            "templateSignature": "chemistry::hydrocarbons::one mole of an electrolyte dissociates in solution to yield math() ions per formula unit with a degree of dissociation math( alpha) calculate its van t hoff factor math()"
+          },
+          {
+            "questionId": "BIOMOLEC-0026",
+            "order": 44,
+            "subject": "Chemistry",
+            "chapter": "Amines & Biomolecules",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Amines & Biomolecules :: Carbohydrates — Assertion & Reason",
+            "templateSignature": "chemistry::amines & biomolecules::given below are two statements one is labelled as assertion (a) and the other is labelled as reason (r) assertion (a) ketoses give seliwanoff s test faster than aldoses reason (r) "
+          },
+          {
+            "questionId": "CHM-ALD-M024",
+            "order": 45,
+            "subject": "Chemistry",
+            "chapter": "Aldehydes, Ketones & Carboxylic Acids",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Aldehydes, Ketones & Carboxylic Acids :: Reaction Mechanism & Selectivity",
+            "templateSignature": "chemistry::aldehydes, ketones & carboxylic acids::a chemical reaction produces two regioisomers in the molar ratio math() what is the percentage composition of the major regioisomer in the product mixture"
+          },
+          {
+            "questionId": "ELECTROC-0071",
+            "order": 46,
+            "subject": "Chemistry",
+            "chapter": "Redox Reactions & Electrochemistry",
+            "type": "integer",
+            "difficulty": "hard",
+            "category": "Redox Reactions & Electrochemistry :: Electromagnetic Induction [diagram_faraday_electr]",
+            "templateSignature": "chemistry::redox reactions & electrochemistry::# faraday electricity was passed through math() and # faraday was passed through math() electrolytic cells after this the two cells were connected as shown below to make an electro"
+          },
+          {
+            "questionId": "CHM-AMN-I001",
+            "order": 47,
+            "subject": "Chemistry",
+            "chapter": "Amines & Biomolecules",
+            "type": "integer",
+            "difficulty": "easy",
+            "category": "Amines & Biomolecules :: Numerical Stoichiometric Equivalents",
+            "templateSignature": "chemistry::amines & biomolecules::when math() moles of a substance with math() factor math() react completely what is the total number of chemical equivalents reacted"
+          },
+          {
+            "questionId": "CHEM_SBC_010",
+            "order": 48,
+            "subject": "Chemistry",
+            "chapter": "Mole Concept & Stoichiometry",
+            "type": "integer",
+            "difficulty": "medium",
+            "category": "Mole Concept & Stoichiometry :: Solution Concentration & Dilution [density_nacl]",
+            "templateSignature": "chemistry::mole concept & stoichiometry::the density of math() solution of math() is math() molality of the solution is math( times) (nearest integer) given molar mass of math() and math() is math() and math() respectivel"
+          },
+          {
+            "questionId": "CHEM_SOA_024",
+            "order": 49,
+            "subject": "Chemistry",
+            "chapter": "Atomic Structure",
+            "type": "integer",
+            "difficulty": "medium",
+            "category": "Atomic Structure :: Gravitation & Orbital Mechanics [atomic_orbitals]",
+            "templateSignature": "chemistry::atomic structure::the number of atomic orbitals from the following having # radial nodes is math()"
+          },
+          {
+            "questionId": "CHEM_IONIC_027",
+            "order": 50,
+            "subject": "Chemistry",
+            "chapter": "Equilibrium (Chemical & Ionic)",
+            "type": "integer",
+            "difficulty": "medium",
+            "category": "Equilibrium (Chemical & Ionic) :: Solubility Product And Common Ion Effect [log_solubility_silver]",
+            "templateSignature": "chemistry::equilibrium (chemical & ionic)::at math() the solubility of silver chloride in water is math( times) the value of math( log) for silver chloride is (given mass of math() is math() and mass of math() is math() )"
+          },
+          {
+            "questionId": "MATH_SEQ_012",
+            "order": 51,
+            "subject": "Mathematics",
+            "chapter": "Sequence & Series",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Sequence & Series :: Arithmetic Progression [suppose_arithmetic]",
+            "templateSignature": "mathematics::sequence & series::suppose math( ldots) be an arithmetic progression of natural numbers if the ratio of the sum of first five terms to the sum of first nine terms of the progression is math() and mat"
+          },
+          {
+            "questionId": "MAT-PRB-M015",
+            "order": 52,
+            "subject": "Mathematics",
+            "chapter": "Statistics & Probability",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Statistics & Probability :: Telescoping Series & Recurrence",
+            "templateSignature": "mathematics::statistics & probability::let math( alpha) and math( beta) be the roots of math() evaluate math( alpha beta)"
+          },
+          {
+            "questionId": "MAT-DET-M014",
+            "order": 53,
+            "subject": "Mathematics",
+            "chapter": "Determinants",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Determinants :: Functional Equations & Composition",
+            "templateSignature": "mathematics::determinants::if a function math( mathbb to mathbb) satisfies math() for all math( in mathbb) find math()"
+          },
+          {
+            "questionId": "MAT-LCD-M019",
+            "order": 54,
+            "subject": "Mathematics",
+            "chapter": "Limits, Continuity & Differentiability",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Limits, Continuity & Differentiability :: Definite Integration & Symmetry",
+            "templateSignature": "mathematics::limits, continuity & differentiability::evaluate the definite integral math( int frac sqrt sqrt)"
+          },
+          {
+            "questionId": "MAT-DFE-M018",
+            "order": 55,
+            "subject": "Mathematics",
+            "chapter": "Differential Equations",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Differential Equations :: Differential Rate & Tangent Locus",
+            "templateSignature": "mathematics::differential equations::at what abscissa math() is the normal to the curve math() parallel to the math() axis"
+          },
+          {
+            "questionId": "MAT-PNC-M010",
+            "order": 56,
+            "subject": "Mathematics",
+            "chapter": "Permutations & Combinations",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Permutations & Combinations :: Transformation of Equations",
+            "templateSignature": "mathematics::permutations & combinations::if one root of math() (where math( in mathbb) ) is math( sqrt) what is the rational coefficient math()"
+          },
+          {
+            "questionId": "MAT-CRD-M006",
+            "order": 57,
+            "subject": "Mathematics",
+            "chapter": "Coordinate Geometry (Straight Lines & Circles)",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Coordinate Geometry (Straight Lines & Circles) :: Common Roots & Parameter Elimination",
+            "templateSignature": "mathematics::coordinate geometry (straight lines & circles)::if the equations math() and math() have both roots in common find the value of math()"
+          },
+          {
+            "questionId": "MAT-MRL-M008",
+            "order": 58,
+            "subject": "Mathematics",
+            "chapter": "Mathematical Reasoning & Linear Programming",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Mathematical Reasoning & Linear Programming :: Location of Roots on Real Axis",
+            "templateSignature": "mathematics::mathematical reasoning & linear programming::at what value of math() does the real valued function math() attain its global minimum"
+          },
+          {
+            "questionId": "MATH_TRIG_018",
+            "order": 59,
+            "subject": "Mathematics",
+            "chapter": "Trigonometry",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Trigonometry :: Number of Solutions & Counting [trig_such]",
+            "templateSignature": "mathematics::trigonometry::the number of solutions of math( cos sin) such that math( pi leq leq pi) is"
+          },
+          {
+            "questionId": "MAT-3DG-M011",
+            "order": 60,
+            "subject": "Mathematics",
+            "chapter": "Three-Dimensional Geometry",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Three-Dimensional Geometry :: Rational Range & Extremum Analysis",
+            "templateSignature": "mathematics::three-dimensional geometry::determine the minimum value of the expression math() over all math( in mathbb)"
+          },
+          {
+            "questionId": "PHYS_VA_014",
+            "order": 61,
+            "subject": "Mathematics",
+            "chapter": "Vector Algebra",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Vector Algebra :: Vector Arithmetic [vec_vectors_magnitudes]",
+            "templateSignature": "mathematics::vector algebra::two vectors math( overrightarrow) and math( overrightarrow) have equal magnitudes if magnitude of math( overrightarrow) math( overrightarrow) is equal to two times the magnitude of"
+          },
+          {
+            "questionId": "MAT-SRF-M021",
+            "order": 62,
+            "subject": "Mathematics",
+            "chapter": "Sets, Relations & Functions",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Sets, Relations & Functions :: Linear Systems & Determinant Rank",
+            "templateSignature": "mathematics::sets, relations & functions::for what value of math( lambda) is the matrix math( begin lambda end) singular"
+          },
+          {
+            "questionId": "MAT-INT-M017",
+            "order": 63,
+            "subject": "Mathematics",
+            "chapter": "Integral Calculus",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Integral Calculus :: Differential Rate & Tangent Locus",
+            "templateSignature": "mathematics::integral calculus::find the slope of the tangent to the curve math() at the point where math()"
+          },
+          {
+            "questionId": "MAT-BIN-M006",
+            "order": 64,
             "subject": "Mathematics",
             "chapter": "Binomial Theorem",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Binomial Theorem :: Common Roots & Parameter Elimination",
+            "templateSignature": "mathematics::binomial theorem::if the equations math() and math() have both roots in common find the value of math()"
+          },
+          {
+            "questionId": "MAT-CMP-M001",
+            "order": 65,
+            "subject": "Mathematics",
+            "chapter": "Complex Numbers",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Complex Numbers :: Symmetric Functions & Vieta Relations",
+            "templateSignature": "mathematics::complex numbers::if math( alpha) and math( beta) are the roots of math() what is the value of math( alpha beta)"
+          },
+          {
+            "questionId": "MAT-MTX-M013",
+            "order": 66,
+            "subject": "Mathematics",
+            "chapter": "Matrices",
+            "type": "mcq",
+            "difficulty": "easy",
+            "category": "Matrices :: Functional Equations & Composition",
+            "templateSignature": "mathematics::matrices::let math() and math() for math( in mathbb) evaluate math( circ)"
+          },
+          {
+            "questionId": "MAT-CNC-M015",
+            "order": 67,
+            "subject": "Mathematics",
+            "chapter": "Conic Sections (Parabola, Ellipse, Hyperbola)",
+            "type": "mcq",
+            "difficulty": "medium",
+            "category": "Conic Sections (Parabola, Ellipse, Hyperbola) :: Telescoping Series & Recurrence",
+            "templateSignature": "mathematics::conic sections (parabola, ellipse, hyperbola)::let math( alpha) and math( beta) be the roots of math() evaluate math( alpha beta)"
+          },
+          {
+            "questionId": "MAT-QUD-M008",
+            "order": 68,
+            "subject": "Mathematics",
+            "chapter": "Quadratic Equations",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Quadratic Equations :: Location of Roots on Real Axis",
+            "templateSignature": "mathematics::quadratic equations::at what value of math() does the real valued function math() attain its global minimum"
+          },
+          {
+            "questionId": "MATH_SEQ_064",
+            "order": 69,
+            "subject": "Mathematics",
+            "chapter": "Sequence & Series",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Sequence & Series :: Geometric Progression [infinite_whose]",
+            "templateSignature": "mathematics::sequence & series::let the sum of an infinite g p whose first term is a and the common ratio is r be # let the sum of its first five terms be math( frac) then the sum of the first # terms of an ap wh"
+          },
+          {
+            "questionId": "MATH_STAT_007",
+            "order": 70,
+            "subject": "Mathematics",
+            "chapter": "Statistics & Probability",
+            "type": "mcq",
+            "difficulty": "hard",
+            "category": "Statistics & Probability :: Statistical Dispersion & Moments [sum_mean_standard]",
+            "templateSignature": "mathematics::statistics & probability::the mean and standard deviation of # observations are # and # respectively by mistake one observation is taken as # instead of # if the correct mean and the correct standard deviat"
+          },
+          {
+            "questionId": "MAT-INT-I002",
+            "order": 71,
+            "subject": "Mathematics",
+            "chapter": "Integral Calculus",
             "type": "integer",
-            "difficulty": "easy"
+            "difficulty": "medium",
+            "category": "Integral Calculus :: Numerical Discriminant Parameter",
+            "templateSignature": "mathematics::integral calculus::find the positive constant math() for which the equation math() has two equal real roots"
+          },
+          {
+            "questionId": "MAT-DET-I002",
+            "order": 72,
+            "subject": "Mathematics",
+            "chapter": "Determinants",
+            "type": "integer",
+            "difficulty": "medium",
+            "category": "Determinants :: Numerical Discriminant Parameter",
+            "templateSignature": "mathematics::determinants::find the positive constant math() for which the equation math() has two equal real roots"
+          },
+          {
+            "questionId": "MATH_SL_026",
+            "order": 73,
+            "subject": "Mathematics",
+            "chapter": "Coordinate Geometry (Straight Lines & Circles)",
+            "type": "integer",
+            "difficulty": "medium",
+            "category": "Coordinate Geometry (Straight Lines & Circles) :: Centers Of Triangle [equations_sides]",
+            "templateSignature": "mathematics::coordinate geometry (straight lines & circles)::the equations of the sides math() and math() of a triangle math() are math() and math() respectively if its orthocentre is math( frac) then math() is equal to"
+          },
+          {
+            "questionId": "MATH_STAT_014",
+            "order": 74,
+            "subject": "Mathematics",
+            "chapter": "Statistics & Probability",
+            "type": "integer",
+            "difficulty": "hard",
+            "category": "Statistics & Probability :: Statistical Dispersion & Moments [sum_mean_standard]",
+            "templateSignature": "mathematics::statistics & probability::the mean and standard deviation of # observations were found to be # and # respectively on rechecking it was found that an observation was read as # in place of # if math( mu) and "
+          },
+          {
+            "questionId": "MAT-VEC-I001",
+            "order": 75,
+            "subject": "Mathematics",
+            "chapter": "Vector Algebra",
+            "type": "integer",
+            "difficulty": "easy",
+            "category": "Vector Algebra :: Numerical Vieta & Root Sum",
+            "templateSignature": "mathematics::vector algebra::if math( alpha beta) are the roots of math() compute the integer value of math( alpha beta alpha beta)"
           }
         ],
         "responses": {
-          "BT-0102": {
-            "questionId": "BT-0102",
+          "PHY-GRV-M004": {
+            "questionId": "PHY-GRV-M004",
             "answer": null,
             "status": "VISITED",
             "markedForReview": false,
             "visited": true,
-            "timeSpentSeconds": 117,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
+            "timeSpentSeconds": 12,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
           },
-          "AUTC-0077": {
-            "questionId": "AUTC-0077",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0061": {
-            "questionId": "BT-0061",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0017": {
-            "questionId": "AUTC-0017",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0010": {
-            "questionId": "BT-0010",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0058": {
-            "questionId": "AUTC-0058",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0074": {
-            "questionId": "BT-0074",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0081": {
-            "questionId": "AUTC-0081",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0088": {
-            "questionId": "BT-0088",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0024": {
-            "questionId": "AUTC-0024",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0007": {
-            "questionId": "BT-0007",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0086": {
-            "questionId": "AUTC-0086",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0120": {
-            "questionId": "BT-0120",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0056": {
-            "questionId": "AUTC-0056",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0079": {
-            "questionId": "BT-0079",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0005": {
-            "questionId": "AUTC-0005",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0080": {
-            "questionId": "BT-0080",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0022": {
-            "questionId": "AUTC-0022",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0035": {
-            "questionId": "BT-0035",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0003": {
-            "questionId": "AUTC-0003",
+          "PHY-THM-M006": {
+            "questionId": "PHY-THM-M006",
             "answer": null,
             "status": "VISITED",
             "markedForReview": false,
             "visited": true,
-            "timeSpentSeconds": 287,
-            "lastUpdatedAt": "2026-09-29T19:08:23.890Z"
+            "timeSpentSeconds": 3,
+            "lastUpdatedAt": "2026-10-03T18:38:56.657Z"
           },
-          "BT-0105": {
-            "questionId": "BT-0105",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0036": {
-            "questionId": "AUTC-0036",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0042": {
-            "questionId": "BT-0042",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "AUTC-0039": {
-            "questionId": "AUTC-0039",
-            "answer": null,
-            "status": "NOT_VISITED",
-            "markedForReview": false,
-            "visited": false,
-            "timeSpentSeconds": 0,
-            "lastUpdatedAt": "2026-09-29T19:06:03.641Z"
-          },
-          "BT-0084": {
-            "questionId": "BT-0084",
+          "PHY-ROT-M020": {
+            "questionId": "PHY-ROT-M020",
             "answer": null,
             "status": "VISITED",
             "markedForReview": false,
             "visited": true,
-            "timeSpentSeconds": 4,
-            "lastUpdatedAt": "2026-09-29T19:08:20.140Z"
+            "timeSpentSeconds": 3,
+            "lastUpdatedAt": "2026-10-03T18:39:00.123Z"
+          },
+          "PHYS_SHM_058": {
+            "questionId": "PHYS_SHM_058",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 1,
+            "lastUpdatedAt": "2026-10-03T18:39:02.292Z"
+          },
+          "PHY-DNM-M013": {
+            "questionId": "PHY-DNM-M013",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 11,
+            "lastUpdatedAt": "2026-10-03T18:39:03.174Z"
+          },
+          "PHY-ATN-M018": {
+            "questionId": "PHY-ATN-M018",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-CUR-M006": {
+            "questionId": "PHY-CUR-M006",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-PSL-M007": {
+            "questionId": "PHY-PSL-M007",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-KTG-M008": {
+            "questionId": "PHY-KTG-M008",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHYS_MAG_081": {
+            "questionId": "PHYS_MAG_081",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-EMI-M006": {
+            "questionId": "PHY-EMI-M006",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHYS_WO_043": {
+            "questionId": "PHYS_WO_043",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHYS_UM_102": {
+            "questionId": "PHYS_UM_102",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-ELD-M004": {
+            "questionId": "PHY-ELD-M004",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-ELS-M021": {
+            "questionId": "PHY-ELS-M021",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-NLM-M013": {
+            "questionId": "PHY-NLM-M013",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHYS_WPE_002": {
+            "questionId": "PHYS_WPE_002",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-KIN-M006": {
+            "questionId": "PHY-KIN-M006",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-EMW-M010": {
+            "questionId": "PHY-EMW-M010",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-GRV-M001": {
+            "questionId": "PHY-GRV-M001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-NLM-I002": {
+            "questionId": "PHY-NLM-I002",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-KIN-I003": {
+            "questionId": "PHY-KIN-I003",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-GRV-I002": {
+            "questionId": "PHY-GRV-I002",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-ELD-I001": {
+            "questionId": "PHY-ELD-I001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "PHY-PSL-I004": {
+            "questionId": "PHY-PSL-I004",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "BIOMOLEC-0047": {
+            "questionId": "BIOMOLEC-0047",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:40:08.475Z"
+          },
+          "CHM-ALD-M002": {
+            "questionId": "CHM-ALD-M002",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:40:09.942Z"
+          },
+          "CHM-CRD-M004": {
+            "questionId": "CHM-CRD-M004",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:40:11.242Z"
+          },
+          "CHM-PBL-M002": {
+            "questionId": "CHM-PBL-M002",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:40:11.524Z"
+          },
+          "CHM-HAL-M005": {
+            "questionId": "CHM-HAL-M005",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:40:11.757Z"
+          },
+          "CHEM_SBC_122": {
+            "questionId": "CHEM_SBC_122",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:40:11.973Z"
+          },
+          "CHM-DFB-M013": {
+            "questionId": "CHM-DFB-M013",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:40:13.358Z"
+          },
+          "CBAMS-0093": {
+            "questionId": "CBAMS-0093",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:40:13.557Z"
+          },
+          "CHEM_SOA_025": {
+            "questionId": "CHEM_SOA_025",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 381,
+            "lastUpdatedAt": "2026-10-03T18:40:13.757Z"
+          },
+          "ELECTROC-0053": {
+            "questionId": "ELECTROC-0053",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CKANC-0017": {
+            "questionId": "CKANC-0017",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHEM_THERMO_016": {
+            "questionId": "CHEM_THERMO_016",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-SOL-M013": {
+            "questionId": "CHM-SOL-M013",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-EQL-M015": {
+            "questionId": "CHM-EQL-M015",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-PRD-M001": {
+            "questionId": "CHM-PRD-M001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-GOC-M019": {
+            "questionId": "CHM-GOC-M019",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-ALC-M003": {
+            "questionId": "CHM-ALC-M003",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-HYD-M006": {
+            "questionId": "CHM-HYD-M006",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "BIOMOLEC-0026": {
+            "questionId": "BIOMOLEC-0026",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-ALD-M024": {
+            "questionId": "CHM-ALD-M024",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "ELECTROC-0071": {
+            "questionId": "ELECTROC-0071",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHM-AMN-I001": {
+            "questionId": "CHM-AMN-I001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHEM_SBC_010": {
+            "questionId": "CHEM_SBC_010",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHEM_SOA_024": {
+            "questionId": "CHEM_SOA_024",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "CHEM_IONIC_027": {
+            "questionId": "CHEM_IONIC_027",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MATH_SEQ_012": {
+            "questionId": "MATH_SEQ_012",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:15.526Z"
+          },
+          "MAT-PRB-M015": {
+            "questionId": "MAT-PRB-M015",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:39:17.225Z"
+          },
+          "MAT-DET-M014": {
+            "questionId": "MAT-DET-M014",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:17.842Z"
+          },
+          "MAT-LCD-M019": {
+            "questionId": "MAT-LCD-M019",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 3,
+            "lastUpdatedAt": "2026-10-03T18:39:19.741Z"
+          },
+          "MAT-DFE-M018": {
+            "questionId": "MAT-DFE-M018",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 1,
+            "lastUpdatedAt": "2026-10-03T18:39:22.307Z"
+          },
+          "MAT-PNC-M010": {
+            "questionId": "MAT-PNC-M010",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:23.958Z"
+          },
+          "MAT-CRD-M006": {
+            "questionId": "MAT-CRD-M006",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:26.060Z"
+          },
+          "MAT-MRL-M008": {
+            "questionId": "MAT-MRL-M008",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:27.942Z"
+          },
+          "MATH_TRIG_018": {
+            "questionId": "MATH_TRIG_018",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:29.942Z"
+          },
+          "MAT-3DG-M011": {
+            "questionId": "MAT-3DG-M011",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 2,
+            "lastUpdatedAt": "2026-10-03T18:39:31.842Z"
+          },
+          "PHYS_VA_014": {
+            "questionId": "PHYS_VA_014",
+            "answer": null,
+            "status": "VISITED",
+            "markedForReview": false,
+            "visited": true,
+            "timeSpentSeconds": 35,
+            "lastUpdatedAt": "2026-10-03T18:39:33.758Z"
+          },
+          "MAT-SRF-M021": {
+            "questionId": "MAT-SRF-M021",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-INT-M017": {
+            "questionId": "MAT-INT-M017",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-BIN-M006": {
+            "questionId": "MAT-BIN-M006",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-CMP-M001": {
+            "questionId": "MAT-CMP-M001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-MTX-M013": {
+            "questionId": "MAT-MTX-M013",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-CNC-M015": {
+            "questionId": "MAT-CNC-M015",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-QUD-M008": {
+            "questionId": "MAT-QUD-M008",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MATH_SEQ_064": {
+            "questionId": "MATH_SEQ_064",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MATH_STAT_007": {
+            "questionId": "MATH_STAT_007",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-INT-I002": {
+            "questionId": "MAT-INT-I002",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-DET-I002": {
+            "questionId": "MAT-DET-I002",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MATH_SL_026": {
+            "questionId": "MATH_SL_026",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MATH_STAT_014": {
+            "questionId": "MATH_STAT_014",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
+          },
+          "MAT-VEC-I001": {
+            "questionId": "MAT-VEC-I001",
+            "answer": null,
+            "status": "NOT_VISITED",
+            "markedForReview": false,
+            "visited": false,
+            "timeSpentSeconds": 0,
+            "lastUpdatedAt": "2026-10-03T18:38:23.146Z"
           }
         },
-        "currentQuestionOrder": 20,
-        "activeSubject": "Mathematics",
+        "currentQuestionOrder": 34,
+        "activeSubject": "Chemistry",
         "scoringConfig": {
           "mcqCountPerSubject": 20,
           "integerCountPerSubject": 5,
