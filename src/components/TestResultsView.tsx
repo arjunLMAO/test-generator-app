@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Info,
+  Maximize2,
   RotateCcw,
   Sparkles,
   X,
@@ -104,6 +106,20 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
   const [subjectFilter, setSubjectFilter] = useState<'ALL' | SubjectName>('ALL');
   const [activeSolutionQuestion, setActiveSolutionQuestion] =
     useState<QuestionResultDetail | null>(null);
+  const [zoomedSolutionImage, setZoomedSolutionImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (zoomedSolutionImage) {
+          e.preventDefault();
+          setZoomedSolutionImage(null);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [zoomedSolutionImage]);
 
   const animatedMarks = useAnimatedScore(report.totalMarks, 650);
 
@@ -1053,14 +1069,49 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
                   <MathText text={sanitizeStudentQuestionText(activeSolutionQuestion.question)} />
                 </div>
 
-                {activeSolutionQuestion.image && (
-                  <div className="p-4 rounded-xl bg-[#0B1120] border border-slate-800 inline-block">
-                    <img
-                      src={activeSolutionQuestion.image}
-                      alt="Question diagram"
-                      referrerPolicy="no-referrer"
-                      className="max-h-56 w-auto object-contain"
-                    />
+                {activeSolutionQuestion.image && !/^\[(image|diagram|figure|graph|reaction|structure):/i.test(activeSolutionQuestion.image) && (
+                  <div className="my-2">
+                    <div className="relative inline-block max-w-full rounded-xl bg-[#0B1120] border border-slate-800 p-4">
+                      <div
+                        className="cursor-zoom-in group"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setZoomedSolutionImage(activeSolutionQuestion.image!);
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setZoomedSolutionImage(activeSolutionQuestion.image!);
+                          }
+                        }}
+                        title="Click to enlarge diagram"
+                        aria-label="Click to enlarge diagram"
+                      >
+                        <img
+                          src={activeSolutionQuestion.image}
+                          alt="Question diagram"
+                          referrerPolicy="no-referrer"
+                          className="max-h-56 w-auto max-w-full object-contain rounded transition-all duration-150 group-hover:brightness-105"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setZoomedSolutionImage(activeSolutionQuestion.image!);
+                        }}
+                        aria-label="Enlarge Image"
+                        title="Enlarge Image"
+                        className="mt-3 text-xs font-mono font-medium text-slate-300 hover:text-white bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
+                      >
+                        <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
+                        <span>Enlarge Image</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -1184,6 +1235,71 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
             </div>
           </div>
         </div>
+      )}
+      {/* FULLSCREEN / MODAL ENLARGED IMAGE VIEWER (PORTALED TO DOCUMENT.BODY) */}
+      {zoomedSolutionImage && typeof document !== 'undefined' && createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged Question Diagram"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm animate-fade-in"
+          onClick={() => setZoomedSolutionImage(null)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex flex-col max-w-5xl w-full max-h-[92vh] bg-[#0A1022] border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-900/80 shrink-0">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                <span className="font-mono font-bold text-blue-400">
+                  Question {activeSolutionQuestion?.order}
+                </span>
+                <span className="text-slate-500">·</span>
+                <span>Enlarged Figure</span>
+                {activeSolutionQuestion?.chapter && (
+                  <span className="hidden sm:inline text-xs text-slate-400 font-normal">
+                    ({activeSolutionQuestion.chapter})
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setZoomedSolutionImage(null);
+                }}
+                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                title="Close (Esc)"
+                aria-label="Close enlarged view"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body / Enlarged Image Area */}
+            <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-center justify-center bg-[#070D1E] min-h-[280px]">
+              <img
+                src={zoomedSolutionImage}
+                alt={`Enlarged diagram for Question ${activeSolutionQuestion?.order}`}
+                referrerPolicy="no-referrer"
+                className="max-h-[75vh] max-w-full w-auto h-auto object-contain rounded-lg shadow-xl select-none mx-auto block"
+                style={{ maxHeight: '75vh', maxWidth: '100%', objectFit: 'contain' }}
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-2.5 border-t border-slate-800/80 bg-slate-900/50 flex items-center justify-between text-xs text-slate-400 shrink-0">
+              <span>Full resolution diagram</span>
+              <span>
+                Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">Esc</kbd> or click outside to return to review
+              </span>
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );

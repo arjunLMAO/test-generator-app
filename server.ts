@@ -75,6 +75,42 @@ function getOrCreateUser(db: PersistentDatabase, userId: string): UserPersistent
 
 function scanQuestionBankDirectory(dirPath: string): RawFilePayload[] {
   const results: RawFilePayload[] = [];
+  const seenFiles = new Set<string>();
+
+  // 1. Sync any authentic JSON question files uploaded directly to project root explorer
+  try {
+    const rootFiles = fs.readdirSync(ROOT_DIR, { withFileTypes: true });
+    for (const entry of rootFiles) {
+      if (
+        entry.isFile() &&
+        entry.name.toLowerCase().endsWith('.json') &&
+        !['package.json', 'tsconfig.json', 'metadata.json', 'bun.lock'].includes(entry.name)
+      ) {
+        const fullPath = path.join(ROOT_DIR, entry.name);
+        try {
+          const text = fs.readFileSync(fullPath, 'utf-8');
+          const parsed = JSON.parse(text);
+          if (parsed && (Array.isArray(parsed) || parsed.questions || parsed.chapter)) {
+            const sub = parsed.subject;
+            let targetSubDir = 'physics';
+            if (sub === 'Chemistry') targetSubDir = 'chemistry';
+            else if (sub === 'Mathematics') targetSubDir = 'mathematics';
+            const targetDir = path.join(dirPath, targetSubDir);
+            fs.mkdirSync(targetDir, { recursive: true });
+            const destPath = path.join(targetDir, entry.name);
+            if (!fs.existsSync(destPath)) {
+              fs.copyFileSync(fullPath, destPath);
+            }
+          }
+        } catch {
+          // ignore unparseable root file
+        }
+      }
+    }
+  } catch {
+    // ignore
+  }
+
   if (!fs.existsSync(dirPath)) return results;
 
   const walk = (currentDir: string) => {
@@ -84,14 +120,16 @@ function scanQuestionBankDirectory(dirPath: string): RawFilePayload[] {
       if (entry.isDirectory()) {
         walk(fullPath);
       } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.json')) {
+        const relPath = path.relative(QUESTION_BANK_DIR, fullPath);
+        if (seenFiles.has(relPath)) continue;
+        seenFiles.add(relPath);
         try {
           const text = fs.readFileSync(fullPath, 'utf-8');
           const parsed = JSON.parse(text);
-          const relPath = path.relative(QUESTION_BANK_DIR, fullPath);
           results.push({ filePath: relPath, content: parsed });
         } catch (err) {
           results.push({
-            filePath: path.relative(QUESTION_BANK_DIR, fullPath),
+            filePath: relPath,
             content: [{ id: `MALFORMED_${entry.name}`, question: '' }],
           });
         }
@@ -319,7 +357,25 @@ async function startServer() {
     });
   });
 
-  // 5. Get Student Persistent State
+  // 5. Database Statistics & Audit Reporting
+  app.get('/api/question-bank/stats', (_req, res) => {
+    res.json(qbEngine.getDatabaseStats());
+  });
+
+  // 6. Searchable Question Query API
+  app.post('/api/question-bank/query', (req, res) => {
+    try {
+      const results = qbEngine.queryQuestions(req.body || {});
+      res.json({
+        totalMatched: results.length,
+        questions: results,
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err?.message || 'Query failed.' });
+    }
+  });
+
+  // 7. Get Student Persistent State
   app.get('/api/student/:userId/state', (req, res) => {
     db = loadDatabase();
     const user = getOrCreateUser(db, req.params.userId);

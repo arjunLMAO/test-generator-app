@@ -22,8 +22,10 @@ function normalizeHtmlFormatting(input: string): string {
   return input
     // Strip embedded <style>...</style> blocks from scraped HTML tables so dark theme styles apply
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    // Cleanly format [image: ...] scraper notes
-    .replace(/\[image:\s*([^\]]+)\]/gi, '<span class="text-xs font-mono text-slate-400">[Diagram: $1]</span>')
+    // Strip diagram/image metadata placeholders so they never render as student-facing text
+    .replace(/\[(image|diagram|figure|graph|reaction|structure|asset|image\s+attached):\s*[^\]]+\]/gi, '')
+    // Strip leftover scraper question header artifacts like "Question 113 English"
+    .replace(/(?:\n|<br\/>|\s)*Question\s+\d+\s+English(?=[.,?;:\s]|$)/gi, '')
     // Replace paragraph boundaries with clean line breaks
     .replace(/<\/p>\s*<p>/gi, '<br/><br/>')
     .replace(/<\/?p[^>]*>/gi, '')

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { DifficultyLevel, ErrorCategory, SubjectName } from '../types/jee';
+import { DifficultyLevel, ErrorCategory, SubjectName, VisualType } from '../types/jee';
+import { VisualAssetEngine } from '../services/VisualAssetEngine';
 
 export interface ChapterMeta {
   subject: SubjectName;
@@ -940,7 +941,60 @@ $$\\lim_{x \\to 0} \\frac{x - \\sin x}{x^3} \\times 6$$`;
   }
 }
 
-export function ensureQuestionBankSeeded(baseDir: string): void {
+function determineVisualAssetForQuestion(
+  meta: ChapterMeta,
+  index: number,
+  isReactionBased: boolean
+): { visualType?: VisualType; visualAsset?: any; svgDataUri?: string } {
+  let visualType: VisualType | undefined;
+
+  if (meta.subject === 'Chemistry') {
+    if (ORGANIC_CHAPTER_CODES.has(meta.code) || isReactionBased) {
+      visualType = index % 2 === 0 ? 'reaction_scheme' : 'stereochemical_structure';
+    } else if (index % 3 === 0) {
+      visualType = 'data_plot';
+    }
+  } else if (meta.subject === 'Physics') {
+    if (['PHY-CUR', 'PHY-ACN', 'PHY-ELS', 'PHY-EMI'].includes(meta.code)) {
+      visualType = 'circuit';
+    } else if (['PHY-KIN', 'PHY-THM', 'PHY-OSW', 'PHY-WEP'].includes(meta.code)) {
+      visualType = 'data_plot';
+    } else if (['PHY-OPT', 'PHY-NLM', 'PHY-ROT'].includes(meta.code)) {
+      visualType = 'geometry_diagram';
+    } else if (index % 3 === 0) {
+      visualType = 'data_plot';
+    }
+  } else if (meta.subject === 'Mathematics') {
+    if (['MAT-CRD', 'MAT-CNC'].includes(meta.code)) {
+      visualType = 'coordinate_graph';
+    } else if (['MAT-INT', 'MAT-3DG', 'MAT-VEC', 'MAT-DFE'].includes(meta.code)) {
+      visualType = 'geometry_diagram';
+    } else if (index % 3 === 0) {
+      visualType = 'coordinate_graph';
+    }
+  }
+
+  if (!visualType) return {};
+
+  const visualAsset = VisualAssetEngine.createVisualAsset(
+    meta.subject,
+    meta.chapter,
+    visualType,
+    meta.code,
+    {
+      caption: `${meta.chapter} · Visual Diagram`,
+      substrate: meta.chapter.includes('Aldehydes') ? 'Benzaldehyde' : 'Toluene',
+    }
+  );
+
+  const svgDataUri = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(visualAsset.svgContent || '')}`;
+  return { visualType, visualAsset, svgDataUri };
+}
+
+export function ensureQuestionBankSeeded(
+  baseDir: string = path.resolve(process.cwd(), 'question-bank')
+): void {
+  const rootDir = process.cwd();
   const physicsDir = path.join(baseDir, 'physics');
   const chemistryDir = path.join(baseDir, 'chemistry');
   const mathDir = path.join(baseDir, 'mathematics');
@@ -949,122 +1003,33 @@ export function ensureQuestionBankSeeded(baseDir: string): void {
   fs.mkdirSync(chemistryDir, { recursive: true });
   fs.mkdirSync(mathDir, { recursive: true });
 
-  const SCHEMA_VERSION = 'v6-hard-mode-authentic';
+  // Remove any legacy mock/synthetic or deprecated directories
+  fs.rmSync(path.join(baseDir, 'imported'), { recursive: true, force: true });
 
-  // Check if already seeded with v5 hard mode questions
-  const sampleCheckFile = path.join(chemistryDir, 'aldehydes-ketones-carboxylic-acids.json');
-  if (fs.existsSync(sampleCheckFile)) {
+  // Discover all authentic question bank JSON files in the project root explorer
+  const rootFiles = fs.existsSync(rootDir)
+    ? fs.readdirSync(rootDir).filter((f) =>
+        f.endsWith('.json') &&
+        !['package.json', 'tsconfig.json', 'metadata.json', 'bun.lock'].includes(f)
+      )
+    : [];
+
+  for (const file of rootFiles) {
     try {
-      const sampleParsed = JSON.parse(fs.readFileSync(sampleCheckFile, 'utf-8'));
-      if (sampleParsed.schemaVersion === SCHEMA_VERSION) {
-        return;
+      const fullPath = path.join(rootDir, file);
+      const content = JSON.parse(fs.readFileSync(fullPath, 'utf-8'));
+      const sub = content.subject;
+      let targetDir = physicsDir;
+      if (sub === 'Chemistry') targetDir = chemistryDir;
+      else if (sub === 'Mathematics') targetDir = mathDir;
+      else if (sub === 'Physics') targetDir = physicsDir;
+
+      const targetPath = path.join(targetDir, file);
+      if (!fs.existsSync(targetPath)) {
+        fs.copyFileSync(fullPath, targetPath);
       }
     } catch {
-      // Proceed to regenerate
+      // Ignore unparseable files
     }
-  }
-
-  for (const meta of ALL_55_CHAPTERS) {
-    const mcqCount = meta.isMinor ? 12 : 24;
-    const intCount = meta.isMinor ? 3 : 6;
-    const questions: any[] = [];
-
-    for (let i = 0; i < mcqCount; i++) {
-      const qData =
-        meta.subject === 'Physics'
-          ? buildPhysicsQuestion(meta, i, 'mcq')
-          : meta.subject === 'Chemistry'
-            ? buildChemistryQuestion(meta, i, 'mcq')
-            : buildMathQuestion(meta, i, 'mcq');
-
-      questions.push({
-        id: `${meta.code}-M${String(i + 1).padStart(3, '0')}`,
-        subject: meta.subject,
-        chapter: meta.chapter,
-        topic: qData.topic,
-        category: qData.category,
-        difficulty: qData.difficulty,
-        type: 'mcq',
-        question: qData.question,
-        options: qData.options,
-        correctAnswer: qData.correctAnswer,
-        solution: qData.solution,
-        explanation: qData.explanation,
-        possibleErrorType: qData.possibleErrorType,
-        isReactionBased: (qData as any).isReactionBased || false,
-        image: (qData as any).image || null,
-        source: 'question_bank',
-        tags: [
-          'JEE Main',
-          'JEE Advanced',
-          meta.chapter,
-          qData.topic,
-          (qData as any).isReactionBased ? 'reaction-based' : 'conceptual',
-        ],
-      });
-    }
-
-    for (let j = 0; j < intCount; j++) {
-      const qData =
-        meta.subject === 'Physics'
-          ? buildPhysicsQuestion(meta, j, 'integer')
-          : meta.subject === 'Chemistry'
-            ? buildChemistryQuestion(meta, j, 'integer')
-            : buildMathQuestion(meta, j, 'integer');
-
-      questions.push({
-        id: `${meta.code}-I${String(j + 1).padStart(3, '0')}`,
-        subject: meta.subject,
-        chapter: meta.chapter,
-        topic: qData.topic,
-        category: qData.category,
-        difficulty: qData.difficulty,
-        type: 'integer',
-        question: qData.question,
-        correctAnswer: qData.correctAnswer,
-        solution: qData.solution,
-        explanation: qData.explanation,
-        possibleErrorType: qData.possibleErrorType,
-        isReactionBased: (qData as any).isReactionBased || false,
-        image: null,
-        source: 'question_bank',
-        tags: [
-          'JEE Main',
-          'Numerical',
-          meta.chapter,
-          qData.topic,
-          (qData as any).isReactionBased ? 'reaction-based' : 'numerical',
-        ],
-      });
-    }
-
-    const targetFolder =
-      meta.subject === 'Physics'
-        ? physicsDir
-        : meta.subject === 'Chemistry'
-          ? chemistryDir
-          : mathDir;
-
-    const slug = meta.chapter
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-    const filePath = path.join(targetFolder, `${slug}.json`);
-    fs.writeFileSync(
-      filePath,
-      JSON.stringify(
-        {
-          schemaVersion: SCHEMA_VERSION,
-          subject: meta.subject,
-          chapter: meta.chapter,
-          chapterCode: meta.code,
-          questions,
-        },
-        null,
-        2
-      ),
-      'utf-8'
-    );
   }
 }

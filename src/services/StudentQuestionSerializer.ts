@@ -1,4 +1,4 @@
-import { NormalizedQuestion, QuestionType, SubjectName } from '../types/jee';
+import { NormalizedQuestion, QuestionType, SubjectName, VisualAsset, VisualStatus } from '../types/jee';
 
 /**
  * Central whitelist of fields allowed to reach the active examination renderer (Section 15, 41, 60).
@@ -11,6 +11,10 @@ export const STUDENT_VISIBLE_QUESTION_FIELDS = [
   'question',
   'options',
   'image',
+  'images',
+  'visualAsset',
+  'visualRequired',
+  'visualStatus',
 ] as const;
 
 /**
@@ -37,6 +41,8 @@ export const FORBIDDEN_STUDENT_QUESTION_FIELDS = [
   'source',
   'sourceFile',
   'rawSourceId',
+  'rawVisualMetadata',
+  'diagram_ref',
   'generationPrompt',
   'generationReason',
 ] as const;
@@ -53,6 +59,10 @@ export interface StudentQuestion {
   question: string;
   options?: [string, string, string, string];
   image?: string | null;
+  images?: VisualAsset[] | string[];
+  visualAsset?: VisualAsset | null;
+  visualRequired?: boolean;
+  visualStatus?: VisualStatus;
 }
 
 /**
@@ -99,6 +109,15 @@ export function sanitizeStudentQuestionText(rawText: string): string {
   );
   text = text.replace(/\s+by\s+(?:Raoult(?:'s)?\s+law|Hess(?:'s)?\s+law|AM-GM\s+inequality)(?=[.?]|$)/gi, '');
   text = text.replace(/\s+according\s+to\s+Slater(?:'s)?\s+rules(?=[.?]|$)/gi, '');
+
+  // 5. Strip diagram/image placeholder metadata from student-facing question text (Section 3, 7, 8, 14, 24)
+  text = text.replace(
+    /\[(image|diagram|figure|graph|reaction|structure|asset|image\s+attached):[\s\S]*?\]/gi,
+    ''
+  );
+  // Strip trailing or standalone "Question \d+ English" artifacts left by scraper linebreaks
+  text = text.replace(/(?:\n|<br\s*\/?>|\s)*Question\s+\d+\s+English(?=[.,?;:\s]|$)/gi, '');
+  text = text.replace(/(?:\n|<br\s*\/?>|\s)*\[(?:image|diagram|figure|graph|reaction|structure)[\s\S]*?\]/gi, '');
 
   // Capitalize first letter if a leading clause was stripped cleanly
   if (text.length > 1 && /^[a-z]/.test(text)) {
@@ -155,6 +174,10 @@ export function toStudentQuestion(
     question: sanitizedQuestion,
     ...(question.type === 'mcq' && question.options ? { options: question.options } : {}),
     image: question.image ?? null,
+    images: (question.images && question.images.length > 0) ? question.images : (question.image ? [question.image] : []),
+    visualAsset: question.visualAsset ?? null,
+    visualRequired: Boolean(question.visualRequired),
+    visualStatus: question.visualStatus ?? (question.image ? 'verified' : 'unverified'),
   };
 
   assertNoMetadataLeak(studentQuestion);

@@ -138,6 +138,10 @@ export class TestGeneratorService {
 
     for (const q of pool) {
       if (q.type !== qType) continue;
+      // Section 16: Never include questions where a required diagram/visual is missing or broken
+      if (q.visualRequired && (q.visualStatus === 'missing' || q.visualStatus === 'broken')) {
+        continue;
+      }
       const fp = buildQuestionContentFingerprint(q.subject, q.question, q.options);
       const tmpl =
         q.templateSignature || buildQuestionTemplateSignature(q.subject, q.chapter, q.question);

@@ -37,6 +37,107 @@ export type ErrorCategory =
   | 'Time-pressure error'
   | 'Sign/unit mistake';
 
+export type VisualType =
+  | 'reaction_scheme'
+  | 'molecule'
+  | 'stereochemical_structure'
+  | 'coordinate_graph'
+  | 'geometry_diagram'
+  | 'circuit'
+  | 'ray_diagram'
+  | 'free_body_diagram'
+  | 'experimental_setup'
+  | 'energy_diagram'
+  | 'orbital_diagram'
+  | 'table'
+  | 'data_plot'
+  | '3d_diagram';
+
+export type QuestionOrigin =
+  | 'ORIGINAL_PYQ'
+  | 'DERIVED_PYQ'
+  | 'ORIGINAL_GENERATED';
+
+export interface PYQSourceMetadata {
+  exam: string;
+  year: number;
+  session?: string;
+  date?: string;
+  shift?: string;
+  paper?: string;
+  questionNumber?: number;
+  sourceUrl?: string;
+  sourceType?: 'official_nta' | 'verified_paper' | 'standard_reference';
+  answerKeySource?: string;
+  imageSource?: string;
+}
+
+export type VisualStatus = 'verified' | 'unverified' | 'missing' | 'broken' | 'needs_review';
+
+export interface VisualAsset {
+  assetId: string;
+  type: VisualType;
+  subject: SubjectName;
+  chapter: string;
+  questionId?: string;
+  source?: string;
+  license?: string;
+  format: 'svg' | 'url' | 'data_uri';
+  content?: string;
+  svgContent?: string;
+  imageUrl?: string;
+  url?: string;
+  storagePath?: string;
+  sourceUrl?: string;
+  altText: string;
+  caption?: string;
+  width?: number;
+  height?: number;
+  verified?: boolean;
+  visualStatus?: VisualStatus;
+}
+
+export interface QuestionImage {
+  assetId: string;
+  questionId: string;
+  sourceUrl?: string;
+  storagePath?: string;
+  mimeType?: string;
+  altText: string;
+  visualType: string;
+  sourceType: string;
+  verificationStatus: 'verified' | 'needs_review' | 'failed';
+  svgContent?: string;
+}
+
+export interface ImageAuditReport {
+  totalQuestions: number;
+  questionsWithImages: number;
+  questionsWithoutImages: number;
+  uniqueImageAssets: number;
+  brokenImageReferences: number;
+  duplicateImageReferences: number;
+  suspiciousSharedAssets: number;
+  unverifiedImageAssociations: number;
+  repairedAssociations: number;
+  questionsRequiringManualReview: number;
+  suspiciousRecords: Array<{
+    questionId: string;
+    subject: SubjectName;
+    chapter: string;
+    assetId: string;
+    reason: string;
+    verificationStatus: 'verified' | 'needs_review' | 'failed';
+  }>;
+}
+
+export interface ReactionSchemeStep {
+  startingMaterial: string;
+  reagent: string;
+  intermediateOrProduct: string;
+  conditions?: string;
+}
+
 export interface NormalizedQuestion {
   id: string;
   subject: SubjectName;
@@ -52,6 +153,19 @@ export interface NormalizedQuestion {
   commonMistake?: string;
   possibleErrorType?: ErrorCategory;
   image?: string | null;
+  images?: string[];
+  visualAsset?: VisualAsset | null;
+  visualType?: VisualType;
+  isVisualQuestion?: boolean;
+  visualRequired?: boolean;
+  visualStatus?: VisualStatus;
+  rawVisualMetadata?: string | null;
+  questionOrigin?: QuestionOrigin;
+  sourceMetadata?: PYQSourceMetadata;
+  reactionSchemes?: ReactionSchemeStep[];
+  diagrams?: VisualAsset[];
+  questionImages?: QuestionImage[];
+  verificationStatus?: 'verified' | 'needs_review' | 'failed';
   source: string;
   sourceFile?: string;
   tags: string[];
@@ -60,6 +174,43 @@ export interface NormalizedQuestion {
   templateSignature?: string;
   isReactionBased?: boolean;
   isMultiConcept?: boolean;
+}
+
+export interface QuestionQueryCriteria {
+  subject?: SubjectName;
+  chapter?: string;
+  topic?: string;
+  difficulty?: DifficultyLevel;
+  type?: QuestionType;
+  isVisualQuestion?: boolean;
+  visualType?: VisualType;
+  isReactionBased?: boolean;
+  origin?: QuestionOrigin;
+  textSearch?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface DatabaseStats {
+  totalQuestions: number;
+  bySubject: Record<SubjectName, number>;
+  byOrigin: Record<QuestionOrigin, number>;
+  visualCount: number;
+  textCount: number;
+  reactionCount: number;
+  graphCount: number;
+  diagramCount: number;
+  structureCount: number;
+  byVisualType: Record<string, number>;
+  byDifficulty: Record<DifficultyLevel, number>;
+  byChapter: Record<string, {
+    total: number;
+    visual: number;
+    reaction: number;
+    hard: number;
+  }>;
+  auditPassed: boolean;
+  auditMessage?: string;
 }
 
 export interface QuestionValidationIssue {

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Bookmark,
   Check,
@@ -55,7 +56,7 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showMobilePalette, setShowMobilePalette] = useState(false);
   const [showShortcutsTip, setShowShortcutsTip] = useState(false);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
 
   const currentAllocation = useMemo(() => {
@@ -67,6 +68,32 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
   const currentQuestion = useMemo(() => {
     return questionsById.get(currentAllocation.questionId);
   }, [questionsById, currentAllocation]);
+
+  // Maintain image source independently without mutating or recreating
+  const imageSrc = useMemo(() => {
+    let raw = currentQuestion?.image;
+    if (!raw && Array.isArray(currentQuestion?.images) && currentQuestion.images.length > 0) {
+      raw = currentQuestion.images[0];
+    }
+    if (!raw && currentQuestion?.visualAsset?.imageUrl) {
+      raw = currentQuestion.visualAsset.imageUrl;
+    }
+    if (!raw && currentQuestion?.visualAsset?.svgContent) {
+      raw = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(currentQuestion.visualAsset.svgContent)}`;
+    }
+    if (!raw || typeof raw !== 'string') return null;
+    const trimmed = raw.trim();
+    if (!trimmed) return null;
+    // Reject any raw metadata strings from ever being used as an image source
+    if (/^\[(image|diagram|figure|graph|reaction|structure|asset):/i.test(trimmed)) {
+      return null;
+    }
+    // Normalize data URI charset if needed for maximum browser compatibility
+    if (trimmed.startsWith('data:image/svg+xml;utf8,')) {
+      return trimmed.replace('data:image/svg+xml;utf8,', 'data:image/svg+xml;charset=utf-8,');
+    }
+    return trimmed;
+  }, [currentQuestion]);
 
   const currentResponse: QuestionResponseState = useMemo(() => {
     return (
@@ -84,6 +111,7 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
 
   useEffect(() => {
     setImageLoadFailed(false);
+    setShowImageModal(false);
   }, [currentAllocation.questionId]);
 
   // Track per-question time spent every second
@@ -185,10 +213,17 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
     }
   };
 
-  // Keyboard shortcuts for exam speed (Section 54)
+  // Keyboard shortcuts for exam speed (Section 54) & modal dismissal
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (showSubmitModal || zoomedImage) return;
+      if (showImageModal) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          setShowImageModal(false);
+        }
+        return;
+      }
+      if (showSubmitModal) return;
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
         if (e.key === 'Enter') {
@@ -428,26 +463,50 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
               <MathText text={sanitizeStudentQuestionText(currentQuestion.question)} />
             </div>
 
-            {/* Optional Image / Scientific Diagram with Zoom & Leak-Free Fallback */}
-            {currentQuestion.image && (
+            {/* Question Image / Scientific Diagram with Non-Destructive Enlargement */}
+            {imageSrc && (
               <div className="my-4">
                 {!imageLoadFailed ? (
                   <div className="relative inline-block max-w-full rounded-xl bg-[#0B1120] border border-slate-800 p-4">
-                    <img
-                      src={currentQuestion.image}
-                      alt={`Diagram for Question ${currentAllocation.order}`}
-                      referrerPolicy="no-referrer"
-                      onError={() => setImageLoadFailed(true)}
-                      className="max-h-64 w-auto object-contain rounded cursor-zoom-in"
-                      onClick={() => setZoomedImage(currentQuestion.image!)}
-                    />
+                    <div
+                      className="cursor-zoom-in group"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowImageModal(true);
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setShowImageModal(true);
+                        }
+                      }}
+                      title="Click to enlarge image"
+                      aria-label="Click to enlarge image"
+                    >
+                      <img
+                        src={imageSrc}
+                        alt={`Diagram for Question ${currentAllocation.order}`}
+                        referrerPolicy="no-referrer"
+                        onError={() => setImageLoadFailed(true)}
+                        className="max-h-64 sm:max-h-72 w-auto max-w-full object-contain rounded transition-all duration-150 group-hover:brightness-105"
+                      />
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setZoomedImage(currentQuestion.image!)}
-                      className="mt-2 text-[11px] font-mono text-slate-400 hover:text-slate-200 flex items-center gap-1 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowImageModal(true);
+                      }}
+                      aria-label="Enlarge Image"
+                      title="Enlarge Image"
+                      className="mt-3 text-xs font-mono font-medium text-slate-300 hover:text-white bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
                     >
-                      <Maximize2 className="w-3 h-3" />
-                      <span>Enlarge figure</span>
+                      <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
+                      <span>Enlarge Image</span>
                     </button>
                   </div>
                 ) : (
@@ -639,28 +698,70 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
         </div>
       )}
 
-      {/* ZOOMED DIAGRAM LIGHTBOX */}
-      {zoomedImage && (
+      {/* FULLSCREEN / MODAL ENLARGED IMAGE VIEWER (PORTALED TO DOCUMENT.BODY) */}
+      {showImageModal && imageSrc && typeof document !== 'undefined' && createPortal(
         <div
-          className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-6"
-          onClick={() => setZoomedImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged Question Diagram"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm animate-fade-in"
+          onClick={() => setShowImageModal(false)}
         >
-          <div className="relative max-w-4xl max-h-[85vh] bg-[#0B1120] border border-slate-700 p-6 rounded-xl">
-            <button
-              type="button"
-              onClick={() => setZoomedImage(null)}
-              className="absolute top-3 right-3 p-2 rounded-lg bg-slate-800 text-slate-200 hover:text-white cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <img
-              src={zoomedImage}
-              alt="Enlarged question diagram"
-              referrerPolicy="no-referrer"
-              className="max-h-[75vh] w-auto object-contain mx-auto"
-            />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative flex flex-col max-w-5xl w-full max-h-[92vh] bg-[#0A1022] border border-slate-700/90 rounded-2xl shadow-2xl overflow-hidden"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800 bg-slate-900/80 shrink-0">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
+                <span className="font-mono font-bold text-blue-400">
+                  Question {currentAllocation.order}
+                </span>
+                <span className="text-slate-500">·</span>
+                <span>Enlarged Figure</span>
+                {currentQuestion?.chapter && (
+                  <span className="hidden sm:inline text-xs text-slate-400 font-normal">
+                    ({currentQuestion.chapter})
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowImageModal(false);
+                }}
+                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                title="Close (Esc)"
+                aria-label="Close enlarged view"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body / Enlarged Image Area */}
+            <div className="flex-1 overflow-auto p-4 sm:p-8 flex items-center justify-center bg-[#070D1E] min-h-[280px]">
+              <img
+                src={imageSrc}
+                alt={`Enlarged diagram for Question ${currentAllocation.order}`}
+                referrerPolicy="no-referrer"
+                className="max-h-[75vh] max-w-full w-auto h-auto object-contain rounded-lg shadow-xl select-none mx-auto block"
+                style={{ maxHeight: '75vh', maxWidth: '100%', objectFit: 'contain' }}
+              />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-2.5 border-t border-slate-800/80 bg-slate-900/50 flex items-center justify-between text-xs text-slate-400 shrink-0">
+              <span>Full resolution diagram</span>
+              <span>
+                Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">Esc</kbd> or click outside to return to question
+              </span>
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* SUBMIT CONFIRMATION MODAL (Section 17, 94) */}
