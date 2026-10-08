@@ -1,0 +1,580 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-10-08T05:33:41.025Z",
+  "totalQuestions": 5263,
+  "totalFiles": 62,
+  "subjects": {
+    "Physics": {
+      "questionCount": 1753,
+      "chapterCount": 21
+    },
+    "Chemistry": {
+      "questionCount": 1863,
+      "chapterCount": 21
+    },
+    "Mathematics": {
+      "questionCount": 1647,
+      "chapterCount": 20
+    }
+  },
+  "chapters": [
+    {
+      "subject": "Chemistry",
+      "chapter": "Aldehydes Ketones And Carboxylic Acids",
+      "fileName": "Aldehydes Ketones And Carboxylic Acids questions.json",
+      "relativePath": "chemistry/Aldehydes Ketones And Carboxylic Acids questions.json",
+      "urlPath": "/question-bank/chemistry/Aldehydes%20Ketones%20And%20Carboxylic%20Acids%20questions.json",
+      "questionCount": 117,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Biomolecules",
+      "fileName": "Biomolecules questions.json",
+      "relativePath": "chemistry/Biomolecules questions.json",
+      "urlPath": "/question-bank/chemistry/Biomolecules%20questions.json",
+      "questionCount": 90,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Chemical Bonding And Molecular Structure",
+      "fileName": "Chemical Bonding And Molecular Structure questions.json",
+      "relativePath": "chemistry/Chemical Bonding And Molecular Structure questions.json",
+      "urlPath": "/question-bank/chemistry/Chemical%20Bonding%20And%20Molecular%20Structure%20questions.json",
+      "questionCount": 130,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Chemical Equilibrium",
+      "fileName": "Chemical Equilibrium questions.json",
+      "relativePath": "chemistry/Chemical Equilibrium questions.json",
+      "urlPath": "/question-bank/chemistry/Chemical%20Equilibrium%20questions.json",
+      "questionCount": 45,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Chemical Kinetics And Nuclear Chemistry",
+      "fileName": "Chemical Kinetics And Nuclear Chemistry questions.json",
+      "relativePath": "chemistry/Chemical Kinetics And Nuclear Chemistry questions.json",
+      "urlPath": "/question-bank/chemistry/Chemical%20Kinetics%20And%20Nuclear%20Chemistry%20questions.json",
+      "questionCount": 93,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Chemistry In Everyday Life",
+      "fileName": "Chemistry In Everyday Life questions.json",
+      "relativePath": "chemistry/Chemistry In Everyday Life questions.json",
+      "urlPath": "/question-bank/chemistry/Chemistry%20In%20Everyday%20Life%20questions.json",
+      "questionCount": 44,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Coordination Compounds",
+      "fileName": "Coordination Compounds questions.json",
+      "relativePath": "chemistry/Coordination Compounds questions.json",
+      "urlPath": "/question-bank/chemistry/Coordination%20Compounds%20questions.json",
+      "questionCount": 169,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "D And F Block Elements",
+      "fileName": "D And F Block Elements questions.json",
+      "relativePath": "chemistry/D And F Block Elements questions.json",
+      "urlPath": "/question-bank/chemistry/D%20And%20F%20Block%20Elements%20questions.json",
+      "questionCount": 114,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Electrochemistry",
+      "fileName": "Electrochemistry questions.json",
+      "relativePath": "chemistry/Electrochemistry questions.json",
+      "urlPath": "/question-bank/chemistry/Electrochemistry%20questions.json",
+      "questionCount": 103,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Haloalkanes And Haloarenes",
+      "fileName": "Haloalkanes And Haloarenes questions.json",
+      "relativePath": "chemistry/Haloalkanes And Haloarenes questions.json",
+      "urlPath": "/question-bank/chemistry/Haloalkanes%20And%20Haloarenes%20questions.json",
+      "questionCount": 81,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Hydrocarbons",
+      "fileName": "hydrocarbons.json",
+      "relativePath": "chemistry/hydrocarbons.json",
+      "urlPath": "/question-bank/chemistry/hydrocarbons.json",
+      "questionCount": 70,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Ionic Equilibrium",
+      "fileName": "ionic equillibrium.json",
+      "relativePath": "chemistry/ionic equillibrium.json",
+      "urlPath": "/question-bank/chemistry/ionic%20equillibrium.json",
+      "questionCount": 57,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "p-Block Elements",
+      "fileName": "p block elements.json",
+      "relativePath": "chemistry/p block elements.json",
+      "urlPath": "/question-bank/chemistry/p%20block%20elements.json",
+      "questionCount": 123,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Periodic Table and Periodicity",
+      "fileName": "periodic table.json",
+      "relativePath": "chemistry/periodic table.json",
+      "urlPath": "/question-bank/chemistry/periodic%20table.json",
+      "questionCount": 84,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Polymers",
+      "fileName": "polymers.json",
+      "relativePath": "chemistry/polymers.json",
+      "urlPath": "/question-bank/chemistry/polymers.json",
+      "questionCount": 31,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Redox Reactions",
+      "fileName": "redox.json",
+      "relativePath": "chemistry/redox.json",
+      "urlPath": "/question-bank/chemistry/redox.json",
+      "questionCount": 40,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "s-Block Elements",
+      "fileName": "s block elements.json",
+      "relativePath": "chemistry/s block elements.json",
+      "urlPath": "/question-bank/chemistry/s%20block%20elements.json",
+      "questionCount": 63,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Solutions",
+      "fileName": "solutions.json",
+      "relativePath": "chemistry/solutions.json",
+      "urlPath": "/question-bank/chemistry/solutions.json",
+      "questionCount": 83,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Some Basic Concepts of Chemistry",
+      "fileName": "moles.json",
+      "relativePath": "chemistry/moles.json",
+      "urlPath": "/question-bank/chemistry/moles.json",
+      "questionCount": 126,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Structure of Atom",
+      "fileName": "structure of atom.json",
+      "relativePath": "chemistry/structure of atom.json",
+      "urlPath": "/question-bank/chemistry/structure%20of%20atom.json",
+      "questionCount": 99,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Chemistry",
+      "chapter": "Thermodynamics",
+      "fileName": "chem thermo.json",
+      "relativePath": "chemistry/chem thermo.json",
+      "urlPath": "/question-bank/chemistry/chem%20thermo.json",
+      "questionCount": 101,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Area Under The Curves",
+      "fileName": "Area Under The Curves questions.json",
+      "relativePath": "mathematics/Area Under The Curves questions.json",
+      "urlPath": "/question-bank/mathematics/Area%20Under%20The%20Curves%20questions.json",
+      "questionCount": 88,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Binomial Theorem",
+      "fileName": "Binomial Theorem questions.json",
+      "relativePath": "mathematics/Binomial Theorem questions.json",
+      "urlPath": "/question-bank/mathematics/Binomial%20Theorem%20questions.json",
+      "questionCount": 122,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Complex Numbers 2",
+      "fileName": "Complex Numbers 2 questions.json",
+      "relativePath": "mathematics/Complex Numbers 2 questions.json",
+      "urlPath": "/question-bank/mathematics/Complex%20Numbers%202%20questions.json",
+      "questionCount": 93,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Definite Integration",
+      "fileName": "Definite Integration questions.json",
+      "relativePath": "mathematics/Definite Integration questions.json",
+      "urlPath": "/question-bank/mathematics/Definite%20Integration%20questions.json",
+      "questionCount": 152,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Differential Equations",
+      "fileName": "Differential Equations questions.json",
+      "relativePath": "mathematics/Differential Equations questions.json",
+      "urlPath": "/question-bank/mathematics/Differential%20Equations%20questions.json",
+      "questionCount": 122,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Differentiation",
+      "fileName": "Differentiation questions.json",
+      "relativePath": "mathematics/Differentiation questions.json",
+      "urlPath": "/question-bank/mathematics/Differentiation%20questions.json",
+      "questionCount": 41,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Hyperbola",
+      "fileName": "hyperbola.json",
+      "relativePath": "mathematics/hyperbola.json",
+      "urlPath": "/question-bank/mathematics/hyperbola.json",
+      "questionCount": 44,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Indefinite Integrals",
+      "fileName": "indefinite integrals.json",
+      "relativePath": "mathematics/indefinite integrals.json",
+      "urlPath": "/question-bank/mathematics/indefinite%20integrals.json",
+      "questionCount": 29,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Inverse Trigonometric Functions",
+      "fileName": "inverse trigo.json",
+      "relativePath": "mathematics/inverse trigo.json",
+      "urlPath": "/question-bank/mathematics/inverse%20trigo.json",
+      "questionCount": 50,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Limits, Continuity and Differentiability",
+      "fileName": "continuity.json",
+      "relativePath": "mathematics/continuity.json",
+      "urlPath": "/question-bank/mathematics/continuity.json",
+      "questionCount": 107,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Logarithm",
+      "fileName": "log inequalities.json",
+      "relativePath": "mathematics/log inequalities.json",
+      "urlPath": "/question-bank/mathematics/log%20inequalities.json",
+      "questionCount": 5,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Matrices and Determinants",
+      "fileName": "matrices and determinants.json",
+      "relativePath": "mathematics/matrices and determinants.json",
+      "urlPath": "/question-bank/mathematics/matrices%20and%20determinants.json",
+      "questionCount": 167,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Parabola",
+      "fileName": "parabola.json",
+      "relativePath": "mathematics/parabola.json",
+      "urlPath": "/question-bank/mathematics/parabola.json",
+      "questionCount": 71,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Probability",
+      "fileName": "probability.json",
+      "relativePath": "mathematics/probability.json",
+      "urlPath": "/question-bank/mathematics/probability.json",
+      "questionCount": 107,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Quadratic Equation and Inequalities",
+      "fileName": "quadratic.json",
+      "relativePath": "mathematics/quadratic.json",
+      "urlPath": "/question-bank/mathematics/quadratic.json",
+      "questionCount": 81,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Sequences and Series",
+      "fileName": "sequences and series.json",
+      "relativePath": "mathematics/sequences and series.json",
+      "urlPath": "/question-bank/mathematics/sequences%20and%20series.json",
+      "questionCount": 137,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Sets and Relations",
+      "fileName": "sets.json",
+      "relativePath": "mathematics/sets.json",
+      "urlPath": "/question-bank/mathematics/sets.json",
+      "questionCount": 69,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Statistics",
+      "fileName": "stats.json",
+      "relativePath": "mathematics/stats.json",
+      "urlPath": "/question-bank/mathematics/stats.json",
+      "questionCount": 58,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Straight Lines and Pair of Straight Lines",
+      "fileName": "straight lines.json",
+      "relativePath": "mathematics/straight lines.json",
+      "urlPath": "/question-bank/mathematics/straight%20lines.json",
+      "questionCount": 71,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Mathematics",
+      "chapter": "Trigonometric Functions and Equations",
+      "fileName": "trigo.json",
+      "relativePath": "mathematics/trigo.json",
+      "urlPath": "/question-bank/mathematics/trigo.json",
+      "questionCount": 33,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Alternating Current",
+      "fileName": "Alternating Current questions.json",
+      "relativePath": "physics/Alternating Current questions.json",
+      "urlPath": "/question-bank/physics/Alternating%20Current%20questions.json",
+      "questionCount": 93,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Capacitor",
+      "fileName": "Capacitor questions.json",
+      "relativePath": "physics/Capacitor questions.json",
+      "urlPath": "/question-bank/physics/Capacitor%20questions.json",
+      "questionCount": 74,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Circular Motion",
+      "fileName": "Circular Motion questions.json",
+      "relativePath": "physics/Circular Motion questions.json",
+      "urlPath": "/question-bank/physics/Circular%20Motion%20questions.json",
+      "questionCount": 47,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Current Electricity",
+      "fileName": "Current Electricity questions.json",
+      "relativePath": "physics/Current Electricity questions.json",
+      "urlPath": "/question-bank/physics/Current%20Electricity%20questions.json",
+      "questionCount": 167,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Dual Nature Of Radiation",
+      "fileName": "Dual Nature Of Radiation questions.json",
+      "relativePath": "physics/Dual Nature Of Radiation questions.json",
+      "urlPath": "/question-bank/physics/Dual%20Nature%20Of%20Radiation%20questions.json",
+      "questionCount": 93,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Electromagnetic Induction",
+      "fileName": "Electromagnetic Induction questions.json",
+      "relativePath": "physics/Electromagnetic Induction questions.json",
+      "urlPath": "/question-bank/physics/Electromagnetic%20Induction%20questions.json",
+      "questionCount": 63,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Electromagnetic Waves",
+      "fileName": "Electromagnetic Waves questions.json",
+      "relativePath": "physics/Electromagnetic Waves questions.json",
+      "urlPath": "/question-bank/physics/Electromagnetic%20Waves%20questions.json",
+      "questionCount": 71,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Electrostatics",
+      "fileName": "Electrostatics questions.json",
+      "relativePath": "physics/Electrostatics questions.json",
+      "urlPath": "/question-bank/physics/Electrostatics%20questions.json",
+      "questionCount": 131,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Gravitation",
+      "fileName": "Gravitation questions.json",
+      "relativePath": "physics/Gravitation questions.json",
+      "urlPath": "/question-bank/physics/Gravitation%20questions.json",
+      "questionCount": 102,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Magnetic Properties of Matter",
+      "fileName": "magnetic properties of matter.json",
+      "relativePath": "physics/magnetic properties of matter.json",
+      "urlPath": "/question-bank/physics/magnetic%20properties%20of%20matter.json",
+      "questionCount": 33,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Magnetics",
+      "fileName": "magnetic.json",
+      "relativePath": "physics/magnetic.json",
+      "urlPath": "/question-bank/physics/magnetic.json",
+      "questionCount": 112,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Motion in a Plane",
+      "fileName": "motion in a plane.json",
+      "relativePath": "physics/motion in a plane.json",
+      "urlPath": "/question-bank/physics/motion%20in%20a%20plane.json",
+      "questionCount": 49,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Motion in a Straight Line",
+      "fileName": "motion in a straight line.json",
+      "relativePath": "physics/motion in a straight line.json",
+      "urlPath": "/question-bank/physics/motion%20in%20a%20straight%20line.json",
+      "questionCount": 59,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Properties of Matter",
+      "fileName": "mechanical properties of fluids.json",
+      "relativePath": "physics/mechanical properties of fluids.json",
+      "urlPath": "/question-bank/physics/mechanical%20properties%20of%20fluids.json",
+      "questionCount": 166,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Rotational Motion",
+      "fileName": "rotational.json",
+      "relativePath": "physics/rotational.json",
+      "urlPath": "/question-bank/physics/rotational.json",
+      "questionCount": 94,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Simple Harmonic Motion",
+      "fileName": "shm.json",
+      "relativePath": "physics/shm.json",
+      "urlPath": "/question-bank/physics/shm.json",
+      "questionCount": 66,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Units and Measurements",
+      "fileName": "units.json",
+      "relativePath": "physics/units.json",
+      "urlPath": "/question-bank/physics/units.json",
+      "questionCount": 107,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Vector Algebra",
+      "fileName": "vector algebra.json",
+      "relativePath": "physics/vector algebra.json",
+      "urlPath": "/question-bank/physics/vector%20algebra.json",
+      "questionCount": 19,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Wave Optics",
+      "fileName": "wave optics.json",
+      "relativePath": "physics/wave optics.json",
+      "urlPath": "/question-bank/physics/wave%20optics.json",
+      "questionCount": 79,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Waves",
+      "fileName": "waves.json",
+      "relativePath": "physics/waves.json",
+      "urlPath": "/question-bank/physics/waves.json",
+      "questionCount": 57,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "Work, Power and Energy",
+      "fileName": "work power energy.json",
+      "relativePath": "physics/work power energy.json",
+      "urlPath": "/question-bank/physics/work%20power%20energy.json",
+      "questionCount": 71,
+      "grade": "Class 11-12"
+    }
+  ]
+}

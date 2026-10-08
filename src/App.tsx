@@ -15,6 +15,7 @@ import { TestOverviewModal } from './components/TestOverviewModal';
 import { TestResultsView } from './components/TestResultsView';
 import { LongTermAnalyticsService } from './services/LongTermAnalyticsService';
 import { QuestionBankEngine } from './services/QuestionBankEngine';
+import { questionBankService } from './services/QuestionBankService';
 import { ScoringAndAnalyticsService } from './services/ScoringAndAnalyticsService';
 import { TestGeneratorService } from './services/TestGeneratorService';
 import {
@@ -63,6 +64,9 @@ export interface MistakeRetestOptions {
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const [loadingStatus, setLoadingStatus] = useState('Loading 55-chapter question bank & your progress...');
+  const [showDiagnosticsDrawer, setShowDiagnosticsDrawer] = useState(false);
 
   const [questions, setQuestions] = useState<NormalizedQuestion[]>([]);
   const [diagnostics, setDiagnostics] = useState<QuestionBankDiagnostics | null>(null);
@@ -113,18 +117,20 @@ export default function App() {
 
     async function initializePlatform() {
       setIsLoading(true);
+      setLoadError(null);
       try {
-        const [qbRes, userRes] = await Promise.all([
-          fetch('/api/question-bank'),
-          fetch(`/api/student/${USER_ID}/state`),
+        setLoadingStatus('Connecting to authentic JEE question repository...');
+        const [qbData, userData] = await Promise.all([
+          questionBankService.loadQuestionBank({
+            forceReload: loadAttempt > 0,
+            onProgress: (_loaded, _total, msg) => {
+              if (mounted) setLoadingStatus(msg);
+            },
+          }),
+          fetch(`/api/student/${USER_ID}/state`)
+            .then((res) => (res.ok ? res.json() : null))
+            .catch(() => null),
         ]);
-
-        if (!qbRes.ok) {
-          throw new Error('Unable to load the JEE Question Bank from server.');
-        }
-
-        const qbData = await qbRes.json();
-        const userData = userRes.ok ? await userRes.json() : null;
 
         if (!mounted) return;
 
@@ -209,7 +215,7 @@ export default function App() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadAttempt]);
 
   // Sync active test to localStorage and debounce server autosave
   const autosaveTimeoutRef = useRef< ReturnType<typeof setTimeout> | null >(null);
@@ -429,40 +435,42 @@ export default function App() {
         }),
       });
 
-      const outcome = await resp.json();
-      if (!resp.ok || !outcome.success || !outcome.test) {
-        setGenerationError(outcome.error || 'Failed to generate test.');
-        return;
+      if (resp.ok) {
+        const outcome = await resp.json();
+        if (outcome && outcome.success && outcome.test) {
+          const generated: GeneratedTest = outcome.test;
+          setActiveTest(generated);
+          persistActiveTestState(generated);
+          setOverviewConfig(null);
+          setCurrentView('exam');
+          return;
+        }
       }
-
-      const generated: GeneratedTest = outcome.test;
-      setActiveTest(generated);
-      persistActiveTestState(generated);
-      setOverviewConfig(null);
-      setCurrentView('exam');
     } catch {
-      // Fallback to client engine if offline
-      const outcome = TestGeneratorService.generateTest(
-        clientEngine,
-        {
-          userId: USER_ID,
-          mode: overviewConfig.mode,
-          selectedSubjects: overviewConfig.selectedSubjects,
-          chaptersBySubject: overviewConfig.chaptersBySubject,
-          allowFlexibleCount: overviewConfig.allowFlexibleCount,
-        },
-        historyMap
-      );
-
-      if (!outcome.success || !outcome.test) {
-        setGenerationError(outcome.error || 'Failed to generate test.');
-        return;
-      }
-      setActiveTest(outcome.test);
-      persistActiveTestState(outcome.test);
-      setOverviewConfig(null);
-      setCurrentView('exam');
+      // Fallback to client engine if offline or server route fails
     }
+
+    // Authoritative client engine fallback
+    const outcome = TestGeneratorService.generateTest(
+      clientEngine,
+      {
+        userId: USER_ID,
+        mode: overviewConfig.mode,
+        selectedSubjects: overviewConfig.selectedSubjects,
+        chaptersBySubject: overviewConfig.chaptersBySubject,
+        allowFlexibleCount: overviewConfig.allowFlexibleCount,
+      },
+      historyMap
+    );
+
+    if (!outcome.success || !outcome.test) {
+      setGenerationError(outcome.error || 'Failed to generate test.');
+      return;
+    }
+    setActiveTest(outcome.test);
+    persistActiveTestState(outcome.test);
+    setOverviewConfig(null);
+    setCurrentView('exam');
   };
 
   // Discard unfinished test
@@ -685,12 +693,12 @@ export default function App() {
         <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center">
           <div className="w-5 h-5 rounded-full border-2 border-blue-400 border-t-transparent animate-spin" />
         </div>
-        <div className="text-center space-y-1.5">
-          <div className="text-xs font-semibold text-blue-400 tracking-wide">
+        <div className="text-center space-y-1.5 max-w-sm">
+          <div className="text-xs font-semibold text-blue-400 tracking-wide uppercase">
             Preparing your workspace
           </div>
-          <div className="text-2xl font-display text-white">
-            Loading 55-chapter question bank & your progress...
+          <div className="text-xl font-display text-white">
+            {loadingStatus}
           </div>
         </div>
       </div>
@@ -698,23 +706,53 @@ export default function App() {
   }
 
   if (loadError || !diagnostics) {
+    const errorDetails = questionBankService.getLastError();
     return (
       <div className="min-h-screen bg-[#080C14] text-slate-100 flex flex-col items-center justify-center p-6 space-y-5">
-        <div className="max-w-md w-full p-8 rounded-2xl surface-card border border-slate-800 text-center space-y-4">
+        <div className="max-w-md w-full p-8 rounded-2xl surface-card border border-slate-800 text-center space-y-4 shadow-xl">
           <div className="text-xs font-semibold text-red-400">Connection interrupted</div>
           <h2 className="text-2xl font-display text-white">
             Something went wrong while loading your workspace.
           </h2>
           <p className="text-sm text-slate-400 leading-relaxed">
-            {loadError || 'Unable to reach the question bank right now.'}
+            {loadError || 'Unable to load the authentic JEE Question Bank.'}
           </p>
-          <button
-            type="button"
-            onClick={() => window.location.reload()}
-            className="btn-interactive px-5 py-2.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-xl cursor-pointer"
-          >
-            Try Again
-          </button>
+          <div className="pt-2 flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setLoadAttempt((p) => p + 1)}
+              className="btn-interactive px-6 py-2.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-xl cursor-pointer shadow-md shadow-blue-900/30 transition-all"
+            >
+              Try Again
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowDiagnosticsDrawer((p) => !p)}
+              className="text-xs text-slate-500 hover:text-slate-400 underline underline-offset-4 cursor-pointer"
+            >
+              {showDiagnosticsDrawer ? 'Hide Details' : 'View Diagnostics'}
+            </button>
+          </div>
+
+          {showDiagnosticsDrawer && (
+            <div className="mt-4 p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-left font-mono text-[11px] text-slate-400 space-y-1.5 overflow-x-auto">
+              <div>
+                <strong className="text-slate-300">Category:</strong>{' '}
+                {errorDetails?.category || 'QUESTION_BANK_FETCH_FAILED'}
+              </div>
+              <div>
+                <strong className="text-slate-300">Environment:</strong>{' '}
+                {errorDetails?.environment || (typeof process !== 'undefined' ? process.env?.NODE_ENV : 'production')}
+              </div>
+              <div>
+                <strong className="text-slate-300">Attempts:</strong>{' '}
+                {errorDetails?.attemptsMade || 3} of 3
+              </div>
+              <div>
+                <strong className="text-slate-300">Endpoints:</strong> /api/question-bank, /question-bank/manifest.json
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
