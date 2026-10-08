@@ -22,6 +22,7 @@ import {
 } from '../types/jee';
 import { sanitizeStudentQuestionText } from '../services/StudentQuestionSerializer';
 import { MathText } from './MathText';
+import { QuestionVisuals } from './VisualDiagramRenderer';
 
 interface ExamWorkspaceViewProps {
   test: GeneratedTest;
@@ -463,59 +464,16 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
               <MathText text={sanitizeStudentQuestionText(currentQuestion.question)} />
             </div>
 
-            {/* Question Image / Scientific Diagram with Non-Destructive Enlargement */}
-            {imageSrc && (
-              <div className="my-4">
-                {!imageLoadFailed ? (
-                  <div className="relative inline-block max-w-full rounded-xl bg-[#0B1120] border border-slate-800 p-4">
-                    <div
-                      className="cursor-zoom-in group"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setShowImageModal(true);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setShowImageModal(true);
-                        }
-                      }}
-                      title="Click to enlarge image"
-                      aria-label="Click to enlarge image"
-                    >
-                      <img
-                        src={imageSrc}
-                        alt={`Diagram for Question ${currentAllocation.order}`}
-                        referrerPolicy="no-referrer"
-                        onError={() => setImageLoadFailed(true)}
-                        className="max-h-64 sm:max-h-72 w-auto max-w-full object-contain rounded transition-all duration-150 group-hover:brightness-105"
-                      />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setShowImageModal(true);
-                      }}
-                      aria-label="Enlarge Image"
-                      title="Enlarge Image"
-                      className="mt-3 text-xs font-mono font-medium text-slate-300 hover:text-white bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
-                    >
-                      <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
-                      <span>Enlarge Image</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 text-xs text-slate-400">
-                    Figure reference unavailable. All required numerical parameters are provided in the problem statement above.
-                  </div>
-                )}
-              </div>
-            )}
+            {/* Question Visuals / Verified Diagrams / Lightbox (Section 9 & 10) */}
+            <QuestionVisuals
+              visuals={currentQuestion.images}
+              visualAsset={currentQuestion.visualAsset}
+              imageUrl={imageSrc}
+              visualRequired={currentQuestion.visualRequired}
+              visualStatus={currentQuestion.visualStatus}
+              rawVisualMetadata={currentQuestion.rawVisualMetadata}
+              questionOrder={currentAllocation.order}
+            />
 
             {/* ANSWER INPUT AREA: MCQ vs INTEGER TYPE (Part 11: Large, comfortable interactive answer cards) */}
             {currentQuestion.type === 'mcq' && currentQuestion.options ? (
@@ -547,7 +505,7 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                         {letter}
                       </span>
                       <span className="text-sm sm:text-base flex-1 leading-relaxed">
-                        <MathText text={optionText} />
+                        <MathText text={optionText} inline />
                       </span>
                       {isSelected && (
                         <span className="px-2.5 py-1 rounded-lg bg-blue-500/20 border border-blue-400/40 text-xs font-semibold text-blue-300 shrink-0 flex items-center gap-1">

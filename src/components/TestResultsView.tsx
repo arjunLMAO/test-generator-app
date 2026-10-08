@@ -19,6 +19,7 @@ import {
 } from '../types/jee';
 import { sanitizeStudentQuestionText } from '../services/StudentQuestionSerializer';
 import { MathText } from './MathText';
+import { QuestionVisuals } from './VisualDiagramRenderer';
 
 interface TestResultsViewProps {
   report: TestResultReport;
@@ -1069,51 +1070,15 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
                   <MathText text={sanitizeStudentQuestionText(activeSolutionQuestion.question)} />
                 </div>
 
-                {activeSolutionQuestion.image && !/^\[(image|diagram|figure|graph|reaction|structure):/i.test(activeSolutionQuestion.image) && (
-                  <div className="my-2">
-                    <div className="relative inline-block max-w-full rounded-xl bg-[#0B1120] border border-slate-800 p-4">
-                      <div
-                        className="cursor-zoom-in group"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setZoomedSolutionImage(activeSolutionQuestion.image!);
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            setZoomedSolutionImage(activeSolutionQuestion.image!);
-                          }
-                        }}
-                        title="Click to enlarge diagram"
-                        aria-label="Click to enlarge diagram"
-                      >
-                        <img
-                          src={activeSolutionQuestion.image}
-                          alt="Question diagram"
-                          referrerPolicy="no-referrer"
-                          className="max-h-56 w-auto max-w-full object-contain rounded transition-all duration-150 group-hover:brightness-105"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setZoomedSolutionImage(activeSolutionQuestion.image!);
-                        }}
-                        aria-label="Enlarge Image"
-                        title="Enlarge Image"
-                        className="mt-3 text-xs font-mono font-medium text-slate-300 hover:text-white bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 px-3 py-1.5 rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
-                      >
-                        <Maximize2 className="w-3.5 h-3.5 text-blue-400" />
-                        <span>Enlarge Image</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                <QuestionVisuals
+                  visuals={activeSolutionQuestion.images}
+                  visualAsset={activeSolutionQuestion.visualAsset}
+                  imageUrl={activeSolutionQuestion.image}
+                  visualRequired={activeSolutionQuestion.visualRequired}
+                  visualStatus={activeSolutionQuestion.visualStatus}
+                  rawVisualMetadata={activeSolutionQuestion.rawVisualMetadata}
+                  questionOrder={activeSolutionQuestion.order}
+                />
               </div>
 
               {/* Options if MCQ */}
@@ -1138,7 +1103,7 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
                       >
                         <span className="font-mono font-bold">{letter}.</span>
                         <span className="flex-1">
-                          <MathText text={activeSolutionQuestion.options![idx]} />
+                          <MathText text={activeSolutionQuestion.options![idx]} inline />
                         </span>
                         {isCorrectOpt && (
                           <span className="font-mono text-[11px] text-emerald-400 shrink-0">

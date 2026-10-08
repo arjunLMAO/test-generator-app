@@ -16,6 +16,7 @@ import {
   SubjectName,
 } from '../types/jee';
 import { MathText } from './MathText';
+import { QuestionVisuals } from './VisualDiagramRenderer';
 
 interface QuestionBankAdminViewProps {
   questions: NormalizedQuestion[];
@@ -616,6 +617,14 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
                 <div className="text-sm text-slate-200">
                   <MathText text={q.question} />
                 </div>
+
+                <QuestionVisuals
+                  visuals={q.images}
+                  visualAsset={q.visualAsset}
+                  imageUrl={q.image}
+                  visualRequired={q.visualRequired}
+                  visualStatus={q.visualStatus}
+                />
               </div>
             ))}
           </div>

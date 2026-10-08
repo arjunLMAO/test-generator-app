@@ -18,6 +18,7 @@ import {
 } from '../types/jee';
 import { sanitizeStudentQuestionText } from './StudentQuestionSerializer';
 import { VisualAssetEngine } from './VisualAssetEngine';
+import { resolveQuestionVisualAsset } from './VisualAssetResolver';
 
 export interface RawFilePayload {
   filePath: string;
@@ -879,73 +880,16 @@ export class QuestionBankEngine {
           /\b(?:network shown in figure|circuit shown in|diagram shown|graph shows|figure shows|shown in the given circuit)\b/i.test(rawQuestionText)
         );
 
-        let imageRef: string | null = null;
-        let resolvedVisualAsset: VisualAsset | null = raw.visualAsset || null;
-        let visualStatus: VisualStatus | undefined = raw.visualStatus;
+        // Resolve visual asset through the 5-tier priority resolver (Sections 4, 5, 6, 11, 12)
+        const resolvedVisual = resolveQuestionVisualAsset(id, raw, subject, chapter);
+        let resolvedVisualAsset: VisualAsset | null = resolvedVisual.asset;
+        let imageRef: string | null = resolvedVisual.primaryImageUrl;
+        let visualStatus: VisualStatus | undefined = resolvedVisual.visualStatus;
+        let visualRequired: boolean = resolvedVisual.visualRequired || textRequiresVisual;
 
-        // Priority 1: Existing verified image / diagram asset already associated with the question
-        if (resolvedVisualAsset) {
-          if (resolvedVisualAsset.svgContent) {
-            imageRef = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(resolvedVisualAsset.svgContent)}`;
-            visualStatus = 'verified';
-          } else if (resolvedVisualAsset.imageUrl || resolvedVisualAsset.url) {
-            imageRef = resolvedVisualAsset.imageUrl || resolvedVisualAsset.url || null;
-            visualStatus = 'verified';
-          }
-        }
-
-        // Priority 2: Original source image associated with the imported PYQ (<img src="..."> or raw.image URL)
-        if (!imageRef) {
-          let rawImageCandidate = raw.image ?? raw.imageUrl ?? raw.diagramUrl ?? raw.figure ?? null;
-          // Never treat metadata placeholder strings as image URLs
-          if (typeof rawImageCandidate === 'string' && /^\[(image|diagram|figure|graph|reaction|structure):/i.test(rawImageCandidate)) {
-            rawImageCandidate = null;
-          }
-          if (!rawImageCandidate && typeof rawQuestionText === 'string') {
-            const imgMatch = rawQuestionText.match(/<img\b[^>]+src\s*=\s*["']([^"']+)["']/i);
-            if (imgMatch) {
-              rawImageCandidate = imgMatch[1];
-            }
-          }
-          if (rawImageCandidate && typeof rawImageCandidate === 'string' && rawImageCandidate.trim().length > 0) {
-            const trimmedImg = rawImageCandidate.trim();
-            if (
-              trimmedImg.startsWith('data:image/') ||
-              trimmedImg.startsWith('http://') ||
-              trimmedImg.startsWith('https://') ||
-              trimmedImg.startsWith('/') ||
-              /\.(png|jpg|jpeg|webp|svg)$/i.test(trimmedImg)
-            ) {
-              imageRef = trimmedImg.startsWith('images/') ? `/question-bank/${trimmedImg}` : trimmedImg;
-              visualStatus = 'verified';
-            }
-          }
-        }
-
-        // Priority 4: Reconstructed verified diagram for known PYQ problems
-        if (!imageRef) {
-          if (
-            id === 'CE-0163' ||
-            (rawVisualMetadata && /Current Electricity.*Question 113/i.test(rawVisualMetadata)) ||
-            (chapter.includes('Current') && questionText.includes('equivalent resistance between') && questionText.includes('network shown in figure'))
-          ) {
-            resolvedVisualAsset = VisualAssetEngine.createWheatstoneBridge113Diagram(id);
-            imageRef = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(resolvedVisualAsset.svgContent!)}`;
-            visualStatus = 'verified';
-          }
-        }
-
-        // Priority 5: If visual is required but cannot be resolved, mark as missing
-        let visualRequired = false;
-        if (textRequiresVisual) {
+        if (textRequiresVisual && !imageRef && !resolvedVisualAsset) {
           visualRequired = true;
-          if (imageRef) {
-            visualStatus = visualStatus || 'verified';
-          } else {
-            visualStatus = 'missing';
-            imageRef = null;
-            resolvedVisualAsset = null;
-          }
+          visualStatus = 'missing';
         }
 
         const difficulty = normalizeDifficulty(raw.difficulty ?? raw.level, id);

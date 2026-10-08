@@ -1,141 +1,102 @@
 import React, { useMemo } from 'react';
-import katex from 'katex';
+import {
+  parseQuestionContentBlocks,
+  QuestionContentBlock,
+} from '../services/MathRendererService';
 
-interface MathTextProps {
+export interface MathTextProps {
   text: string;
   className?: string;
   block?: boolean;
+  inline?: boolean;
 }
 
-function decodeHtmlEntities(input: string): string {
-  return input
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'");
-}
+/**
+ * Standardized JEE Mathematical Typesetting Component (Sections 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16).
+ * Automatically separates inline prose from prominent display equations,
+ * groups prose and inline math (e.g. `C`, `AB`) into unified flowing sentences,
+ * guarantees zero glyph overlap, and provides full responsive equation scrolling.
+ */
+export const MathText: React.FC<MathTextProps> = ({
+  text,
+  className = '',
+  block = false,
+  inline = false,
+}) => {
+  const blocks = useMemo<QuestionContentBlock[]>(() => {
+    if (!text) return [];
+    return parseQuestionContentBlocks(String(text), inline);
+  }, [text, inline]);
 
-function normalizeHtmlFormatting(input: string): string {
-  return input
-    // Strip embedded <style>...</style> blocks from scraped HTML tables so dark theme styles apply
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-    // Strip diagram/image metadata placeholders so they never render as student-facing text
-    .replace(/\[(image|diagram|figure|graph|reaction|structure|asset|image\s+attached):\s*[^\]]+\]/gi, '')
-    // Strip leftover scraper question header artifacts like "Question 113 English"
-    .replace(/(?:\n|<br\/>|\s)*Question\s+\d+\s+English(?=[.,?;:\s]|$)/gi, '')
-    // Replace paragraph boundaries with clean line breaks
-    .replace(/<\/p>\s*<p>/gi, '<br/><br/>')
-    .replace(/<\/?p[^>]*>/gi, '')
-    .replace(/<\/?blockquote[^>]*>/gi, '')
-    .replace(/<br\s*\/?>/gi, '<br/>')
-    // Collapse 3+ consecutive <br/> into 2
-    .replace(/(?:<br\/>\s*){3,}/gi, '<br/><br/>')
-    .trim();
-}
+  if (!text) {
+    return null;
+  }
 
-export const MathText: React.FC<MathTextProps> = ({ text, className = '', block = false }) => {
-  const renderedHtml = useMemo(() => {
-    if (!text) return '';
-
-    const raw = normalizeHtmlFormatting(String(text));
-
-    // Tokenize display math ($$...$$ and \[...\]) and inline math ($...$ and \(...\))
-    const tokenRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^\n$]+?\$)/g;
-    const parts: string[] = [];
-    let lastIndex = 0;
-    let match: RegExpExecArray | null;
-
-    const formatPlainSegment = (seg: string): string => {
-      // Allow safe inline formatting tags (strong, b, i, em, sub, sup, br, span)
-      return decodeHtmlEntities(seg).replace(/\n/g, '<br/>');
-    };
-
-    while ((match = tokenRegex.exec(raw)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(formatPlainSegment(raw.slice(lastIndex, match.index)));
-      }
-
-      const token = match[0];
-      let isDisplay = false;
-      let mathSource = '';
-
-      if (token.startsWith('$$') && token.endsWith('$$')) {
-        isDisplay = true;
-        mathSource = token.slice(2, -2);
-      } else if (token.startsWith('\\[') && token.endsWith('\\]')) {
-        isDisplay = true;
-        mathSource = token.slice(2, -2);
-      } else if (token.startsWith('\\(') && token.endsWith('\\)')) {
-        isDisplay = false;
-        mathSource = token.slice(2, -2);
-      } else if (token.startsWith('$') && token.endsWith('$')) {
-        isDisplay = false;
-        mathSource = token.slice(1, -1);
-      }
-
-      // Decode HTML entities inside LaTeX blocks (e.g., &amp; in \begin{aligned}, &lt; for <)
-      const cleanedMath = decodeHtmlEntities(mathSource)
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<\/?[^>]+>/g, '')
-        .trim();
-
-      if (
-        cleanedMath.includes('\\begin{aligned}') ||
-        cleanedMath.includes('\\begin{array}') ||
-        cleanedMath.includes('\\begin{cases}')
-      ) {
-        // Keep inline or display based on context, KaTeX supports aligned/cases in both
-      }
-
-      try {
-        parts.push(
-          katex.renderToString(cleanedMath, {
-            displayMode: isDisplay || block,
-            throwOnError: false,
-            strict: false,
-          })
-        );
-      } catch {
-        parts.push(formatPlainSegment(token));
-      }
-
-      lastIndex = tokenRegex.lastIndex;
-    }
-
-    if (lastIndex < raw.length) {
-      const tail = raw.slice(lastIndex);
-      if (
-        !raw.includes('$') &&
-        !raw.includes('\\(') &&
-        !raw.includes('\\[') &&
-        /\\(frac|sqrt|int|sum|alpha|beta|theta|Delta|rightarrow|mathrm)/.test(tail)
-      ) {
-        try {
-          parts.push(
-            katex.renderToString(decodeHtmlEntities(tail), {
-              displayMode: block,
-              throwOnError: false,
-              strict: false,
-            })
-          );
-        } catch {
-          parts.push(formatPlainSegment(tail));
+  // Purely inline mode (for MCQ options, small labels, table cells, or single-line prose)
+  if (inline || (blocks.length === 1 && blocks[0].type === 'paragraph' && !block)) {
+    const inlineHtml = blocks
+      .flatMap((b) =>
+        b.type === 'paragraph'
+          ? b.items
+          : [{ type: 'inlineMath' as const, latex: b.latex, renderedHtml: b.renderedHtml }]
+      )
+      .map((item) => {
+        if (item.type === 'text') {
+          return item.text;
         }
-      } else {
-        parts.push(formatPlainSegment(tail));
-      }
-    }
+        return `<span class="inline-math-item inline align-baseline px-0.5">${item.renderedHtml}</span>`;
+      })
+      .join('');
 
-    return parts.join('');
-  }, [text, block]);
+    return (
+      <span
+        className={`math-rich-content leading-relaxed select-text ${className}`}
+        dangerouslySetInnerHTML={{ __html: inlineHtml }}
+      />
+    );
+  }
 
+  // Structured Content-Aware Layout Mode (for Question Statements, Solutions, Explanations)
   return (
-    <span
-      className={`math-rich-content leading-relaxed ${className}`}
-      dangerouslySetInnerHTML={{ __html: renderedHtml }}
-    />
+    <div className={`math-rich-content w-full leading-relaxed select-text space-y-3 ${className}`}>
+      {blocks.map((b, idx) => {
+        if (b.type === 'paragraph') {
+          return (
+            <p
+              key={`p-${idx}`}
+              className="text-slate-100 text-base sm:text-lg leading-relaxed select-text my-2"
+            >
+              {b.items.map((item, itemIdx) =>
+                item.type === 'text' ? (
+                  <span key={itemIdx} dangerouslySetInnerHTML={{ __html: item.text }} />
+                ) : (
+                  <span
+                    key={itemIdx}
+                    className="inline-math-item inline align-baseline px-0.5"
+                    dangerouslySetInnerHTML={{ __html: item.renderedHtml }}
+                  />
+                )
+              )}
+            </p>
+          );
+        }
+
+        if (b.type === 'displayMath') {
+          return (
+            <div
+              key={`disp-${idx}`}
+              className="math-display-container w-full my-4 py-3 sm:py-3.5 px-4 bg-slate-900/60 border border-slate-800/80 rounded-xl overflow-x-auto overflow-y-visible text-center sm:text-left transition-colors hover:border-slate-700/80 select-text shadow-xs"
+            >
+              <div
+                className="w-full inline-block min-w-0"
+                dangerouslySetInnerHTML={{ __html: b.renderedHtml }}
+              />
+            </div>
+          );
+        }
+
+        return null;
+      })}
+    </div>
   );
 };

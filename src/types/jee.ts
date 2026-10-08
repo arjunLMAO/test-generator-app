@@ -38,6 +38,11 @@ export type ErrorCategory =
   | 'Sign/unit mistake';
 
 export type VisualType =
+  | 'diagram'
+  | 'image'
+  | 'graph'
+  | 'reaction'
+  | 'structure'
   | 'reaction_scheme'
   | 'molecule'
   | 'stereochemical_structure'
@@ -424,6 +429,11 @@ export interface QuestionResultDetail {
   commonMistake?: string;
   possibleErrorType?: ErrorCategory;
   image?: string | null;
+  images?: string[];
+  visualAsset?: VisualAsset | null;
+  visualRequired?: boolean;
+  visualStatus?: VisualStatus;
+  rawVisualMetadata?: string | null;
   historySnapshot: {
     attemptCount: number;
     correctCount: number;

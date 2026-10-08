@@ -403,6 +403,11 @@ export class ScoringAndAnalyticsService {
         commonMistake: q.commonMistake,
         possibleErrorType: inferredError,
         image: q.image,
+        images: q.images,
+        visualAsset: q.visualAsset,
+        visualRequired: q.visualRequired,
+        visualStatus: q.visualStatus,
+        rawVisualMetadata: q.rawVisualMetadata,
         historySnapshot: {
           attemptCount: newAttemptCount,
           correctCount: newCorrectCount,

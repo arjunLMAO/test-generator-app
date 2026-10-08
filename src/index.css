@@ -144,12 +144,51 @@
 }
 
 .katex {
-  font-size: 1.05em;
+  font-size: 1.08em;
+  text-rendering: auto;
 }
+
+.katex-html {
+  overflow-y: visible;
+}
+
 .katex-display {
-  margin: 0.75em 0;
+  display: block;
+  margin: 1.25rem 0;
+  padding: 0.5rem 0.25rem;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  max-width: 100%;
+}
+
+.katex-display > .katex {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 100%;
+  text-align: center;
+}
+
+.math-display-container {
+  display: block;
+  width: 100%;
+  margin: 1.25rem 0;
+  padding: 0.5rem 0.75rem;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+}
+
+.math-display-container .katex-display {
+  margin: 0.25rem 0;
+}
+
+.math-rich-content {
+  line-height: 1.75;
+  word-break: break-word;
 }
 
 .math-rich-content table {
