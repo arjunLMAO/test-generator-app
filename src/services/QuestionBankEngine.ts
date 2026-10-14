@@ -18,7 +18,7 @@ import {
 } from '../types/jee';
 import { sanitizeStudentQuestionText } from './StudentQuestionSerializer';
 import { VisualAssetEngine } from './VisualAssetEngine';
-import { resolveQuestionVisualAsset } from './VisualAssetResolver';
+import { resolveQuestionVisualAsset, canonicalizeImageUrl } from './VisualAssetResolver';
 
 export interface RawFilePayload {
   filePath: string;
@@ -944,7 +944,28 @@ export class QuestionBankEngine {
             `Review the fundamental relations of ${topic} in ${chapter}.`,
           possibleErrorType: (raw.possibleErrorType as ErrorCategory) || 'Conceptual mistake',
           image: imageRef,
-          images: imageRef ? [imageRef] : (Array.isArray(raw.images) ? raw.images : []),
+          images: (() => {
+            const rawImagesList: string[] = [];
+            if (imageRef) rawImagesList.push(imageRef);
+            if (Array.isArray(raw.images)) {
+              for (const img of raw.images) {
+                if (typeof img === 'string' && img.trim()) rawImagesList.push(img.trim());
+              }
+            }
+            if (typeof raw.image === 'string' && raw.image.trim()) {
+              rawImagesList.push(raw.image.trim());
+            }
+            const deduped: string[] = [];
+            const seenKeys = new Set<string>();
+            for (const u of rawImagesList) {
+              const k = canonicalizeImageUrl(u);
+              if (k && !seenKeys.has(k)) {
+                seenKeys.add(k);
+                deduped.push(u);
+              }
+            }
+            return deduped;
+          })(),
           visualAsset: resolvedVisualAsset,
           visualType,
           isVisualQuestion,

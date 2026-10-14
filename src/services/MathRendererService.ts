@@ -13,9 +13,33 @@ export type InlineItem =
   | { type: 'text'; text: string }
   | { type: 'inlineMath'; latex: string; renderedHtml: string };
 
+export interface MatchTableRow {
+  id: string;
+  leftLabel: string;   // e.g. "(A)", "(P)"
+  leftContent: string; // text, LaTeX formula, or HTML img
+  rightLabel: string;  // e.g. "(I)", "(1)"
+  rightContent: string;// text, LaTeX formula, or HTML img
+}
+
+export interface MatchTableData {
+  instructionPrefix?: string;
+  list1Title: string;
+  list2Title: string;
+  rows: MatchTableRow[];
+  instructionSuffix?: string;
+}
+
+export interface DataTableData {
+  headers: string[];
+  rows: string[][];
+  caption?: string;
+}
+
 export type QuestionContentBlock =
   | { type: 'paragraph'; items: InlineItem[] }
-  | { type: 'displayMath'; latex: string; renderedHtml: string };
+  | { type: 'displayMath'; latex: string; renderedHtml: string }
+  | { type: 'matchingTable'; data: MatchTableData }
+  | { type: 'dataTable'; data: DataTableData };
 
 export interface MathHealthReport {
   totalScanned: number;
@@ -182,49 +206,12 @@ export function sanitizeLatex(input: string): { sanitized: string; wasRepaired: 
 
 /**
  * Determines whether a LaTeX snippet warrants display mode (Section 5 & 6).
- * Large fractions, limits, integrals, summations, matrices, cases, or complex operators
- * are automatically elevated to display equations for optimal legibility,
- * while compact scalars and simple ratios stay inline with prose.
+ * Explicit display math ($$...$$ or \[...\]) is always rendered in display mode.
+ * Inline formulas ($...$ or \(...\)) embedded within prose sentences are strictly preserved
+ * as inline math to prevent sentence fragmentation, glyph distortion, and oversized block rendering.
  */
 export function isComplexMathStructure(latex: string, isExplicitDisplay: boolean = false): boolean {
   if (isExplicitDisplay) return true;
-
-  const trimmed = latex.trim();
-
-  // If contains matrices, systems of equations, or piecewise definitions
-  if (/\\begin\{(matrix|pmatrix|bmatrix|vmatrix|cases|aligned|array)\}/i.test(trimmed)) {
-    return true;
-  }
-
-  // If contains limits, summations, integrals, or products
-  if (/\\(lim|sum|int|iint|iiint|oint|prod|coprod)(?=[^a-zA-Z]|$)/i.test(trimmed)) {
-    return true;
-  }
-
-  // If contains multi-line breaks
-  if (/\\\\/.test(trimmed)) {
-    return true;
-  }
-
-  // If contains nested fractions (\frac inside another \frac)
-  const fracMatches = trimmed.match(/\\(frac|dfrac|cfrac)(?=[^a-zA-Z]|$)/gi) || [];
-  if (fracMatches.length > 1) {
-    return true;
-  }
-
-  // Complex fraction with polynomials, exponents, trig functions, or long expressions
-  if (
-    /\\(frac|dfrac|cfrac)\s*\{[^{}]*(\^|_|\\sin|\\cos|\\tan|\\log|\\ln|\\int|\+|\-|\()[^{}]*\}\s*\{/i.test(trimmed) ||
-    (trimmed.length > 30 && fracMatches.length > 0)
-  ) {
-    return true;
-  }
-
-  // If contains substantial equations with multiple relations
-  if (trimmed.length > 45 && /(=|<|>|\\le|\\ge|\\in|\\to|\\rightarrow)/.test(trimmed)) {
-    return true;
-  }
-
   return false;
 }
 
@@ -273,7 +260,7 @@ export function parseContentSegments(rawText: string, forceInline: boolean = fal
     }
 
     const { sanitized } = sanitizeLatex(mathSource);
-    const promoteToDisplay = !forceInline && isComplexMathStructure(sanitized, isExplicitDisplay);
+    const promoteToDisplay = !forceInline && isExplicitDisplay;
 
     segments.push({
       type: promoteToDisplay ? 'displayMath' : 'inlineMath',
@@ -322,11 +309,279 @@ export function renderMathToHtml(
   }
 }
 
+function formatLabel(rawLabel: string, idx: number, side: 'left' | 'right'): string {
+  const clean = rawLabel.replace(/[().]/g, '').trim();
+  if (clean.length > 0) return `(${clean})`;
+  if (side === 'left') return `(${String.fromCharCode(65 + idx)})`;
+  const romans = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  return `(${romans[idx] || idx + 1})`;
+}
+
+function splitLabelAndContent(
+  cellStr: string,
+  idx: number,
+  side: 'left' | 'right'
+): { label: string; content: string } {
+  const plain = cellStr.trim();
+  const labelMatch = plain.match(/^(?:<p[^>]*>)?(?:\(([A-Za-z0-9]+)\)|([A-Za-z0-9]+)[\.\)])\s*([\s\S]*)$/i);
+  if (labelMatch) {
+    const lbl = (labelMatch[1] || labelMatch[2]).toUpperCase();
+    return {
+      label: `(${lbl})`,
+      content: labelMatch[3].trim(),
+    };
+  }
+  return {
+    label: formatLabel('', idx, side),
+    content: plain,
+  };
+}
+
+/**
+ * Parses an HTML <table> snippet into a structured MatchTableData if it matches
+ * the List I vs List II or Column I vs Column II format.
+ */
+export function parseHtmlMatchTable(
+  tableHtml: string,
+  surroundingPre: string = '',
+  surroundingPost: string = ''
+): MatchTableData | null {
+  const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+  const rawRows: string[][] = [];
+  let m: RegExpExecArray | null;
+  while ((m = trRegex.exec(tableHtml)) !== null) {
+    const rowHtml = m[1];
+    const cellRegex = /<(?:td|th)[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
+    const cells: string[] = [];
+    let cm: RegExpExecArray | null;
+    while ((cm = cellRegex.exec(rowHtml)) !== null) {
+      cells.push(cm[1].trim());
+    }
+    if (cells.length > 0) rawRows.push(cells);
+  }
+
+  if (rawRows.length === 0) return null;
+
+  let list1Title = 'List I';
+  let list2Title = 'List II';
+  let dataRows = rawRows;
+
+  // Check if first row contains headers
+  const firstRow = rawRows[0];
+  const isHeaderRow = firstRow.some((c) => /List|Column/i.test(c));
+  if (isHeaderRow) {
+    if (firstRow.length === 4) {
+      list1Title = firstRow[1] || firstRow[0] || 'List I';
+      list2Title = firstRow[3] || firstRow[2] || 'List II';
+    } else if (firstRow.length === 2) {
+      list1Title = firstRow[0] || 'List I';
+      list2Title = firstRow[1] || 'List II';
+    }
+    dataRows = rawRows.slice(1);
+  }
+
+  list1Title = list1Title.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || 'List I';
+  list2Title = list2Title.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() || 'List II';
+
+  const rows: MatchTableRow[] = [];
+  for (let idx = 0; idx < dataRows.length; idx++) {
+    const r = dataRows[idx];
+    if (r.length === 4) {
+      const leftLabel = r[0].replace(/<[^>]+>/g, '').trim();
+      const leftContent = r[1].trim();
+      const rightLabel = r[2].replace(/<[^>]+>/g, '').trim();
+      const rightContent = r[3].trim();
+      rows.push({
+        id: `row-${idx}`,
+        leftLabel: formatLabel(leftLabel, idx, 'left'),
+        leftContent,
+        rightLabel: formatLabel(rightLabel, idx, 'right'),
+        rightContent,
+      });
+    } else if (r.length === 2) {
+      const leftParsed = splitLabelAndContent(r[0], idx, 'left');
+      const rightParsed = splitLabelAndContent(r[1], idx, 'right');
+      rows.push({
+        id: `row-${idx}`,
+        leftLabel: leftParsed.label,
+        leftContent: leftParsed.content,
+        rightLabel: rightParsed.label,
+        rightContent: rightParsed.content,
+      });
+    }
+  }
+
+  if (rows.length < 2) return null;
+
+  const instructionPrefix = surroundingPre
+    ? surroundingPre.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    : 'Match List I with List II';
+  const instructionSuffix = surroundingPost
+    ? surroundingPost.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    : '';
+
+  return {
+    instructionPrefix,
+    list1Title,
+    list2Title,
+    rows,
+    instructionSuffix,
+  };
+}
+
+/**
+ * Parses general data tables (e.g. probability distributions, truth tables).
+ */
+export function parseGeneralTable(tableHtml: string, caption?: string): DataTableData | null {
+  const trRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+  const rows: string[][] = [];
+  let m: RegExpExecArray | null;
+  while ((m = trRegex.exec(tableHtml)) !== null) {
+    const rowHtml = m[1];
+    const cellRegex = /<(?:td|th)[^>]*>([\s\S]*?)<\/(?:td|th)>/gi;
+    const cells: string[] = [];
+    let cm: RegExpExecArray | null;
+    while ((cm = cellRegex.exec(rowHtml)) !== null) {
+      cells.push(cm[1].trim());
+    }
+    if (cells.length > 0) rows.push(cells);
+  }
+
+  if (rows.length < 2) return null;
+
+  return {
+    headers: rows[0],
+    rows: rows.slice(1),
+    caption: caption ? caption.replace(/<[^>]+>/g, ' ').trim() : undefined,
+  };
+}
+
+/**
+ * Parses plain text / markdown / unformatted Match the Following questions.
+ */
+export function parseTextMatching(rawText: string): MatchTableData | null {
+  let text = String(rawText || '').trim();
+  text = text.replace(/\\?\(\s*\\text\s*\{([^}]*)\}\s*\\?\)/gi, '$1');
+
+  // 1. Separate trailing instruction (e.g. Choose the correct answer...)
+  let instructionSuffix = '';
+  const suffixMatch = text.match(/(Choose the correct answer (?:from the options given below|from the following)[\s\S]*)$/i);
+  if (suffixMatch && suffixMatch.index !== undefined) {
+    instructionSuffix = suffixMatch[1].trim();
+    text = text.slice(0, suffixMatch.index).trim();
+  }
+
+  // 2. Find where items start: A. or (A) or P. or (P)
+  const firstItemMatch = text.search(/(?:^|\s)(?:\([APap]\)|[APap][\.\)]|\b[APap]\b(?=\s+\\?\())(?=\s)/);
+  if (firstItemMatch === -1) return null;
+
+  const headerPart = text.slice(0, firstItemMatch).trim();
+  const itemsPart = text.slice(firstItemMatch).trim();
+
+  let instructionPrefix = 'Match List I with List II';
+  let list1Title = 'List I';
+  let list2Title = 'List II';
+
+  const promptMatch = headerPart.match(/^(Match\s+(?:the\s+)?(?:List|Column)[^\n:.]*(?:with|and)[^\n:.]*[:.]?)/i);
+  let columnsPart = headerPart;
+  if (promptMatch) {
+    instructionPrefix = promptMatch[1].trim();
+    columnsPart = headerPart.slice(promptMatch[0].length).trim();
+  } else {
+    const genericPrompt = headerPart.match(/^(Match\s+(?:the\s+)?(?:List|Column)[^\n:.]+[:.]?)/i);
+    if (genericPrompt) {
+      instructionPrefix = genericPrompt[1].trim();
+      columnsPart = headerPart.slice(genericPrompt[0].length).trim();
+    }
+  }
+
+  const list2Idx = columnsPart.search(/(?:LIST|List|Column)\s*[-–—]?\s*(?:II|2)\b/i);
+  if (list2Idx !== -1) {
+    const list1Segment = columnsPart.slice(0, list2Idx).trim();
+    const list2Segment = columnsPart.slice(list2Idx).trim();
+
+    const l1Match = list1Segment.match(/(?:LIST|List|Column)\s*[-–—]?\s*(?:I|1)\s*(?:\(([^)]+)\)|([A-Za-z\s,/+-]{2,}))?$/i);
+    if (l1Match && (l1Match[1] || l1Match[2])) {
+      const sub1 = (l1Match[1] || l1Match[2]).trim();
+      if (sub1 && sub1.length > 1 && !/^(?:with|and)$/i.test(sub1)) list1Title = `List I (${sub1})`;
+    }
+
+    const l2Match = list2Segment.match(/(?:LIST|List|Column)\s*[-–—]?\s*(?:II|2)\s*(?:\(([^)]+)\)|([A-Za-z\s,/+-]{2,}))?$/i);
+    if (l2Match && (l2Match[1] || l2Match[2])) {
+      const sub2 = (l2Match[1] || l2Match[2]).trim();
+      if (sub2 && sub2.length > 1) list2Title = `List II (${sub2})`;
+    }
+  }
+
+  const isPQRS = /(?:^|\s)(?:\(P\)|P[\.\)])/i.test(itemsPart);
+  const leftLabels = isPQRS ? ['P', 'Q', 'R', 'S', 'T'] : ['A', 'B', 'C', 'D', 'E'];
+
+  const foundLeft: Array<{ label: string; index: number; matchLen: number }> = [];
+  let searchPos = 0;
+  for (let i = 0; i < leftLabels.length; i++) {
+    const label = leftLabels[i];
+    const reg = new RegExp(`(?:^|\\s)(?:\\(${label}\\)|${label}[\\.\\)]|\\b${label}\\b(?=\\s+\\\\?\\())(?=\\s)`, 'i');
+    const sub = itemsPart.slice(searchPos);
+    const m = sub.match(reg);
+    if (m && m.index !== undefined) {
+      const absIdx = searchPos + m.index + (m[0].startsWith(' ') ? 1 : 0);
+      foundLeft.push({
+        label,
+        index: absIdx,
+        matchLen: m[0].trim().length,
+      });
+      searchPos = absIdx + m[0].trim().length;
+    } else {
+      break;
+    }
+  }
+
+  if (foundLeft.length < 2) return null;
+
+  const rows: MatchTableRow[] = [];
+  for (let i = 0; i < foundLeft.length; i++) {
+    const cur = foundLeft[i];
+    const nextIdx = i + 1 < foundLeft.length ? foundLeft[i + 1].index : itemsPart.length;
+    const chunk = itemsPart.slice(cur.index + cur.matchLen, nextIdx).trim();
+
+    const rightRegex = /(?:^|\s)(?:\(([IVXivx]+|[1-9])\)|([IVXivx]+|[1-9])[\.\)]|\b([IVXivx]+)\b(?=\s*\\?\()|\b([IVXivx]+)\b(?=\s+[A-Za-z0-9\\]))/;
+    const rm = chunk.match(rightRegex);
+    if (rm && rm.index !== undefined) {
+      const leftContent = chunk.slice(0, rm.index).trim();
+      const rightLabel = (rm[1] || rm[2] || rm[3] || rm[4]).toUpperCase();
+      const rightContent = chunk.slice(rm.index + rm[0].length).trim();
+      rows.push({
+        id: `row-${i}`,
+        leftLabel: `(${cur.label})`,
+        leftContent,
+        rightLabel: `(${rightLabel})`,
+        rightContent,
+      });
+    } else {
+      rows.push({
+        id: `row-${i}`,
+        leftLabel: `(${cur.label})`,
+        leftContent: chunk,
+        rightLabel: '',
+        rightContent: '',
+      });
+    }
+  }
+
+  return {
+    instructionPrefix,
+    list1Title,
+    list2Title,
+    rows,
+    instructionSuffix,
+  };
+}
+
 /**
  * Parses raw question text into structured content blocks (Sections 2, 3, 4, 5, 6, 7).
  * Paragraphs keep prose and inline mathematical expressions flowing naturally together
  * without breaking sentences into isolated boxes. Display math expressions form
- * standalone responsive blocks.
+ * standalone responsive blocks. Matching tables and data tables form dedicated structural blocks.
  */
 export function parseQuestionContentBlocks(
   rawText: string,
@@ -334,6 +589,59 @@ export function parseQuestionContentBlocks(
 ): QuestionContentBlock[] {
   if (!rawText) return [];
 
+  // 1. High-level check for Match the Following tables and general data tables when not forceInline
+  if (!forceInline) {
+    const rawStr = String(rawText);
+
+    // Case A: Contains HTML <table>
+    const tableMatch = rawStr.match(/<table[^>]*>[\s\S]*?<\/table>/i);
+    if (tableMatch && tableMatch.index !== undefined) {
+      const pre = rawStr.slice(0, tableMatch.index).trim();
+      const post = rawStr.slice(tableMatch.index + tableMatch[0].length).trim();
+      const tableHtml = tableMatch[0];
+
+      // Check if it is a Match List table
+      if (
+        /List\s*[-–—\s]*[I1]|Column/i.test(tableHtml) ||
+        /Match\s+(?:the\s+)?(?:List|Column)/i.test(pre)
+      ) {
+        const matchData = parseHtmlMatchTable(tableHtml, pre, post);
+        if (matchData && matchData.rows.length >= 2) {
+          return [{ type: 'matchingTable', data: matchData }];
+        }
+      } else {
+        // General Data Table (e.g. probability, frequency distribution)
+        const genData = parseGeneralTable(tableHtml, pre);
+        if (genData) {
+          const blocks: QuestionContentBlock[] = [];
+          if (pre && !genData.caption) {
+            blocks.push(...parseQuestionContentBlocks(pre, true));
+          }
+          blocks.push({ type: 'dataTable', data: genData });
+          if (post) {
+            blocks.push(...parseQuestionContentBlocks(post, true));
+          }
+          return blocks;
+        }
+      }
+    }
+
+    // Case B: Plain text / unformatted Match List question (no <table> tag)
+    if (
+      /Match\s+(?:the\s+)?(?:List|Column)|(?:List|Column)\s*[-–—]?\s*[I1]\b/i.test(rawStr)
+    ) {
+      const matchData = parseTextMatching(rawStr);
+      if (
+        matchData &&
+        matchData.rows.length >= 2 &&
+        matchData.rows.every((r) => r.leftContent && r.rightContent)
+      ) {
+        return [{ type: 'matchingTable', data: matchData }];
+      }
+    }
+  }
+
+  // 2. Standard Prose + Math Token Parsing
   const normalized = normalizeHtmlFormatting(rawText);
   const tokenRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|\$[^\n$]+?\$)/g;
   const blocks: QuestionContentBlock[] = [];
@@ -400,7 +708,26 @@ export function parseQuestionContentBlocks(
     }
 
     const { sanitized } = sanitizeLatex(mathSource);
-    const promoteToDisplay = !forceInline && isComplexMathStructure(sanitized, isExplicitDisplay);
+
+    // Only promote to display mode if explicitly authored as display math ($$...$$ or \[...\]),
+    // OR if it is an isolated multiline system (\begin{aligned|cases|matrix}) with zero surrounding prose.
+    // Inline math ($...$ or \(...\)) embedded in prose must NEVER split paragraphs or render as giant blocks.
+    let promoteToDisplay = false;
+    if (!forceInline) {
+      if (isExplicitDisplay) {
+        promoteToDisplay = true;
+      } else if (
+        currentItems.length === 0 &&
+        /\\begin\{(aligned|cases|matrix|pmatrix|bmatrix|vmatrix|array)\}/i.test(sanitized)
+      ) {
+        const remaining = normalized.slice(tokenRegex.lastIndex);
+        const nextBreak = remaining.search(/\n\n|<br\s*\/?>\s*<br\s*\/?>/i);
+        const restOfParagraph = nextBreak !== -1 ? remaining.slice(0, nextBreak) : remaining;
+        if (!restOfParagraph.replace(/<[^>]+>/g, '').trim()) {
+          promoteToDisplay = true;
+        }
+      }
+    }
 
     if (promoteToDisplay) {
       flushParagraph();

@@ -162,10 +162,31 @@ export function normalizeVisualKey(rawKey: string): string {
 /**
  * Extracts all visual references, URLs, and placeholders from raw question fields.
  */
+/**
+ * Canonicalizes an image URL for robust deduplication across CDN proxies,
+ * query parameters, protocol variants, and thumbnails (Section 2 & 3).
+ */
+export function canonicalizeImageUrl(url: string): string {
+  if (!url || typeof url !== 'string') return '';
+  let clean = url.trim();
+  // Strip protocol for comparison (treat http and https as equivalent)
+  clean = clean.replace(/^https?:\/\//i, '');
+  // Normalize ExamGoal CDN fly/@width/ thumbnail paths to base image path
+  clean = clean.replace(/\/fly\/@[^/]+\/image\//i, '/image/');
+  // Strip query parameters for comparison (?format=png, cachebusters, resize dims)
+  const qIdx = clean.indexOf('?');
+  if (qIdx !== -1) {
+    clean = clean.substring(0, qIdx);
+  }
+  // Strip trailing slashes and normalize case
+  return clean.replace(/\/+$/, '').toLowerCase();
+}
+
 export interface ExtractedVisualReference {
   raw: string;
   cleanKey: string;
   sourceType: 'html_img' | 'bracket_placeholder' | 'field_string' | 'field_object';
+  sourceField: 'question' | 'options' | 'explanation' | 'direct_field';
   url?: string;
   altText?: string;
 }
@@ -175,7 +196,11 @@ export function extractAllVisualReferences(
 ): ExtractedVisualReference[] {
   const refs: ExtractedVisualReference[] = [];
 
-  const inspectText = (text: string, fieldName: string) => {
+  const inspectText = (
+    text: string,
+    fieldName: string,
+    sourceField: 'question' | 'options' | 'explanation'
+  ) => {
     if (!text || typeof text !== 'string') return;
 
     // 1. Extract HTML <img ...> tags
@@ -191,6 +216,7 @@ export function extractAllVisualReferences(
         raw: tagStr,
         cleanKey: alt ? normalizeVisualKey(alt) : (url || fieldName),
         sourceType: 'html_img',
+        sourceField,
         url,
         altText: alt,
       });
@@ -205,13 +231,14 @@ export function extractAllVisualReferences(
         raw: full,
         cleanKey: normalizeVisualKey(inner),
         sourceType: 'bracket_placeholder',
+        sourceField,
         altText: inner,
       });
     }
   };
 
-  inspectText(String(rawRecord.question ?? rawRecord.questionText ?? rawRecord.statement ?? ''), 'question');
-  inspectText(String(rawRecord.explanation ?? rawRecord.solution ?? ''), 'explanation');
+  inspectText(String(rawRecord.question ?? rawRecord.questionText ?? rawRecord.statement ?? ''), 'question', 'question');
+  inspectText(String(rawRecord.explanation ?? rawRecord.solution ?? ''), 'explanation', 'explanation');
 
   // Check explicit object fields: diagram, image, images, diagramUrl, visual, visualAsset
   if (typeof rawRecord.diagram === 'string' && rawRecord.diagram.trim()) {
@@ -219,6 +246,7 @@ export function extractAllVisualReferences(
       raw: rawRecord.diagram,
       cleanKey: normalizeVisualKey(rawRecord.diagram),
       sourceType: 'field_string',
+      sourceField: 'direct_field',
     });
   }
   if (typeof rawRecord.image === 'string' && rawRecord.image.trim()) {
@@ -226,6 +254,7 @@ export function extractAllVisualReferences(
       raw: rawRecord.image,
       cleanKey: normalizeVisualKey(rawRecord.image),
       sourceType: 'field_string',
+      sourceField: 'direct_field',
       url: /^https?:\/\//i.test(rawRecord.image.trim()) ? rawRecord.image.trim() : undefined,
     });
   }
@@ -234,6 +263,7 @@ export function extractAllVisualReferences(
       raw: rawRecord.diagramUrl,
       cleanKey: normalizeVisualKey(rawRecord.diagramUrl),
       sourceType: 'field_string',
+      sourceField: 'direct_field',
       url: rawRecord.diagramUrl.trim(),
     });
   }
@@ -244,6 +274,7 @@ export function extractAllVisualReferences(
           raw: item,
           cleanKey: normalizeVisualKey(item),
           sourceType: 'field_string',
+          sourceField: 'direct_field',
           url: /^https?:\/\//i.test(item.trim()) ? item.trim() : undefined,
         });
       }
@@ -267,6 +298,8 @@ export interface ResolvedQuestionVisual {
 
 /**
  * Core 5-tier Priority Visual Asset Resolver.
+ * Filters out explanation-only visuals from active question rendering
+ * and safely deduplicates repeated references and CDN aliases.
  */
 export function resolveQuestionVisualAsset(
   questionId: string,
@@ -291,6 +324,10 @@ export function resolveQuestionVisualAsset(
   // Combine raw visual metadata strings for internal provenance (Section 15)
   const rawVisualMetadata = references.map((r) => r.cleanKey).join('; ');
 
+  // Filter to references that genuinely belong to the question (prompt or direct question fields),
+  // strictly excluding explanation-only images from active question presentation
+  const questionRefs = references.filter((r) => r.sourceField !== 'explanation');
+
   // PRIORITY 1: Existing verified image/diagram asset already attached
   if (rawRecord.visualAsset && typeof rawRecord.visualAsset === 'object') {
     const existing = rawRecord.visualAsset as VisualAsset;
@@ -306,37 +343,49 @@ export function resolveQuestionVisualAsset(
     }
   }
 
-  // PRIORITY 2: Original source image associated with imported PYQ (valid HTTP/HTTPS URL)
-  for (const ref of references) {
+  // PRIORITY 2: Original source images associated with imported PYQ (valid HTTP/HTTPS URLs)
+  // Safely deduplicate across question body, image array, and aliases
+  const uniqueQuestionAssets: VisualAsset[] = [];
+  const seenCanonicalUrls = new Set<string>();
+
+  for (const ref of questionRefs) {
     if (ref.url && /^https?:\/\/[^\s]+$/i.test(ref.url)) {
-      const asset: VisualAsset = {
-        assetId: `asset-${questionId}-${Date.now().toString(36)}`,
-        type: 'image',
-        subject,
-        chapter,
-        questionId,
-        format: 'url',
-        imageUrl: ref.url,
-        url: ref.url,
-        sourceUrl: ref.url,
-        altText: ref.altText || `${subject} Problem Diagram`,
-        caption: ref.altText,
-        verified: true,
-        visualStatus: 'verified',
-      };
-      return {
-        asset,
-        images: [asset],
-        primaryImageUrl: ref.url,
-        visualRequired: true,
-        visualStatus: 'verified',
-        rawVisualMetadata,
-      };
+      const canonicalKey = canonicalizeImageUrl(ref.url);
+      if (canonicalKey && !seenCanonicalUrls.has(canonicalKey)) {
+        seenCanonicalUrls.add(canonicalKey);
+        const asset: VisualAsset = {
+          assetId: `asset-${questionId}-${uniqueQuestionAssets.length + 1}`,
+          type: 'image',
+          subject,
+          chapter,
+          questionId,
+          format: 'url',
+          imageUrl: ref.url,
+          url: ref.url,
+          sourceUrl: ref.url,
+          altText: ref.altText || `${subject} Problem Diagram ${uniqueQuestionAssets.length > 0 ? uniqueQuestionAssets.length + 1 : ''}`.trim(),
+          caption: ref.altText,
+          verified: true,
+          visualStatus: 'verified',
+        };
+        uniqueQuestionAssets.push(asset);
+      }
     }
   }
 
+  if (uniqueQuestionAssets.length > 0) {
+    return {
+      asset: uniqueQuestionAssets[0],
+      images: uniqueQuestionAssets,
+      primaryImageUrl: uniqueQuestionAssets[0].imageUrl || null,
+      visualRequired: true,
+      visualStatus: 'verified',
+      rawVisualMetadata,
+    };
+  }
+
   // PRIORITY 3: Verified locally stored or curated visual asset associated through source metadata
-  for (const ref of references) {
+  for (const ref of questionRefs) {
     // Check against curated verified PYQ diagrams
     for (const [key, verifiedData] of Object.entries(VERIFIED_PYQ_DIAGRAMS)) {
       const normalizedKey = normalizeVisualKey(key).toLowerCase();

@@ -3,6 +3,7 @@ import {
   parseQuestionContentBlocks,
   QuestionContentBlock,
 } from '../services/MathRendererService';
+import { MatchTableRenderer, DataTableRenderer } from './MatchTableRenderer';
 
 export interface MathTextProps {
   text: string;
@@ -35,11 +36,15 @@ export const MathText: React.FC<MathTextProps> = ({
   // Purely inline mode (for MCQ options, small labels, table cells, or single-line prose)
   if (inline || (blocks.length === 1 && blocks[0].type === 'paragraph' && !block)) {
     const inlineHtml = blocks
-      .flatMap((b) =>
-        b.type === 'paragraph'
-          ? b.items
-          : [{ type: 'inlineMath' as const, latex: b.latex, renderedHtml: b.renderedHtml }]
-      )
+      .flatMap((b) => {
+        if (b.type === 'paragraph') {
+          return b.items;
+        }
+        if (b.type === 'displayMath') {
+          return [{ type: 'inlineMath' as const, latex: b.latex, renderedHtml: b.renderedHtml }];
+        }
+        return [];
+      })
       .map((item) => {
         if (item.type === 'text') {
           return item.text;
@@ -85,7 +90,7 @@ export const MathText: React.FC<MathTextProps> = ({
           return (
             <div
               key={`disp-${idx}`}
-              className="math-display-container w-full my-4 py-3 sm:py-3.5 px-4 bg-slate-900/60 border border-slate-800/80 rounded-xl overflow-x-auto overflow-y-visible text-center sm:text-left transition-colors hover:border-slate-700/80 select-text shadow-xs"
+              className="math-display-container my-3 py-2 px-3 sm:px-4 bg-slate-900/40 border border-slate-800/60 rounded-xl overflow-x-auto overflow-y-visible text-center select-text shadow-xs"
             >
               <div
                 className="w-full inline-block min-w-0"
@@ -93,6 +98,14 @@ export const MathText: React.FC<MathTextProps> = ({
               />
             </div>
           );
+        }
+
+        if (b.type === 'matchingTable') {
+          return <MatchTableRenderer key={`match-${idx}`} data={b.data} />;
+        }
+
+        if (b.type === 'dataTable') {
+          return <DataTableRenderer key={`data-table-${idx}`} data={b.data} />;
         }
 
         return null;

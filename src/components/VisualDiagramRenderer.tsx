@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Eye, Maximize2, Minus, Plus, RotateCcw, X, AlertCircle } from 'lucide-react';
 import { VisualAsset, VisualStatus } from '../types/jee';
+import { canonicalizeImageUrl } from '../services/VisualAssetResolver';
 
 export interface VisualDiagramRendererProps {
   asset?: VisualAsset | null;
@@ -243,51 +244,85 @@ export const QuestionVisuals: React.FC<QuestionVisualsProps> = ({
   enableZoom = true,
   questionOrder,
 }) => {
-  // Normalize visual assets list
+  // Normalize visual assets list with strict canonical deduplication
   const assetList: VisualAsset[] = [];
+  const seenCanonicalKeys = new Set<string>();
 
+  const getCanonicalKey = (item: VisualAsset | string | null | undefined): string | null => {
+    if (!item) return null;
+    if (typeof item === 'string') {
+      const trimmed = item.trim();
+      if (!trimmed || /^\[(image|diagram|figure|graph|reaction|structure|asset):/i.test(trimmed)) return null;
+      if (trimmed.startsWith('data:image/svg+xml') || trimmed.startsWith('<svg')) {
+        return `svg:${trimmed.slice(0, 120)}`;
+      }
+      const c = canonicalizeImageUrl(trimmed);
+      return c ? `url:${c}` : null;
+    }
+    if (typeof item === 'object') {
+      if (item.svgContent) {
+        return `svg:${item.svgContent.slice(0, 120)}`;
+      }
+      const u = item.imageUrl || item.url || item.sourceUrl;
+      if (u) {
+        const c = canonicalizeImageUrl(u);
+        return c ? `url:${c}` : null;
+      }
+    }
+    return null;
+  };
+
+  // 1. Add primary verified visualAsset first (highest fidelity)
   if (visualAsset && (visualAsset.svgContent || visualAsset.imageUrl || visualAsset.url)) {
-    assetList.push(visualAsset);
+    const key = getCanonicalKey(visualAsset);
+    if (key) {
+      seenCanonicalKeys.add(key);
+      assetList.push(visualAsset);
+    }
   }
 
+  // 2. Add from visuals array (strictly deduplicated against visualAsset and earlier entries)
   if (Array.isArray(visuals)) {
     for (const v of visuals) {
+      const key = getCanonicalKey(v);
+      if (!key || seenCanonicalKeys.has(key)) continue;
+      seenCanonicalKeys.add(key);
+
       if (typeof v === 'string') {
         const trimmed = v.trim();
-        // Never treat raw metadata strings as visual assets
-        if (trimmed && !/^\[(image|diagram|figure|graph|reaction|structure|asset):/i.test(trimmed)) {
-          if (trimmed.startsWith('data:image/svg+xml') || trimmed.startsWith('<svg')) {
-            assetList.push({
-              assetId: `svg-${assetList.length}`,
-              type: 'diagram',
-              subject: 'Physics',
-              chapter: '',
-              format: 'svg',
-              svgContent: trimmed.startsWith('<svg') ? trimmed : decodeURIComponent(trimmed.replace(/^data:image\/svg\+xml;charset=utf-8,/, '')),
-              altText: caption || `Question ${questionOrder || ''} Diagram`,
-            });
-          } else {
-            assetList.push({
-              assetId: `img-${assetList.length}`,
-              type: 'image',
-              subject: 'Physics',
-              chapter: '',
-              format: 'url',
-              imageUrl: trimmed,
-              altText: caption || `Question ${questionOrder || ''} Diagram`,
-            });
-          }
+        if (trimmed.startsWith('data:image/svg+xml') || trimmed.startsWith('<svg')) {
+          assetList.push({
+            assetId: `svg-${assetList.length}`,
+            type: 'diagram',
+            subject: 'Physics',
+            chapter: '',
+            format: 'svg',
+            svgContent: trimmed.startsWith('<svg') ? trimmed : decodeURIComponent(trimmed.replace(/^data:image\/svg\+xml;charset=utf-8,/, '')),
+            altText: caption || `Question ${questionOrder || ''} Diagram`,
+          });
+        } else {
+          assetList.push({
+            assetId: `img-${assetList.length}`,
+            type: 'image',
+            subject: 'Physics',
+            chapter: '',
+            format: 'url',
+            imageUrl: trimmed,
+            altText: caption || `Question ${questionOrder || ''} Diagram`,
+          });
         }
-      } else if (v && typeof v === 'object' && (v.svgContent || v.imageUrl || v.url)) {
+      } else if (typeof v === 'object' && (v.svgContent || v.imageUrl || v.url)) {
         assetList.push(v);
       }
     }
   }
 
-  // Check fallback primary imageUrl
+  // 3. Fallback to primary imageUrl only if not already represented in assetList
   if (assetList.length === 0 && imageUrl) {
     const trimmed = imageUrl.trim();
-    if (trimmed && !/^\[(image|diagram|figure|graph|reaction|structure|asset):/i.test(trimmed)) {
+    const key = getCanonicalKey(trimmed);
+    if (key && !seenCanonicalKeys.has(key)) {
+      seenCanonicalKeys.add(key);
       if (trimmed.startsWith('data:image/svg+xml')) {
         assetList.push({
           assetId: 'primary-svg',

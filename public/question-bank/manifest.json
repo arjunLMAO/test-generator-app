@@ -1,12 +1,12 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-10-08T05:33:41.025Z",
+  "generatedAt": "2026-10-11T08:01:49.216Z",
   "totalQuestions": 5263,
-  "totalFiles": 62,
+  "totalFiles": 63,
   "subjects": {
     "Physics": {
       "questionCount": 1753,
-      "chapterCount": 21
+      "chapterCount": 22
     },
     "Chemistry": {
       "questionCount": 1863,
@@ -547,6 +547,15 @@
       "relativePath": "physics/vector algebra.json",
       "urlPath": "/question-bank/physics/vector%20algebra.json",
       "questionCount": 19,
+      "grade": "Class 11-12"
+    },
+    {
+      "subject": "Physics",
+      "chapter": "vercel",
+      "fileName": "vercel.json",
+      "relativePath": "physics/vercel.json",
+      "urlPath": "/question-bank/physics/vercel.json",
+      "questionCount": 0,
       "grade": "Class 11-12"
     },
     {

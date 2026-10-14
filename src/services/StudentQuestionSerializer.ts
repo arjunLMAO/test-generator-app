@@ -1,4 +1,5 @@
 import { NormalizedQuestion, QuestionType, SubjectName, VisualAsset, VisualStatus } from '../types/jee';
+import { canonicalizeImageUrl } from './VisualAssetResolver';
 
 /**
  * Central whitelist of fields allowed to reach the active examination renderer (Section 15, 41, 60).
@@ -110,14 +111,23 @@ export function sanitizeStudentQuestionText(rawText: string): string {
   text = text.replace(/\s+by\s+(?:Raoult(?:'s)?\s+law|Hess(?:'s)?\s+law|AM-GM\s+inequality)(?=[.?]|$)/gi, '');
   text = text.replace(/\s+according\s+to\s+Slater(?:'s)?\s+rules(?=[.?]|$)/gi, '');
 
-  // 5. Strip diagram/image placeholder metadata from student-facing question text (Section 3, 7, 8, 14, 24)
+  // 5. Strip standalone or trailing diagram/image placeholder metadata from student-facing question text (Section 3, 7, 8, 14, 24)
+  // while preserving inline placeholders embedded inside matching items/options so cells are not emptied
   text = text.replace(
-    /\[(image|diagram|figure|graph|reaction|structure|asset|image\s+attached):[\s\S]*?\]/gi,
+    /(?:^|\n|<br\s*\/?>|\s+)\[(image|diagram|figure|graph|reaction|structure|asset|image\s+attached):\s*([^\]]+)\](?:\s*$)/gi,
     ''
   );
   // Strip trailing or standalone "Question \d+ English" artifacts left by scraper linebreaks
   text = text.replace(/(?:\n|<br\s*\/?>|\s)*Question\s+\d+\s+English(?=[.,?;:\s]|$)/gi, '');
-  text = text.replace(/(?:\n|<br\s*\/?>|\s)*\[(?:image|diagram|figure|graph|reaction|structure)[\s\S]*?\]/gi, '');
+  text = text.replace(/(?:\n|<br\s*\/?>|\s)*\[(?:image|diagram|figure|graph|reaction|structure)[\s\S]*?\](?:\s*$)/gi, '');
+
+  // 6. Clean standalone question-level diagram <img> tags outside tables
+  // These are rendered cleanly in QuestionVisuals with zoom and lightbox;
+  // images embedded within <table> cells (e.g. Match List I & II) are strictly preserved.
+  if (!/<table\b/i.test(text)) {
+    text = text.replace(/<p[^>]*>\s*<img[^>]+>\s*<\/p>/gi, '');
+    text = text.replace(/(?:^|<br\s*\/?>|\n)\s*<img[^>]+>\s*(?:$|<br\s*\/?>|\n)/gi, '<br/>');
+  }
 
   // Capitalize first letter if a leading clause was stripped cleanly
   if (text.length > 1 && /^[a-z]/.test(text)) {
@@ -166,6 +176,36 @@ export function toStudentQuestion(
 ): StudentQuestion {
   const sanitizedQuestion = sanitizeStudentQuestionText(question.question);
 
+  // Deduplicate images with canonical key check
+  const rawList: string[] = [];
+  if (Array.isArray(question.images)) {
+    for (const item of question.images) {
+      const anyItem = item as unknown;
+      if (typeof anyItem === 'string' && anyItem.trim()) {
+        rawList.push(anyItem.trim());
+      } else if (anyItem && typeof anyItem === 'object') {
+        const obj = anyItem as Record<string, unknown>;
+        const u = obj.imageUrl || obj.url || obj.sourceUrl;
+        if (typeof u === 'string' && u.trim()) {
+          rawList.push(u.trim());
+        }
+      }
+    }
+  }
+  if (question.image && typeof question.image === 'string') {
+    rawList.push(question.image);
+  }
+
+  const dedupedImages: string[] = [];
+  const seenImgKeys = new Set<string>();
+  for (const img of rawList) {
+    const k = canonicalizeImageUrl(img);
+    if (k && !seenImgKeys.has(k)) {
+      seenImgKeys.add(k);
+      dedupedImages.push(img);
+    }
+  }
+
   const studentQuestion: StudentQuestion = {
     id: question.id,
     order,
@@ -174,7 +214,7 @@ export function toStudentQuestion(
     question: sanitizedQuestion,
     ...(question.type === 'mcq' && question.options ? { options: question.options } : {}),
     image: question.image ?? null,
-    images: (question.images && question.images.length > 0) ? question.images : (question.image ? [question.image] : []),
+    images: dedupedImages,
     visualAsset: question.visualAsset ?? null,
     visualRequired: Boolean(question.visualRequired),
     visualStatus: question.visualStatus ?? (question.image ? 'verified' : 'unverified'),
