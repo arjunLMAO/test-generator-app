@@ -2,7 +2,6 @@ import React, { useMemo, useRef, useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
-  Database,
   FileJson,
   FolderUp,
   GitBranch,
@@ -17,6 +16,7 @@ import {
 } from '../types/jee';
 import { MathText } from './MathText';
 import { QuestionVisuals } from './VisualDiagramRenderer';
+import { sanitizeStudentQuestionText } from '../services/StudentQuestionSerializer';
 
 interface QuestionBankAdminViewProps {
   questions: NormalizedQuestion[];
@@ -42,7 +42,7 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
   onImportGitRepo,
   onResetDefaultBank,
 }) => {
-  const [importMode, setImportMode] = useState<'upload' | 'git'>('git');
+  const [importMode, setImportMode] = useState<'upload' | 'git'>('upload');
   const [replaceExisting, setReplaceExisting] = useState(true);
   const [gitRepoUrl, setGitRepoUrl] = useState('');
   const [gitBranch, setGitBranch] = useState('');
@@ -139,7 +139,7 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
       );
       setStatusMessage({
         type: 'success',
-        text: 'Successfully synchronized all chapter JSON files from your GitHub repository.',
+        text: 'Successfully synchronized question bank files from Git.',
       });
     } catch (err: any) {
       setStatusMessage({
@@ -158,7 +158,7 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
       await onResetDefaultBank();
       setStatusMessage({
         type: 'success',
-        text: 'Restored default 55-chapter JEE Main & Advanced question bank.',
+        text: 'Restored default question bank.',
       });
     } catch (err: any) {
       setStatusMessage({
@@ -189,19 +189,16 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
   }, [questions, explorerSubject, explorerSearch]);
 
   return (
-    <div className="min-h-screen bg-[#090D16] text-slate-100 py-8 px-6">
-      <div className="max-w-[1240px] mx-auto space-y-10">
+    <div className="min-h-screen bg-white dark:bg-[#0F0F11] text-neutral-900 dark:text-neutral-100 py-8 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
-          <div>
-            <div className="text-xs font-mono text-blue-400">
-              QUESTION BANK DIAGNOSTICS · INGESTION & GIT SYNC
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-display text-white mt-1">
-              Question Bank Administration & Validator
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-5">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">
+              Question Bank
             </h1>
-            <p className="text-sm text-slate-400">
-              Inspect schema normalization diagnostics, upload custom JSON chapter files, or connect a Git repository.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              Diagnostics, schema validation, and question import controls.
             </p>
           </div>
 
@@ -209,195 +206,151 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
             type="button"
             disabled={isBusy}
             onClick={handleReset}
-            className="px-4 py-2 text-xs font-medium text-slate-300 hover:text-white border border-slate-700 rounded-lg transition-colors flex items-center gap-1.5 self-start md:self-auto cursor-pointer"
+            className="px-3.5 py-1.5 text-xs font-medium text-neutral-800 dark:text-neutral-200 hover:text-neutral-950 dark:hover:text-white bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded transition-colors flex items-center gap-1.5 self-start md:self-auto cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isBusy ? 'animate-spin' : ''}`} />
-            <span>Reset Default 55-Chapter Bank</span>
+            <span>Reset to Default Bank</span>
           </button>
         </div>
 
-        {/* DIAGNOSTIC TELEMETRY GRID (Section 70) */}
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-white">
-            Live Question Bank Health & Inventory
+        {/* Telemetry Strip */}
+        <section aria-label="Question Bank Summary" className="space-y-3">
+          <h2 className="text-base font-semibold text-neutral-950 dark:text-white">
+            Inventory Overview
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Total Valid Questions</div>
-              <div className="text-2xl font-mono font-semibold text-white mt-1 tabular-nums">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Total Questions</div>
+              <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
                 {diagnostics.validQuestionsCount.toLocaleString()}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 mt-1 tabular-nums">
-                {diagnostics.filesScanned} JSON files scanned
+              <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-1 tabular-nums">
+                {diagnostics.filesScanned} JSON files
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Physics</div>
-              <div className="text-2xl font-mono font-semibold text-blue-400 mt-1 tabular-nums">
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Physics</div>
+              <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
                 {diagnostics.bySubject.Physics.total}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 mt-1 tabular-nums">
+              <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-1 tabular-nums">
                 {diagnostics.bySubject.Physics.chaptersCount} Chapters
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Chemistry</div>
-              <div className="text-2xl font-mono font-semibold text-emerald-400 mt-1 tabular-nums">
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Chemistry</div>
+              <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
                 {diagnostics.bySubject.Chemistry.total}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 mt-1 tabular-nums">
+              <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-1 tabular-nums">
                 {diagnostics.bySubject.Chemistry.chaptersCount} Chapters
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Mathematics</div>
-              <div className="text-2xl font-mono font-semibold text-amber-400 mt-1 tabular-nums">
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Mathematics</div>
+              <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
                 {diagnostics.bySubject.Mathematics.total}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 mt-1 tabular-nums">
+              <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-1 tabular-nums">
                 {diagnostics.bySubject.Mathematics.chaptersCount} Chapters
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Question Types</div>
-              <div className="text-lg font-mono font-semibold text-white mt-1 tabular-nums">
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Format Split</div>
+              <div className="text-base font-mono font-semibold text-neutral-950 dark:text-white mt-1 tabular-nums">
                 {totalMcqs} MCQ
               </div>
-              <div className="text-[11px] font-mono text-emerald-400 mt-1 tabular-nums">
-                {totalIntegers} Integer Type
+              <div className="text-[11px] font-mono text-neutral-600 dark:text-neutral-400 mt-1 tabular-nums">
+                {totalIntegers} Numerical
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-              <div className="text-xs text-slate-400">Validation Status</div>
-              <div className="text-lg font-mono font-semibold text-emerald-400 mt-1 tabular-nums">
-                { totalChapters } Chapters
+            <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">Total Chapters</div>
+              <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
+                {totalChapters}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 mt-1 tabular-nums">
-                Invalid: {diagnostics.invalidQuestionsCount} · Dup: {diagnostics.duplicateIds.length}
+              <div className="text-[11px] font-mono text-neutral-600 dark:text-neutral-400 mt-1 tabular-nums">
+                Covered
               </div>
-            </div>
-          </div>
-
-          {/* Detailed Validation Counters Row */}
-          <div className="p-4 rounded-xl bg-slate-900/70 border border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono tabular-nums">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Invalid Questions Rejected:</span>
-              <span
-                className={
-                  diagnostics.invalidQuestionsCount > 0 ? 'text-red-400 font-semibold' : 'text-emerald-400'
-                }
-              >
-                {diagnostics.invalidQuestionsCount}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Duplicate IDs Detected:</span>
-              <span
-                className={
-                  diagnostics.duplicateIds.length > 0 ? 'text-amber-400 font-semibold' : 'text-emerald-400'
-                }
-              >
-                {diagnostics.duplicateIds.length}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Broken Image References:</span>
-              <span
-                className={
-                  diagnostics.brokenImagesCount > 0 ? 'text-amber-400 font-semibold' : 'text-emerald-400'
-                }
-              >
-                {diagnostics.brokenImagesCount}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Missing Solutions:</span>
-              <span
-                className={
-                  diagnostics.missingSolutionsCount > 0 ? 'text-amber-400 font-semibold' : 'text-emerald-400'
-                }
-              >
-                {diagnostics.missingSolutionsCount}
-              </span>
             </div>
           </div>
         </section>
 
-        {/* IMPORT QUESTION BANK WORKFLOW (Section 71) */}
-        <section className="p-6 rounded-xl bg-[#111827] border border-slate-800 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        {/* Import Workflow */}
+        <section aria-label="Import Question Bank" className="p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-3">
             <div>
-              <h2 className="text-lg font-semibold text-white">Import Question Bank</h2>
-              <p className="text-xs text-slate-400">
-                Upload your JSON question-bank files/folder or connect a GitHub repository. Automatically normalizes diverse JSON schemas.
+              <h2 className="text-base font-semibold text-neutral-950 dark:text-white">Import Questions</h2>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Upload JSON chapter files or synchronize from a Git repository.
               </p>
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
+            <div className="flex items-center gap-0.5 p-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded text-xs">
               <button
                 type="button"
                 onClick={() => setImportMode('upload')}
-                className={`px-3 py-1.5 rounded text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer ${
                   importMode === 'upload'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                 }`}
               >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Upload JSON Files</span>
+                <Upload className="w-3 h-3" />
+                <span>Upload JSON</span>
               </button>
               <button
                 type="button"
                 onClick={() => setImportMode('git')}
-                className={`px-3 py-1.5 rounded text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer ${
                   importMode === 'git'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                 }`}
               >
-                <GitBranch className="w-3.5 h-3.5" />
-                <span>Connect Git Repository</span>
+                <GitBranch className="w-3 h-3" />
+                <span>Connect Git</span>
               </button>
             </div>
           </div>
 
           {statusMessage && (
             <div
-              className={`p-4 rounded-lg border text-xs flex items-center gap-2.5 ${
+              className={`p-3 rounded border text-xs flex items-center gap-2 ${
                 statusMessage.type === 'success'
-                  ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200'
-                  : 'bg-red-950/40 border-red-500/40 text-red-200'
+                  ? 'bg-neutral-50 dark:bg-neutral-900/60 border-neutral-300 dark:border-neutral-700 text-neutral-800 dark:text-neutral-200'
+                  : 'bg-neutral-50 dark:bg-red-950/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
               }`}
             >
               {statusMessage.type === 'success' ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-neutral-900 dark:text-white shrink-0" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+                <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
               )}
               <span>{statusMessage.text}</span>
             </div>
           )}
 
           {importMode === 'upload' ? (
-            <div className="space-y-4">
-              <div className="p-6 rounded-xl border-2 border-dashed border-slate-700 hover:border-blue-500/60 bg-slate-900/40 text-center space-y-3">
-                <FolderUp className="w-8 h-8 text-blue-400 mx-auto" />
-                <div className="space-y-1">
-                  <div className="text-sm font-semibold text-white">
-                    Select one or more JSON question files (up to 55+ chapter files)
-                  </div>
-                  <p className="text-xs text-slate-400 max-w-lg mx-auto">
-                    Supports arrays of questions, chapter wrapper objects, or nested subject maps. Automatically resolves MCQ options, integer answers, and LaTeX formulas.
+            <div className="space-y-3">
+              <div className="p-6 rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-700 text-center space-y-2 bg-neutral-50 dark:bg-neutral-900/40">
+                <FolderUp className="w-6 h-6 text-neutral-600 dark:text-neutral-400 mx-auto" />
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-neutral-900 dark:text-white">
+                    Select JSON question-bank files or a directory
+                  </p>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+                    Supports question arrays or chapter maps. Formula strings and diagrams are automatically validated.
                   </p>
                 </div>
 
-                <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+                <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -409,10 +362,10 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
                   />
                   <label
                     htmlFor="qb-json-upload"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900 text-xs font-medium transition-colors cursor-pointer"
                   >
-                    <FileJson className="w-4 h-4" />
-                    <span>{isBusy ? 'Importing & Validating...' : 'Choose JSON Files'}</span>
+                    <FileJson className="w-3.5 h-3.5" />
+                    <span>{isBusy ? 'Importing...' : 'Choose JSON Files'}</span>
                   </label>
 
                   <input
@@ -426,31 +379,31 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
                   />
                   <label
                     htmlFor="qb-folder-upload"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 text-xs font-semibold transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 text-xs font-medium transition-colors cursor-pointer"
                   >
-                    <FolderUp className="w-4 h-4" />
-                    <span>Upload Question-Bank Folder</span>
+                    <FolderUp className="w-3.5 h-3.5" />
+                    <span>Upload Folder</span>
                   </label>
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={replaceExisting}
                   onChange={(e) => setReplaceExisting(e.target.checked)}
-                  className="rounded border-slate-600"
+                  className="rounded border-neutral-300 dark:border-neutral-700"
                 />
                 <span>
-                  Replace existing question bank completely (uncheck to merge uploaded chapters into current bank)
+                  Replace existing question bank (uncheck to merge into current questions)
                 </span>
               </label>
             </div>
           ) : (
-            <form onSubmit={handleGitSync} className="space-y-4 max-w-2xl">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-300">
+            <form onSubmit={handleGitSync} className="space-y-3 max-w-xl">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300">
                     GitHub Repository URL
                   </label>
                   <input
@@ -459,26 +412,26 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
                     value={gitRepoUrl}
                     onChange={(e) => setGitRepoUrl(e.target.value)}
                     placeholder="https://github.com/username/jee-question-bank"
-                    className="w-full px-3.5 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-300">
-                    Branch (Auto-detected if blank)
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                    Branch
                   </label>
                   <input
                     type="text"
                     value={gitBranch}
                     onChange={(e) => setGitBranch(e.target.value)}
-                    placeholder="main / master"
-                    className="w-full px-3.5 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono"
+                    placeholder="main"
+                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300 font-mono"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300">
                     Subfolder Path (Optional)
                   </label>
                   <input
@@ -486,104 +439,80 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
                     value={gitSubPath}
                     onChange={(e) => setGitSubPath(e.target.value)}
                     placeholder="e.g. question-bank/"
-                    className="w-full px-3.5 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono"
+                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300 font-mono"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-slate-300">
-                    GitHub Personal Access Token (Only if private repo)
+                <div className="space-y-1">
+                  <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                    Access Token (Private repos only)
                   </label>
                   <input
                     type="password"
                     value={githubToken}
                     onChange={(e) => setGithubToken(e.target.value)}
-                    placeholder="ghp_... (leave blank for public repos)"
-                    className="w-full px-3.5 py-2 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono"
+                    placeholder="ghp_..."
+                    className="w-full px-3 py-1.5 text-xs bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300 font-mono"
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={replaceExisting}
                   onChange={(e) => setReplaceExisting(e.target.checked)}
-                  className="rounded border-slate-600"
+                  className="rounded border-neutral-300 dark:border-neutral-700"
                 />
                 <span>
-                  Replace existing question bank with this Git repository (makes your Git repo chapters the sole source of truth)
+                  Replace existing questions with repository content
                 </span>
               </label>
 
               <button
                 type="submit"
                 disabled={isBusy}
-                className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors cursor-pointer"
+                className="px-4 py-2 rounded bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900 text-xs font-medium transition-colors cursor-pointer"
               >
-                {isBusy ? 'Syncing Repository...' : 'Sync Question Bank from Git'}
+                {isBusy ? 'Syncing...' : 'Sync Repository'}
               </button>
             </form>
           )}
         </section>
 
-        {/* VALIDATION ISSUES LOG (If any invalid records or warnings exist) */}
-        {diagnostics.issues.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-white">
-              Validation & Normalization Report ({diagnostics.issues.length})
-            </h2>
-            <div className="rounded-xl bg-[#111827] border border-slate-800 max-h-60 overflow-y-auto divide-y divide-slate-800 text-xs font-mono">
-              {diagnostics.issues.map((iss, idx) => (
-                <div key={idx} className="p-3 flex items-center justify-between gap-4">
-                  <span
-                    className={
-                      iss.severity === 'error' ? 'text-red-400 font-semibold' : 'text-amber-400'
-                    }
-                  >
-                    [{iss.severity.toUpperCase()}: {iss.reason}]
-                  </span>
-                  <span className="text-slate-300 flex-1">{iss.message}</span>
-                  <span className="text-slate-500">{iss.sourceFile}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* LIVE QUESTION BANK EXPLORER */}
-        <section className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Question Inspector */}
+        <section aria-label="Question Inspector" className="space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-white">
-                Normalized Question Inspector
+              <h2 className="text-base font-semibold text-neutral-950 dark:text-white">
+                Question Preview
               </h2>
-              <p className="text-xs text-slate-400">
-                Verify how imported questions, options, and LaTeX derivations render in the engine
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Inspect questions and mathematical formulas
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative w-64">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative w-60">
+                <Search className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={explorerSearch}
                   onChange={(e) => setExplorerSearch(e.target.value)}
-                  placeholder="Search ID, chapter, or text..."
-                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#111827] border border-slate-800 rounded-lg text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+                  placeholder="Search questions..."
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300"
                 />
               </div>
 
-              <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
+              <div className="flex items-center gap-0.5 p-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded text-xs">
                 {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((sub) => (
                   <button
                     key={sub}
                     type="button"
                     onClick={() => setExplorerSubject(sub)}
-                    className={`px-3 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
                       explorerSubject === sub
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                     }`}
                   >
                     {sub === 'ALL' ? 'All' : sub}
@@ -597,31 +526,33 @@ export const QuestionBankAdminView: React.FC<QuestionBankAdminViewProps> = ({
             {filteredQuestions.map((q) => (
               <div
                 key={q.id}
-                className="p-4 rounded-xl bg-[#111827] border border-slate-800 space-y-2.5"
+                className="p-4 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 space-y-2"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-semibold">{q.id}</span>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-neutral-500 dark:text-neutral-400">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-neutral-900 dark:text-white font-semibold">{q.id}</span>
                     <span>·</span>
-                    <span className="text-blue-400">{q.subject}</span>
+                    <span className="text-neutral-800 dark:text-neutral-200">{q.subject}</span>
                     <span>·</span>
-                    <span className="text-slate-200">{q.chapter}</span>
+                    <span className="text-neutral-600 dark:text-neutral-400">{q.chapter}</span>
                     <span>·</span>
                     <span className="uppercase">{q.type}</span>
                     <span>·</span>
                     <span className="capitalize">{q.difficulty}</span>
                   </div>
-                  <span className="text-emerald-400">Answer Key: {q.correctAnswer}</span>
+                  <span className="text-neutral-900 dark:text-white font-medium">Answer: {q.correctAnswer}</span>
                 </div>
 
-                <div className="text-sm text-slate-200">
-                  <MathText text={q.question} />
+                <div className="text-sm text-neutral-900 dark:text-neutral-100 leading-relaxed">
+                  <MathText text={sanitizeStudentQuestionText(q.question)} />
                 </div>
 
                 <QuestionVisuals
                   visuals={q.images}
                   visualAsset={q.visualAsset}
                   imageUrl={q.image}
+                  subject={q.subject}
+                  chapter={q.chapter}
                   visualRequired={q.visualRequired}
                   visualStatus={q.visualStatus}
                 />

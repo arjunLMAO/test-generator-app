@@ -12,12 +12,6 @@ export interface MathTextProps {
   inline?: boolean;
 }
 
-/**
- * Standardized JEE Mathematical Typesetting Component (Sections 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16).
- * Automatically separates inline prose from prominent display equations,
- * groups prose and inline math (e.g. `C`, `AB`) into unified flowing sentences,
- * guarantees zero glyph overlap, and provides full responsive equation scrolling.
- */
 export const MathText: React.FC<MathTextProps> = ({
   text,
   className = '',
@@ -63,13 +57,13 @@ export const MathText: React.FC<MathTextProps> = ({
 
   // Structured Content-Aware Layout Mode (for Question Statements, Solutions, Explanations)
   return (
-    <div className={`math-rich-content w-full leading-relaxed select-text space-y-3 ${className}`}>
+    <div className={`math-rich-content w-full leading-relaxed select-text space-y-2.5 ${className}`}>
       {blocks.map((b, idx) => {
         if (b.type === 'paragraph') {
           return (
             <p
               key={`p-${idx}`}
-              className="text-slate-100 text-base sm:text-lg leading-relaxed select-text my-2"
+              className="text-neutral-900 text-base leading-relaxed select-text my-1.5"
             >
               {b.items.map((item, itemIdx) =>
                 item.type === 'text' ? (
@@ -90,7 +84,7 @@ export const MathText: React.FC<MathTextProps> = ({
           return (
             <div
               key={`disp-${idx}`}
-              className="math-display-container my-3 py-2 px-3 sm:px-4 bg-slate-900/40 border border-slate-800/60 rounded-xl overflow-x-auto overflow-y-visible text-center select-text shadow-xs"
+              className="math-display-container my-2.5 py-2 px-3 bg-neutral-50 border border-neutral-200 rounded-md overflow-x-auto overflow-y-visible text-center select-text"
             >
               <div
                 className="w-full inline-block min-w-0"

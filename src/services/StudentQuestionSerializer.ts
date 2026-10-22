@@ -121,12 +121,17 @@ export function sanitizeStudentQuestionText(rawText: string): string {
   text = text.replace(/(?:\n|<br\s*\/?>|\s)*Question\s+\d+\s+English(?=[.,?;:\s]|$)/gi, '');
   text = text.replace(/(?:\n|<br\s*\/?>|\s)*\[(?:image|diagram|figure|graph|reaction|structure)[\s\S]*?\](?:\s*$)/gi, '');
 
-  // 6. Clean standalone question-level diagram <img> tags outside tables
+  // 6. Clean question-level diagram <img> tags
   // These are rendered cleanly in QuestionVisuals with zoom and lightbox;
   // images embedded within <table> cells (e.g. Match List I & II) are strictly preserved.
-  if (!/<table\b/i.test(text)) {
+  if (/<table\b/i.test(text)) {
+    // Preserve <img> tags inside <table>...</table>, strip any outside tables
+    text = text
+      .replace(/^([\s\S]*?)<table/i, (_, pre) => pre.replace(/<img[^>]+>/gi, '') + '<table')
+      .replace(/<\/table>([\s\S]*)$/i, (_, post) => '</table>' + post.replace(/<img[^>]+>/gi, ''));
+  } else {
     text = text.replace(/<p[^>]*>\s*<img[^>]+>\s*<\/p>/gi, '');
-    text = text.replace(/(?:^|<br\s*\/?>|\n)\s*<img[^>]+>\s*(?:$|<br\s*\/?>|\n)/gi, '<br/>');
+    text = text.replace(/<img[^>]+>/gi, '');
   }
 
   // Capitalize first letter if a leading clause was stripped cleanly
@@ -200,8 +205,11 @@ export function toStudentQuestion(
   const seenImgKeys = new Set<string>();
   for (const img of rawList) {
     const k = canonicalizeImageUrl(img);
-    if (k && !seenImgKeys.has(k)) {
+    const fileMatch = img.match(/(file-[a-z0-9_-]+\.(?:png|jpe?g|svg|webp))/i);
+    const fileKey = fileMatch ? `file:${fileMatch[1].toLowerCase()}` : null;
+    if (k && !seenImgKeys.has(k) && (!fileKey || !seenImgKeys.has(fileKey))) {
       seenImgKeys.add(k);
+      if (fileKey) seenImgKeys.add(fileKey);
       dedupedImages.push(img);
     }
   }

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Menu, X, Play, Clock, Sun, Moon } from 'lucide-react';
 
 export type ActiveNavTab = 'dashboard' | 'chapters' | 'analytics' | 'history' | 'question-bank';
 
@@ -8,6 +9,8 @@ interface NavbarProps {
   hasActiveTest: boolean;
   onResumeTest: () => void;
   onStartFullTest: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,7 +19,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   hasActiveTest,
   onResumeTest,
   onStartFullTest,
+  theme,
+  onToggleTheme,
 }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const navItems: Array<{ id: ActiveNavTab; label: string }> = [
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'chapters', label: 'Select Chapters' },
@@ -25,58 +32,150 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'question-bank', label: 'Question Bank' },
   ];
 
+  const handleNavClick = (tabId: ActiveNavTab) => {
+    onSelectTab(tabId);
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between px-6 py-4 bg-[#090D16]/90 backdrop-blur-md border-b border-slate-800/80">
-      {/* Zone 1: Brand Title (Single text element wordmark per Top Bar Contract) */}
-      <button
-        type="button"
-        onClick={() => onSelectTab('dashboard')}
-        className="text-2xl font-display font-semibold tracking-tight text-slate-100 hover:text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-      >
-        JEE Test Generator
-      </button>
+    <header className="sticky top-0 z-40 bg-white dark:bg-[#121214] border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+        {/* LEFT: Typographic Wordmark */}
+        <div className="shrink-0 flex items-center">
+          <button
+            type="button"
+            onClick={() => handleNavClick('dashboard')}
+            className="text-left font-semibold text-base tracking-tight text-neutral-900 dark:text-neutral-100 hover:text-neutral-700 dark:hover:text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-neutral-100 rounded"
+          >
+            Test Generator
+          </button>
+        </div>
 
-      {/* Zone 2: 5 clean text navigation links */}
-      <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-400">
-        {navItems.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
+        {/* CENTRE: Desktop Navigation Links */}
+        <nav
+          className="hidden md:flex items-center gap-1 text-sm font-medium"
+          aria-label="Main Navigation"
+        >
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleNavClick(item.id)}
+                className={`px-3 py-1.5 text-xs font-medium rounded transition-colors cursor-pointer whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-neutral-100 ${
+                  isActive
+                    ? 'text-neutral-950 dark:text-white font-semibold bg-neutral-100 dark:bg-neutral-800'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800/60'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* RIGHT: Theme Toggle, Primary Action & Mobile Hamburger */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Theme Toggle (Dark / Light Mode) */}
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="p-1.5 rounded text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-neutral-100 flex items-center gap-1.5 text-xs font-medium"
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="w-4 h-4 text-amber-400" />
+                <span className="hidden sm:inline">Light</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-4 h-4 text-neutral-700" />
+                <span className="hidden sm:inline">Dark</span>
+              </>
+            )}
+          </button>
+
+          {/* Primary Action Button */}
+          {hasActiveTest ? (
             <button
-              key={item.id}
               type="button"
-              onClick={() => onSelectTab(item.id)}
-              className={`py-1 transition-colors whitespace-nowrap shrink-0 cursor-pointer border-b-2 ${
-                isActive
-                  ? 'text-slate-100 border-blue-500'
-                  : 'text-slate-400 border-transparent hover:text-slate-200 hover:border-slate-700'
-              }`}
+              onClick={onResumeTest}
+              className="px-3.5 py-1.5 text-xs font-medium text-white dark:text-neutral-950 bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 rounded transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-neutral-100"
             >
-              {item.label}
+              <Clock className="w-3.5 h-3.5" />
+              <span>Resume Test</span>
             </button>
-          );
-        })}
-      </nav>
+          ) : (
+            <button
+              type="button"
+              onClick={onStartFullTest}
+              className="px-3.5 py-1.5 text-xs font-medium text-white dark:text-neutral-950 bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 rounded transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-neutral-100"
+            >
+              <Play className="w-3 h-3 fill-current" />
+              <span>Start Test</span>
+            </button>
+          )}
 
-      {/* Zone 3: Primary Action */}
-      <div className="flex items-center gap-3">
-        {hasActiveTest ? (
+          {/* Mobile Menu Hamburger */}
           <button
             type="button"
-            onClick={onResumeTest}
-            className="px-4 py-2 text-xs font-semibold text-amber-950 bg-amber-400 rounded-lg hover:bg-amber-300 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+            className="md:hidden p-1.5 rounded text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 cursor-pointer"
           >
-            Resume Active Test
+            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onStartFullTest}
-            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-500 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-          >
-            Start Full Test
-          </button>
-        )}
+        </div>
       </div>
+
+      {/* Mobile Drawer Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#121214] px-4 py-3 space-y-2 shadow-sm">
+          <div className="space-y-1">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleNavClick(item.id)}
+                  className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
+                    isActive
+                      ? 'text-neutral-950 dark:text-white font-semibold bg-neutral-100 dark:bg-neutral-800'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800/60'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 flex items-center justify-between px-3 py-1">
+            <span className="text-xs text-neutral-600 dark:text-neutral-400">Theme</span>
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 cursor-pointer"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

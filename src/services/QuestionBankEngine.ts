@@ -946,6 +946,12 @@ export class QuestionBankEngine {
           image: imageRef,
           images: (() => {
             const rawImagesList: string[] = [];
+            if (resolvedVisual.images && resolvedVisual.images.length > 0) {
+              for (const a of resolvedVisual.images) {
+                const u = a.imageUrl || a.url;
+                if (u && typeof u === 'string') rawImagesList.push(u);
+              }
+            }
             if (imageRef) rawImagesList.push(imageRef);
             if (Array.isArray(raw.images)) {
               for (const img of raw.images) {

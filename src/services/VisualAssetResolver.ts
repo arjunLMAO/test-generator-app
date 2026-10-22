@@ -328,6 +328,17 @@ export function resolveQuestionVisualAsset(
   // strictly excluding explanation-only images from active question presentation
   const questionRefs = references.filter((r) => r.sourceField !== 'explanation');
 
+  if (questionRefs.length === 0) {
+    return {
+      asset: null,
+      images: [],
+      primaryImageUrl: null,
+      visualRequired: false,
+      visualStatus: 'verified',
+      rawVisualMetadata,
+    };
+  }
+
   // PRIORITY 1: Existing verified image/diagram asset already attached
   if (rawRecord.visualAsset && typeof rawRecord.visualAsset === 'object') {
     const existing = rawRecord.visualAsset as VisualAsset;

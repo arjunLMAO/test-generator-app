@@ -1,12 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
-  ArrowUpRight,
-  BarChart3,
-  CheckCircle2,
-  Play,
   RotateCcw,
-  Target,
-  TrendingUp,
 } from 'lucide-react';
 import { DashboardAnalyticsSummary } from '../services/LongTermAnalyticsService';
 import { QuestionHistoryRecord, SubjectName } from '../types/jee';
@@ -55,26 +49,25 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
     return analytics.chapterStats.filter((c) => c.subject === chapterSubjectFilter);
   }, [analytics.chapterStats, chapterSubjectFilter]);
 
-  // Compute chart points for Performance Trend Graph (Section 40)
   const chartPoints = useMemo(() => {
     return analytics.trendSeries.map((pt) => {
       let yVal = 0;
       let unit = '';
-      if (subjectFilter === 'ALL') {
-        if (trendMetric === 'accuracy') {
+      if (trendMetric === 'score') {
+        if (subjectFilter === 'ALL') {
+          yVal = pt.normalizedScore300;
+          unit = ' pts';
+        } else {
+          yVal = pt.subjectScoreNormalized100[subjectFilter] ?? 0;
+          unit = ' pts';
+        }
+      } else if (trendMetric === 'percentile') {
+        yVal = pt.estimatedPercentile ?? 0;
+        unit = ' %ile';
+      } else {
+        if (subjectFilter === 'ALL') {
           yVal = pt.accuracy;
           unit = '%';
-        } else if (trendMetric === 'score') {
-          yVal = pt.normalizedScore300;
-          unit = ' / 300';
-        } else {
-          yVal = pt.estimatedPercentile;
-          unit = ' %ile';
-        }
-      } else {
-        if (trendMetric === 'score') {
-          yVal = pt.subjectScoreNormalized100[subjectFilter] ?? 0;
-          unit = ' / 100';
         } else {
           yVal = pt.subjectAccuracy[subjectFilter] ?? 0;
           unit = '%';
@@ -90,22 +83,23 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
 
   if (!analytics.hasData) {
     return (
-      <div className="min-h-screen bg-[#080C14] text-slate-100 py-12 px-6">
-        <div className="max-w-4xl mx-auto p-10 rounded-2xl surface-card border border-slate-800 text-center space-y-5 animate-card-reveal">
-          <div className="text-xs font-semibold text-blue-400">Long-Term Analytics</div>
-          <h1 className="text-3xl sm:text-4xl font-display font-semibold text-white">
-            Your performance dashboard unlocks after your first test.
-          </h1>
-          <p className="text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
-            JEE Test Generator never populates charts with placeholder scores. Complete a Full Syllabus or Chapter Test to unlock accuracy trends, chapter mastery deltas, and one-click mistake retests.
-          </p>
-          <div className="pt-2 flex items-center justify-center gap-3">
+      <div className="min-h-screen bg-white dark:bg-[#0F0F11] text-neutral-900 dark:text-neutral-100 py-12 px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto p-8 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 text-center space-y-4">
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold text-neutral-950 dark:text-white">
+              No performance data yet
+            </h1>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 max-w-md mx-auto leading-relaxed">
+              Complete your first Full Syllabus or Chapter Test to unlock longitudinal accuracy graphs, chapter improvement tracking, and mistake retests.
+            </p>
+          </div>
+          <div className="pt-2">
             <button
               type="button"
               onClick={onStartFullTest}
-              className="btn-interactive px-6 py-3 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-950/50 cursor-pointer"
+              className="px-4 py-2 text-xs font-medium text-white dark:text-neutral-900 bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 rounded transition-colors cursor-pointer"
             >
-              Take Your First Test
+              Start Full Test
             </button>
           </div>
         </div>
@@ -117,21 +111,17 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
     trendMetric === 'score' && subjectFilter === 'ALL' ? 300 : 100;
 
   return (
-    <div className="min-h-screen bg-[#080C14] text-slate-100 py-8 px-6">
-      <div className="max-w-[1240px] mx-auto space-y-10">
+    <div className="min-h-screen bg-white dark:bg-[#0F0F11] text-neutral-900 dark:text-neutral-100 py-8 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-5">
           <div className="space-y-1">
-            <div className="text-xs font-semibold text-blue-400">
-              Longitudinal Progress & Mistake Recovery
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-display font-semibold text-white">
-              Here&apos;s where you stand over time.
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">
+              Analytics
             </h1>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
               Tracked across {analytics.testsAttempted} completed test
-              {analytics.testsAttempted === 1 ? '' : 's'} and {analytics.questionsAttempted}{' '}
-              question responses.
+              {analytics.testsAttempted === 1 ? '' : 's'} and {analytics.questionsAttempted} question responses.
             </p>
           </div>
 
@@ -139,91 +129,91 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             <button
               type="button"
               onClick={() => onRetestMistakes()}
-              className="btn-interactive px-5 py-3 text-xs font-semibold text-white bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 border border-red-400/40 rounded-xl shadow-lg shadow-red-950/40 flex items-center gap-2 self-start md:self-auto cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-medium text-neutral-900 dark:text-neutral-100 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700 rounded transition-colors flex items-center gap-1.5 self-start md:self-auto cursor-pointer"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5" />
               <span>
-                Retest {analytics.questionsNeedingReviewCount} Unresolved Mistake
+                Retest {analytics.questionsNeedingReviewCount} Mistake
                 {analytics.questionsNeedingReviewCount === 1 ? '' : 's'}
               </span>
             </button>
           )}
         </div>
 
-        {/* OVERALL SUMMARY STRIP (Section 39) */}
-        <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Tests Attempted</div>
-            <div className="text-2xl font-mono font-semibold text-white mt-1 tabular-nums">
+        {/* 6-Metric Overview Strip */}
+        <section aria-label="Key Metrics" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Tests Attempted</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.testsAttempted}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Questions Attempted</div>
-            <div className="text-2xl font-mono font-semibold text-white mt-1 tabular-nums">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Questions Attempted</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.questionsAttempted}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Overall Accuracy</div>
-            <div className="text-2xl font-mono font-semibold text-emerald-400 mt-1 tabular-nums">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Overall Accuracy</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.overallAccuracy}%
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Avg Scaled Score</div>
-            <div className="text-2xl font-mono font-semibold text-blue-400 mt-1 tabular-nums">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Avg Scaled Score</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.averageNormalizedScore300}
-              <span className="text-xs text-slate-500"> / 300</span>
+              <span className="text-xs font-normal text-neutral-400 dark:text-neutral-500"> / 300</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Mistakes in Queue</div>
-            <div className="text-2xl font-mono font-semibold text-red-400 mt-1 tabular-nums">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Mistakes in Queue</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.questionsNeedingReviewCount}
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#111827] border border-slate-800">
-            <div className="text-xs text-slate-400">Mistakes Corrected</div>
-            <div className="text-2xl font-mono font-semibold text-emerald-300 mt-1 tabular-nums">
+          <div className="p-3.5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800">
+            <div className="text-xs text-neutral-500 dark:text-neutral-400">Mistakes Corrected</div>
+            <div className="text-xl font-mono font-bold text-neutral-950 dark:text-white mt-1 tabular-nums">
               {analytics.correctedMistakesCount}
             </div>
           </div>
         </section>
 
-        {/* PERFORMANCE TREND GRAPH (Section 40) */}
-        <section className="p-6 rounded-xl bg-[#111827] border border-slate-800 space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Performance Trend Graph */}
+        <section aria-label="Performance Trend" className="p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-white">Performance Trend Over Time</h2>
-              <p className="text-xs text-slate-400">
-                Switch between Accuracy, Normalized Score, and Estimated Percentile across subjects
+              <h2 className="text-base font-semibold text-neutral-950 dark:text-white">Performance Trend Over Time</h2>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Score trajectory and accuracy over completed tests
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2">
               {/* Metric Switcher */}
-              <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
+              <div className="flex items-center gap-0.5 p-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded text-xs">
                 {(
                   [
                     { id: 'accuracy', label: 'Accuracy' },
                     { id: 'score', label: 'Score' },
-                    { id: 'percentile', label: 'Percentile Estimate' },
+                    { id: 'percentile', label: 'Percentile' },
                   ] as Array<{ id: TrendMetric; label: string }>
                 ).map((m) => (
                   <button
                     key={m.id}
                     type="button"
                     onClick={() => setTrendMetric(m.id)}
-                    className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
                       trendMetric === m.id
-                        ? 'bg-blue-600 text-white'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                     }`}
                   >
                     {m.label}
@@ -232,16 +222,16 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
               </div>
 
               {/* Subject Switcher */}
-              <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-lg">
+              <div className="flex items-center gap-0.5 p-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded text-xs">
                 {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((sub) => (
                   <button
                     key={sub}
                     type="button"
                     onClick={() => setSubjectFilter(sub)}
-                    className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
+                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
                       subjectFilter === sub
-                        ? 'bg-slate-700 text-white'
-                        : 'text-slate-400 hover:text-slate-200'
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                     }`}
                   >
                     {sub === 'ALL' ? 'All' : sub}
@@ -251,9 +241,9 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             </div>
           </div>
 
-          {/* SVG Time-Series Line Chart */}
-          <div className="w-full overflow-x-auto">
-            <div className="min-w-[600px] h-64 relative">
+          {/* SVG Line Chart */}
+          <div className="w-full overflow-x-auto pt-2">
+            <div className="min-w-[600px] h-60 relative">
               <svg
                 viewBox="0 0 800 220"
                 className="w-full h-full overflow-visible"
@@ -270,14 +260,14 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                         y1={y}
                         x2="770"
                         y2={y}
-                        stroke="rgba(148,163,184,0.12)"
+                        className="stroke-neutral-200 dark:stroke-neutral-800"
                         strokeDasharray="4 4"
                       />
                       <text
                         x="40"
                         y={y + 4}
                         textAnchor="end"
-                        fill="#64748B"
+                        className="fill-neutral-500 dark:fill-neutral-400"
                         fontFamily="JetBrains Mono, monospace"
                         fontSize="10"
                       >
@@ -293,8 +283,8 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                     {chartPoints.length > 1 && (
                       <polyline
                         fill="none"
-                        stroke="#3B82F6"
-                        strokeWidth="2.5"
+                        className="stroke-neutral-900 dark:stroke-white"
+                        strokeWidth="2"
                         points={chartPoints
                           .map((pt, i) => {
                             const x =
@@ -325,29 +315,24 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
                           <circle
                             cx={x}
                             cy={y}
-                            r="5"
-                            fill="#3B82F6"
-                            stroke="#090D16"
+                            r="4.5"
+                            className="fill-neutral-900 dark:fill-white stroke-white dark:stroke-[#18181B]"
                             strokeWidth="2"
                           />
                           <text
                             x={x}
-                            y={y - 10}
+                            y={y - 8}
                             textAnchor="middle"
-                            fill="#E2E8F0"
-                            fontFamily="JetBrains Mono, monospace"
-                            fontSize="10"
+                            className="fill-neutral-900 dark:fill-white font-mono text-[10px] font-semibold"
                           >
                             {pt.yVal}
                             {pt.unit}
                           </text>
                           <text
                             x={x}
-                            y="206"
+                            y="204"
                             textAnchor="middle"
-                            fill="#94A3B8"
-                            fontFamily="JetBrains Mono, monospace"
-                            fontSize="10"
+                            className="fill-neutral-500 dark:fill-neutral-400 font-mono text-[10px]"
                           >
                             {pt.dateShort}
                           </text>
@@ -361,32 +346,32 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
           </div>
         </section>
 
-        {/* SUBJECT PERFORMANCE BREAKDOWN & QUESTION MASTERY (Section 39, 10) */}
+        {/* Subject Breakdown & Question Mastery */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Subject Breakdown */}
-          <div className="lg:col-span-7 p-6 rounded-xl bg-[#111827] border border-slate-800 space-y-4">
-            <h2 className="text-lg font-semibold text-white">Cumulative Subject Performance</h2>
-            <div className="space-y-4">
+          <div className="lg:col-span-7 p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 space-y-4">
+            <h2 className="text-base font-semibold text-neutral-950 dark:text-white">Subject Performance</h2>
+            <div className="space-y-3">
               {(['Physics', 'Chemistry', 'Mathematics'] as SubjectName[]).map((sub) => {
                 const sb = analytics.subjectBreakdown[sub];
                 return (
                   <div
                     key={sub}
-                    className="p-4 rounded-lg bg-slate-900/70 border border-slate-800 space-y-2"
+                    className="p-3.5 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 space-y-2"
                   >
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-white">{sub}</span>
-                      <span className="font-mono font-semibold text-emerald-400 tabular-nums">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-neutral-900 dark:text-neutral-100">{sub}</span>
+                      <span className="font-mono font-semibold text-neutral-900 dark:text-neutral-100 tabular-nums">
                         {sb.accuracy}% Accuracy
                       </span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                    <div className="w-full h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 rounded-full"
+                        className="h-full bg-neutral-900 dark:bg-white rounded-full"
                         style={{ width: `${Math.min(100, sb.accuracy)}%` }}
                       />
                     </div>
-                    <div className="flex items-center justify-between text-xs font-mono text-slate-400 tabular-nums">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
                       <span>Attempted: {sb.attempted}</span>
                       <span>Correct: {sb.correct}</span>
                       <span>Incorrect: {sb.incorrect}</span>
@@ -397,34 +382,34 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Question Mastery State & Mistake Categories */}
-          <div className="lg:col-span-5 p-6 rounded-xl bg-[#111827] border border-slate-800 flex flex-col justify-between space-y-5">
+          {/* Question Mastery */}
+          <div className="lg:col-span-5 p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 flex flex-col justify-between space-y-4">
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-white">
-                Question Mastery & Error Taxonomy
+              <h2 className="text-base font-semibold text-neutral-950 dark:text-white">
+                Question Mastery
               </h2>
-              <div className="grid grid-cols-2 gap-3 text-xs font-mono tabular-nums">
-                <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                  <div className="text-slate-400">Mastered (2+ ✓)</div>
-                  <div className="text-lg font-semibold text-emerald-400 mt-0.5">
+              <div className="grid grid-cols-2 gap-2.5 text-xs font-mono tabular-nums">
+                <div className="p-3 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800">
+                  <div className="text-neutral-500 dark:text-neutral-400 font-sans">Mastered (2+ ✓)</div>
+                  <div className="text-lg font-bold text-neutral-950 dark:text-white mt-0.5">
                     {masteryCounts.mastered}
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                  <div className="text-slate-400">Corrected (✗ → ✓)</div>
-                  <div className="text-lg font-semibold text-blue-400 mt-0.5">
+                <div className="p-3 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800">
+                  <div className="text-neutral-500 dark:text-neutral-400 font-sans">Corrected (✗ → ✓)</div>
+                  <div className="text-lg font-bold text-neutral-950 dark:text-white mt-0.5">
                     {masteryCounts.corrected}
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                  <div className="text-slate-400">Needs Review (✗)</div>
-                  <div className="text-lg font-semibold text-red-400 mt-0.5">
+                <div className="p-3 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800">
+                  <div className="text-neutral-500 dark:text-neutral-400 font-sans">Needs Review (✗)</div>
+                  <div className="text-lg font-bold text-neutral-950 dark:text-white mt-0.5">
                     {masteryCounts.incorrect}
                   </div>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-900 border border-slate-800">
-                  <div className="text-slate-400">Attempted (1× ✓)</div>
-                  <div className="text-lg font-semibold text-slate-200 mt-0.5">
+                <div className="p-3 rounded bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800">
+                  <div className="text-neutral-500 dark:text-neutral-400 font-sans">Attempted (1× ✓)</div>
+                  <div className="text-lg font-bold text-neutral-950 dark:text-white mt-0.5">
                     {masteryCounts.attempted}
                   </div>
                 </div>
@@ -432,17 +417,17 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
             </div>
 
             {analytics.errorTypeBreakdown.length > 0 && (
-              <div className="space-y-2.5 pt-3 border-t border-slate-800">
-                <div className="text-xs font-semibold text-slate-300">
-                  Most Frequent Possible Error Types
+              <div className="space-y-2 pt-3 border-t border-neutral-200 dark:border-neutral-800">
+                <div className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+                  Frequent Error Categories
                 </div>
                 {analytics.errorTypeBreakdown.slice(0, 4).map((err) => (
                   <div
                     key={err.category}
                     className="flex items-center justify-between text-xs font-mono tabular-nums"
                   >
-                    <span className="text-slate-300 font-sans">{err.category}</span>
-                    <span className="text-amber-400">
+                    <span className="text-neutral-600 dark:text-neutral-400 font-sans">{err.category}</span>
+                    <span className="text-neutral-900 dark:text-neutral-100 font-medium">
                       {err.count} ({err.percentage}%)
                     </span>
                   </div>
@@ -452,112 +437,114 @@ export const AnalyticsDashboardView: React.FC<AnalyticsDashboardViewProps> = ({
           </div>
         </div>
 
-        {/* CHAPTER PERFORMANCE, IMPROVEMENT DELTAS & RETEST MISTAKES FLOW (Sections 63, 65) */}
-        <section className="space-y-4">
+        {/* Chapter Mastery Table */}
+        <section aria-label="Chapter Mastery Table" className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-display font-semibold text-white">
-                Chapter Mastery & Targeted Mistake Retests
+              <h2 className="text-lg font-bold text-neutral-950 dark:text-white">
+                Chapter Breakdown
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Click Retest Mistakes on any chapter to launch a focused test with only the questions you missed in that chapter.
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Accuracy, progress delta, and mistake retest options per chapter
               </p>
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl">
+            <div className="flex items-center gap-0.5 p-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded text-xs">
               {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((sub) => (
                 <button
                   key={sub}
                   type="button"
                   onClick={() => setChapterSubjectFilter(sub)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+                  className={`px-2.5 py-1 rounded text-xs font-medium transition-colors cursor-pointer ${
                     chapterSubjectFilter === sub
-                      ? 'bg-blue-600 text-white'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
                   }`}
                 >
-                  {sub === 'ALL' ? 'All Subjects' : sub}
+                  {sub === 'ALL' ? 'All' : sub}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="rounded-2xl surface-card border border-slate-800 overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-800 text-xs font-semibold text-slate-400 bg-slate-900/60">
-                  <th className="py-3.5 px-5">Chapter</th>
-                  <th className="py-3.5 px-5">Subject</th>
-                  <th className="py-3.5 px-5 text-right">Attempted</th>
-                  <th className="py-3.5 px-5 text-right">Accuracy</th>
-                  <th className="py-3.5 px-5 text-right">Progress Delta</th>
-                  <th className="py-3.5 px-5 text-right">Unresolved Mistakes</th>
-                  <th className="py-3.5 px-5 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/70 text-xs">
-                {filteredChapters.map((c) => (
-                  <tr
-                    key={`${c.subject}::${c.chapter}`}
-                    className="hover:bg-slate-900/50 transition-colors"
-                  >
-                    <td className="py-4 px-5 font-semibold text-white text-sm">{c.chapter}</td>
-                    <td className="py-4 px-5 text-slate-300 font-medium">{c.subject}</td>
-                    <td className="py-4 px-5 text-right font-mono tabular-nums text-slate-300">
-                      {c.attempted} ({c.correct}✓ / {c.incorrect}✗)
-                    </td>
-                    <td className="py-4 px-5 text-right font-mono tabular-nums font-semibold text-emerald-400">
-                      {c.accuracy}%
-                    </td>
-                    <td className="py-4 px-5 text-right font-mono tabular-nums">
-                      {c.improvementDeltaPoints !== null ? (
-                        <span
-                          className={
-                            c.improvementDeltaPoints >= 0
-                              ? 'text-emerald-400 font-semibold'
-                              : 'text-red-400'
-                          }
-                        >
-                          {c.improvementDeltaPoints >= 0 ? '+' : ''}
-                          {c.improvementDeltaPoints} pts
-                        </span>
-                      ) : (
-                        <span className="text-slate-500">Baseline</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-5 text-right font-mono tabular-nums">
-                      {c.activeMistakesInPool > 0 ? (
-                        <span className="text-red-400 font-semibold">
-                          {c.activeMistakesInPool} wrong
-                        </span>
-                      ) : (
-                        <span className="text-emerald-400">0 wrong</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-5 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {c.activeMistakesInPool > 0 && (
+          <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-hidden bg-white dark:bg-[#18181B]">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-neutral-200 dark:border-neutral-800 font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800/60">
+                    <th className="py-3 px-4">Chapter</th>
+                    <th className="py-3 px-4">Subject</th>
+                    <th className="py-3 px-4 text-right">Attempted</th>
+                    <th className="py-3 px-4 text-right">Accuracy</th>
+                    <th className="py-3 px-4 text-right">Progress Delta</th>
+                    <th className="py-3 px-4 text-right">Mistakes</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                  {filteredChapters.map((c) => (
+                    <tr
+                      key={`${c.subject}::${c.chapter}`}
+                      className="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition-colors"
+                    >
+                      <td className="py-3 px-4 font-semibold text-neutral-950 dark:text-white text-xs">{c.chapter}</td>
+                      <td className="py-3 px-4 text-neutral-600 dark:text-neutral-400">{c.subject}</td>
+                      <td className="py-3 px-4 text-right font-mono tabular-nums text-neutral-700 dark:text-neutral-300">
+                        {c.attempted} ({c.correct}✓ / {c.incorrect}✗)
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono tabular-nums font-semibold text-neutral-950 dark:text-white">
+                        {c.accuracy}%
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono tabular-nums">
+                        {c.improvementDeltaPoints !== null ? (
+                          <span
+                            className={
+                              c.improvementDeltaPoints >= 0
+                                ? 'text-neutral-950 dark:text-neutral-100 font-semibold'
+                                : 'text-neutral-600 dark:text-neutral-400'
+                            }
+                          >
+                            {c.improvementDeltaPoints >= 0 ? '+' : ''}
+                            {c.improvementDeltaPoints} pts
+                          </span>
+                        ) : (
+                          <span className="text-neutral-400 dark:text-neutral-500">Baseline</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right font-mono tabular-nums">
+                        {c.activeMistakesInPool > 0 ? (
+                          <span className="font-semibold text-neutral-950 dark:text-white">
+                            {c.activeMistakesInPool} wrong
+                          </span>
+                        ) : (
+                          <span className="text-neutral-400 dark:text-neutral-500">0</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {c.activeMistakesInPool > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => onRetestMistakes(c.subject, c.chapter)}
+                              className="px-2.5 py-1 rounded bg-white dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100 font-medium whitespace-nowrap cursor-pointer transition-colors"
+                            >
+                              Retest ({c.activeMistakesInPool})
+                            </button>
+                          )}
                           <button
                             type="button"
-                            onClick={() => onRetestMistakes(c.subject, c.chapter)}
-                            className="btn-interactive px-3 py-1.5 rounded-lg bg-red-600/90 hover:bg-red-500 text-white font-semibold whitespace-nowrap cursor-pointer"
+                            onClick={() => onPracticeChapter(c.subject, c.chapter)}
+                            className="px-2.5 py-1 rounded bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-100 text-white dark:text-neutral-900 font-medium whitespace-nowrap cursor-pointer transition-colors"
                           >
-                            Retest Mistakes ({c.activeMistakesInPool})
+                            Practice
                           </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => onPracticeChapter(c.subject, c.chapter)}
-                          className="btn-interactive px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold whitespace-nowrap cursor-pointer"
-                        >
-                          Practice Chapter
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </div>

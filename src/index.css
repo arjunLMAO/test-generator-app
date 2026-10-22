@@ -1,294 +1,115 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
-    --font-display: 'Fraunces', 'Outfit', Georgia, serif;
-    --font-heading: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-sans: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --bg-primary: #FFFFFF;
+    --bg-surface: #FFFFFF;
+    --bg-subtle: #FAFAFA;
+    --bg-secondary: #F7F7F7;
+    --text-primary: #171717;
+    --text-secondary: #525252;
+    --text-muted: #737373;
+    --border-primary: #E5E5E5;
+    --border-strong: #D4D4D4;
+    --btn-primary-bg: #171717;
+    --btn-primary-text: #FFFFFF;
+    --btn-secondary-bg: #FFFFFF;
+    --btn-secondary-text: #171717;
+    --btn-secondary-border: #D4D4D4;
+  }
+
+  .dark {
+    --bg-primary: #0F0F11;
+    --bg-surface: #18181B;
+    --bg-subtle: #141416;
+    --bg-secondary: #1F1F23;
+    --text-primary: #F4F4F5;
+    --text-secondary: #A1A1AA;
+    --text-muted: #71717A;
+    --border-primary: #27272A;
+    --border-strong: #3F3F46;
+    --btn-primary-bg: #F4F4F5;
+    --btn-primary-text: #0F0F11;
+    --btn-secondary-bg: #18181B;
+    --btn-secondary-text: #F4F4F5;
+    --btn-secondary-border: #27272A;
+  }
+
+  * {
+    box-sizing: border-box;
+    border-color: var(--border-primary);
   }
 
   body {
-    font-family: var(--font-sans);
-    background-color: #090D16;
-    color: #F1F5F9;
-    overflow-x: hidden;
-    letter-spacing: -0.005em;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
   }
 
-  h1, .font-display {
-    font-family: var(--font-display);
-    text-wrap: balance;
-    letter-spacing: -0.02em;
-  }
-
-  h2, h3, h4, button, nav {
-    font-family: var(--font-heading);
-    letter-spacing: -0.015em;
-  }
-
-  .math-rich-content {
-    font-family: var(--font-body);
-    line-height: 1.72;
-    letter-spacing: 0.004em;
-  }
-
-  .font-mono, .tabular-nums {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
+  /* Accessible focus styling */
+  :focus-visible {
+    outline: 2px solid #111111;
+    outline-offset: 2px;
   }
 }
 
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Mathematical KaTeX typesetting overrides */
+.katex {
+  font-size: 1.05em;
+  text-rendering: auto;
 }
 
-@keyframes cardReveal {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.992);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+.math-display-container {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  background-color: #FAFAFA;
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  overflow-x: auto;
+  text-align: center;
 }
 
-@keyframes pulseSubtle {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.65;
-  }
+.inline-math-item {
+  display: inline-block;
+  vertical-align: baseline;
+  padding: 0 0.15rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 180ms ease-out forwards;
-}
-
-.animate-page-enter {
-  animation: pageEnter 260ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.animate-card-reveal {
-  animation: cardReveal 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.btn-interactive {
-  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
-              background-color 160ms ease,
-              border-color 160ms ease,
-              box-shadow 160ms ease,
-              color 160ms ease;
-}
-
-.btn-interactive:hover:not(:disabled) {
-  transform: translateY(-1px);
-}
-
-.btn-interactive:active:not(:disabled) {
-  transform: translateY(0px) scale(0.98);
-}
-
-.btn-interactive:focus-visible {
-  outline: 2px solid #3B82F6;
-  outline-offset: 2px;
-}
-
-.surface-card {
-  background: linear-gradient(180deg, rgba(19, 28, 46, 0.92) 0%, rgba(13, 19, 32, 0.96) 100%);
-  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset, 0 12px 32px -12px rgba(0, 0, 0, 0.45);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Custom subtle scrollbars for exam palette and tables */
+/* Clean scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090D16;
+  background: #F5F5F5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #D4D4D4;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #A3A3A3;
 }
 
-.katex {
-  font-size: 1.08em;
-  text-rendering: auto;
+.dark .math-display-container {
+  background-color: #141416;
+  border-color: #27272A;
 }
-
-.katex-html {
-  overflow-y: visible;
+.dark ::-webkit-scrollbar-track {
+  background: #141416;
 }
-
-.katex-display {
-  display: block;
-  margin: 1.25rem 0;
-  padding: 0.5rem 0.25rem;
-  overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: thin;
-  max-width: 100%;
+.dark ::-webkit-scrollbar-thumb {
+  background: #3F3F46;
 }
-
-.katex-display > .katex {
-  display: inline-block;
-  white-space: nowrap;
-  max-width: 100%;
-  text-align: center;
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #52525B;
 }
-
-.math-display-container {
-  display: block;
-  width: 100%;
-  margin: 1.25rem 0;
-  padding: 0.5rem 0.75rem;
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid rgba(51, 65, 85, 0.4);
-  border-radius: 0.75rem;
-  overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: thin;
+.dark .katex {
+  color: #F4F4F5;
 }
-
-.math-display-container .katex-display {
-  margin: 0.25rem 0;
-}
-
-.math-rich-content {
-  line-height: 1.75;
-  word-break: break-word;
-}
-
-/* Standardized JEE Match the Following & Data Table Styling */
-.match-table-root,
-.data-table-root {
-  width: 100%;
-  margin: 0.75rem 0;
-  max-width: 100%;
-}
-
-.match-table-container,
-.data-table-container {
-  max-width: 100%;
-  border-radius: 0.75rem;
-  background-color: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(51, 65, 85, 0.85);
-  overflow: hidden;
-}
-
-.match-cell-content {
-  word-break: break-word;
-  overflow-wrap: break-word;
-  line-height: 1.55;
-}
-
-.match-cell-content .inline-math-item {
-  display: inline;
-  vertical-align: baseline;
-  padding: 0 0.125rem;
-}
-
-.match-cell-content .katex {
-  font-size: 1em;
-  line-height: normal;
-  white-space: normal;
-}
-
-.match-cell-content .katex-display {
-  margin: 0.25rem 0 !important;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* Image constraints inside matching tables and table cells */
-.match-table-container img,
-.data-table-container img,
-.math-rich-content table td img,
-.math-rich-content table th img {
-  max-height: 80px;
-  max-width: 100%;
-  object-fit: contain;
-  margin: 0.25rem auto;
-  display: block;
-  border-radius: 0.375rem;
-  padding: 0.25rem;
-  background-color: #ffffff;
-  border: 1px solid rgba(203, 213, 225, 0.4);
-}
-
-@media (max-width: 640px) {
-  .match-table-container img,
-  .data-table-container img,
-  .math-rich-content table td img,
-  .math-rich-content table th img {
-    max-height: 60px;
-  }
-}
-
-.math-rich-content table {
-  border-collapse: collapse;
-  margin: 0.75rem 0;
-  width: 100%;
-  max-width: 100%;
-  font-size: 0.875rem;
-  background-color: rgba(15, 23, 42, 0.75);
-  border: 1px solid #334155;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.math-rich-content th,
-.math-rich-content td {
-  border: 1px solid #334155;
-  padding: 0.5rem 0.75rem;
-  color: #E2E8F0;
-  vertical-align: top;
-}
-
-.math-rich-content th {
-  background-color: rgba(30, 41, 59, 0.9);
-  font-weight: 600;
-  letter-spacing: 0.025em;
-}
-
-.math-rich-content img {
-  background-color: #F8FAFC;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  margin: 0.5rem 0;
-  max-height: 240px;
-  width: auto;
-}
-

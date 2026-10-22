@@ -6,7 +6,6 @@ import {
   Clock,
   RotateCcw,
   Search,
-  Sparkles,
 } from 'lucide-react';
 import {
   ChapterInventory,
@@ -218,50 +217,47 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#080C14] text-slate-100 py-8 px-6">
-      <div className="max-w-[1240px] mx-auto space-y-8">
-        {/* Header (Parts 5 & 9) */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
-          <div className="space-y-1.5">
-            <div className="text-xs font-semibold text-emerald-400">
-              Custom Test Builder · Category-Balanced Engine
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-display font-semibold text-white">
-              What are we testing today?
+    <div className="min-h-screen bg-white dark:bg-[#0F0F11] text-neutral-900 dark:text-neutral-100 py-8 px-4 sm:px-6 transition-colors">
+      <div className="max-w-6xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200 dark:border-neutral-800 pb-5">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-950 dark:text-white">
+              Select Chapters
             </h1>
-            <p className="text-sm text-slate-400 max-w-2xl">
-              Pick 1 to 3 subjects and choose the exact chapters you want in your test. Only questions from your chosen chapters will appear.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 max-w-2xl">
+              Choose 1 to 3 subjects and select chapters for your targeted test.
             </p>
           </div>
           <button
             type="button"
             onClick={onCancel}
-            className="btn-interactive px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-900 border border-slate-700 rounded-xl self-start md:self-auto cursor-pointer"
+            className="px-3.5 py-1.5 text-xs font-medium text-neutral-800 dark:text-neutral-200 bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded transition-colors self-start sm:self-auto cursor-pointer"
           >
             ← Back to Dashboard
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT 8 COLUMNS: Subject Toggles & Dynamic Chapter Trees */}
+          {/* LEFT 8 COLUMNS: Subject Toggles & Chapter Trees */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Step 1: Subject Selection ("Pick your battlefield") */}
-            <div className="p-6 rounded-2xl surface-card border border-slate-800 space-y-4">
+            {/* Step 1: Subject Selection */}
+            <div className="p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-semibold text-white">
-                    1. Pick your battlefield
+                  <h2 className="text-sm font-semibold text-neutral-950 dark:text-white">
+                    1. Subjects
                   </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Each selected subject adds 25 questions (20 MCQ + 5 Numerical) and 1 hour
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    25 questions (20 MCQ + 5 Numerical) per selected subject
                   </p>
                 </div>
-                <span className="text-xs font-mono text-blue-400 font-semibold tabular-nums">
+                <span className="text-xs font-mono text-neutral-600 dark:text-neutral-400 font-medium tabular-nums">
                   {selectedSubjects.length} of 3 active
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {ALL_SUBJECTS.map((sub) => {
                   const isSelected = selectedSubjects.includes(sub);
                   const chapCount = selectedChapters[sub]?.length || 0;
@@ -271,26 +267,26 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                       key={sub}
                       type="button"
                       onClick={() => toggleSubject(sub)}
-                      className={`btn-interactive p-5 rounded-2xl border text-left transition-all cursor-pointer ${
+                      className={`p-4 rounded-lg border text-left transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-gradient-to-b from-blue-950/60 to-slate-900 border-blue-500 text-white shadow-lg shadow-blue-950/30'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                          ? 'border-neutral-900 dark:border-white bg-neutral-50 dark:bg-neutral-800 text-neutral-950 dark:text-white'
+                          : 'border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#121214] text-neutral-600 dark:text-neutral-400 hover:border-neutral-300 dark:hover:border-neutral-700'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold">{sub}</span>
+                        <span className="text-sm font-bold text-neutral-900 dark:text-white">{sub}</span>
                         <div
-                          className={`w-5 h-5 rounded-md flex items-center justify-center border transition-colors ${
+                          className={`w-4 h-4 rounded flex items-center justify-center border transition-colors ${
                             isSelected
-                              ? 'bg-blue-600 border-blue-400 text-white'
-                              : 'border-slate-600 bg-transparent'
+                              ? 'bg-neutral-900 dark:bg-white border-neutral-900 dark:border-white text-white dark:text-neutral-950'
+                              : 'border-neutral-300 dark:border-neutral-700 bg-transparent'
                           }`}
                         >
-                          {isSelected && <Check className="w-3.5 h-3.5" />}
+                          {isSelected && <Check className="w-3 h-3" />}
                         </div>
                       </div>
-                      <div className="mt-2.5 text-xs font-mono tabular-nums text-slate-400">
-                        {chapCount} / {totalSubChaps} chapters selected
+                      <div className="mt-1 text-xs font-mono tabular-nums text-neutral-500 dark:text-neutral-400">
+                        {chapCount} / {totalSubChaps} chapters
                       </div>
                     </button>
                   );
@@ -298,31 +294,31 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
               </div>
             </div>
 
-            {/* Step 2: Search & Chapter Selection Tree */}
-            <div className="space-y-4">
+            {/* Step 2: Search & Chapter Selection */}
+            <div className="space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-base font-semibold text-white">
-                    2. Choose your chapters
+                  <h2 className="text-sm font-semibold text-neutral-950 dark:text-white">
+                    2. Select Chapters
                   </h2>
-                  <p className="text-xs text-slate-400">
-                    Click any chapter card to include or exclude it from this session
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    Click chapters to include or exclude from this test session
                   </p>
                 </div>
-                <div className="relative w-full sm:w-72">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <div className="relative w-full sm:w-64">
+                  <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search chapters (e.g. quadratic, shm)..."
-                    className="w-full pl-9 pr-3 py-2.5 text-xs bg-[#111827] border border-slate-800 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+                    placeholder="Search chapters..."
+                    className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 dark:focus:border-white"
                   />
                 </div>
               </div>
 
               {selectedSubjects.length === 0 ? (
-                <div className="p-8 rounded-xl bg-[#111827] border border-slate-800 text-center text-sm text-slate-400">
+                <div className="p-8 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 text-center text-xs text-neutral-500 dark:text-neutral-400">
                   Select at least one subject above to view its chapters.
                 </div>
               ) : (
@@ -337,35 +333,35 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                   return (
                     <div
                       key={sub}
-                      className="rounded-xl bg-[#111827] border border-slate-800 overflow-hidden"
+                      className="rounded-lg bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 overflow-hidden"
                     >
-                      <div className="px-5 py-4 bg-slate-900/70 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex items-center gap-2.5">
-                          <h3 className="text-base font-semibold text-white">{sub}</h3>
-                          <span className="text-xs font-mono text-slate-400 tabular-nums">
-                            · {chosenList.length} of {subChapters.length} chapters selected
+                      <div className="px-4 py-3 bg-neutral-50 dark:bg-[#141416] border-b border-neutral-200 dark:border-neutral-800 flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-sm font-semibold text-neutral-950 dark:text-white">{sub}</h3>
+                          <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
+                            · {chosenList.length} of {subChapters.length} selected
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-xs">
+                        <div className="flex items-center gap-2 text-xs">
                           <button
                             type="button"
                             onClick={() => selectAllForSubject(sub)}
-                            className="text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
+                            className="text-neutral-900 dark:text-neutral-200 hover:underline font-medium cursor-pointer"
                           >
-                            Select all {sub}
+                            Select all
                           </button>
-                          <span className="text-slate-700">|</span>
+                          <span className="text-neutral-300 dark:text-neutral-700">|</span>
                           <button
                             type="button"
                             onClick={() => clearSubjectChapters(sub)}
-                            className="text-slate-400 hover:text-slate-200 font-medium cursor-pointer"
+                            className="text-neutral-500 hover:text-neutral-900 dark:hover:text-white font-medium cursor-pointer"
                           >
-                            Clear {sub}
+                            Clear
                           </button>
                         </div>
                       </div>
 
-                      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                      <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-2">
                         {filtered.map((chapInv) => {
                           const isChecked = chosenList.includes(chapInv.chapter);
                           const histStat = chapterHistoryStats.get(`${sub}::${chapInv.chapter}`);
@@ -385,27 +381,27 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                                   toggleChapter(sub, chapInv.chapter);
                                 }
                               }}
-                              className={`p-3.5 rounded-lg border transition-colors cursor-pointer flex items-start gap-3 ${
+                              className={`p-3 rounded border transition-colors cursor-pointer flex items-start gap-2.5 ${
                                 isChecked
-                                  ? 'bg-blue-950/30 border-blue-500/70 text-white'
-                                  : 'bg-slate-900/40 border-slate-800/90 text-slate-300 hover:border-slate-700'
+                                  ? 'bg-neutral-100 dark:bg-neutral-800 border-neutral-900 dark:border-neutral-300 text-neutral-950 dark:text-white font-medium'
+                                  : 'bg-white dark:bg-[#121214] border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-700'
                               }`}
                             >
                               <div
-                                className={`mt-0.5 w-4 h-4 rounded flex items-center justify-center border shrink-0 ${
+                                className={`mt-0.5 w-3.5 h-3.5 rounded flex items-center justify-center border shrink-0 ${
                                   isChecked
-                                    ? 'bg-blue-600 border-blue-500 text-white'
-                                    : 'border-slate-600 bg-transparent'
+                                    ? 'bg-neutral-900 dark:bg-white border-neutral-900 dark:border-white text-white dark:text-neutral-950'
+                                    : 'border-neutral-300 dark:border-neutral-700 bg-transparent'
                                 }`}
                               >
-                                {isChecked && <Check className="w-3 h-3" />}
+                                {isChecked && <Check className="w-2.5 h-2.5" />}
                               </div>
 
                               <div className="flex-1 min-w-0">
-                                <div className="text-sm font-medium leading-snug">
+                                <div className="text-xs font-medium leading-snug">
                                   {chapInv.chapter}
                                 </div>
-                                <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] font-mono text-slate-400 tabular-nums">
+                                <div className="mt-1 flex flex-wrap items-center gap-1 text-[11px] font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
                                   <span>{chapInv.totalQuestions} Qs</span>
                                   <span aria-hidden="true">·</span>
                                   <span>{chapInv.mcqCount} MCQ</span>
@@ -414,22 +410,17 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                                   {hasLowSingleInventory && (
                                     <>
                                       <span aria-hidden="true">·</span>
-                                      <span className="text-amber-400">
-                                        Combine for 25-Q test
+                                      <span className="text-neutral-700 dark:text-neutral-300 underline underline-offset-2">
+                                        Combine chapters
                                       </span>
                                     </>
                                   )}
                                 </div>
                                 {histStat && histStat.attempted > 0 && (
-                                  <div className="mt-1 flex items-center gap-2 text-[11px] font-mono tabular-nums">
-                                    <span className="text-emerald-400">
-                                      Attempted: {histStat.attempted}
-                                    </span>
+                                  <div className="mt-1 flex items-center gap-1.5 text-[11px] font-mono tabular-nums text-neutral-600 dark:text-neutral-400">
+                                    <span>Attempted: {histStat.attempted}</span>
                                     {histStat.activeMistakes > 0 && (
-                                      <span className="text-red-400">
-                                        · {histStat.activeMistakes} previous mistake
-                                        {histStat.activeMistakes === 1 ? '' : 's'}
-                                      </span>
+                                      <span>· {histStat.activeMistakes} mistakes</span>
                                     )}
                                   </div>
                                 )}
@@ -445,36 +436,36 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
             </div>
           </div>
 
-          {/* RIGHT 4 COLUMNS: Sticky Configuration Summary Panel (Part 9: "Ready? Generate Test") */}
-          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-            <div className="p-6 rounded-2xl surface-card border border-slate-800 space-y-6">
+          {/* RIGHT 4 COLUMNS: Configuration Summary Panel */}
+          <div className="lg:col-span-4 lg:sticky lg:top-20 space-y-4">
+            <div className="p-5 rounded-lg bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-800 space-y-4">
               <div>
-                <div className="text-xs font-semibold text-blue-400">Ready?</div>
-                <h2 className="text-2xl font-display text-white mt-0.5">
-                  Your Test Blueprint
+                <h2 className="text-base font-bold text-neutral-950 dark:text-white">
+                  Test Summary
                 </h2>
+                <p className="text-xs text-neutral-500 dark:text-neutral-400">Configured parameters</p>
               </div>
 
               {/* Subject Breakdown */}
-              <div className="space-y-3 pt-2 border-t border-slate-800/80 text-xs">
+              <div className="space-y-2 pt-2 border-t border-neutral-200 dark:border-neutral-800 text-xs">
                 {ALL_SUBJECTS.map((sub) => {
                   const isSubSelected = selectedSubjects.includes(sub);
                   const count = isSubSelected ? selectedChapters[sub]?.length || 0 : 0;
                   return (
                     <div key={sub} className="flex items-center justify-between">
-                      <span className={isSubSelected ? 'text-slate-200 font-medium' : 'text-slate-500'}>
+                      <span className={isSubSelected ? 'text-neutral-900 dark:text-white font-medium' : 'text-neutral-400 dark:text-neutral-600'}>
                         {sub}
                       </span>
                       <span
                         className={`font-mono tabular-nums ${
                           isSubSelected && count > 0
-                            ? 'text-blue-400 font-semibold'
+                            ? 'text-neutral-900 dark:text-white font-semibold'
                             : isSubSelected
-                              ? 'text-amber-400'
-                              : 'text-slate-500'
+                              ? 'text-neutral-600 dark:text-neutral-400'
+                              : 'text-neutral-400 dark:text-neutral-600'
                         }`}
                       >
-                        {count} chapter{count === 1 ? '' : 's'} selected
+                        {count} chapter{count === 1 ? '' : 's'}
                       </span>
                     </div>
                   );
@@ -482,38 +473,38 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
               </div>
 
               {/* Question Count & Duration */}
-              <div className="p-4 rounded-lg bg-slate-900/90 border border-slate-800/90 space-y-3">
+              <div className="p-3 rounded bg-neutral-50 dark:bg-[#121214] border border-neutral-200 dark:border-neutral-800 space-y-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Questions</span>
-                  <span className="text-xl font-mono font-semibold text-white tabular-nums">
+                  <span className="text-neutral-600 dark:text-neutral-400">Questions</span>
+                  <span className="font-mono font-semibold text-neutral-950 dark:text-white tabular-nums">
                     {standardQuestionCount}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400">Duration</span>
-                  <span className="text-lg font-mono font-semibold text-emerald-400 tabular-nums flex items-center gap-1.5">
-                    <Clock className="w-4 h-4" />
+                  <span className="text-neutral-600 dark:text-neutral-400">Duration</span>
+                  <span className="font-mono font-semibold text-neutral-950 dark:text-white tabular-nums flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5" />
                     {durationFormatted}
                   </span>
                 </div>
-                <div className="pt-2 border-t border-slate-800 text-[11px] font-mono text-slate-400 tabular-nums">
+                <div className="pt-2 border-t border-neutral-200 dark:border-neutral-800 text-[11px] font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
                   20 MCQ + 5 Integer per selected subject
                 </div>
               </div>
 
-              {/* Validation & Inventory Warnings (Sections 52, 104, 108) */}
+              {/* Validation & Inventory Warnings */}
               {totalSelectedSubjectsCount === 0 && (
-                <div className="p-3.5 rounded-lg bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 flex items-start gap-2.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="p-3 rounded bg-neutral-50 dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-700 dark:text-neutral-300 flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-neutral-700 dark:text-neutral-300" />
                   <span>Select at least one subject to configure a test.</span>
                 </div>
               )}
 
               {anySubjectWithoutChapters && (
-                <div className="p-3.5 rounded-lg bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 flex items-start gap-2.5">
-                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="p-3 rounded bg-neutral-50 dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-700 dark:text-neutral-300 flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-neutral-700 dark:text-neutral-300" />
                   <span>
-                    Please select at least one chapter for every active subject (
+                    Select at least one chapter for each active subject (
                     {subjectInventorySummary
                       .filter((s) => s.chaptersCount === 0)
                       .map((s) => s.subject)
@@ -524,65 +515,64 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
               )}
 
               {anySubjectWithShortfall && !anySubjectWithoutChapters && (
-                <div className="p-4 rounded-lg bg-amber-950/40 border border-amber-500/40 space-y-3 text-xs">
-                  <div className="flex items-start gap-2 text-amber-200">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div className="p-3 rounded bg-neutral-50 dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 space-y-2 text-xs">
+                  <div className="flex items-start gap-2 text-neutral-800 dark:text-neutral-200">
+                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-neutral-700 dark:text-neutral-300" />
                     <div>
-                      <div className="font-semibold">Insufficient Single-Chapter Inventory</div>
+                      <div className="font-medium">Chapter Question Threshold</div>
                       {subjectInventorySummary
                         .filter((s) => s.hasShortfall)
                         .map((s) => (
-                          <p key={s.subject} className="mt-1 text-amber-200/90 leading-relaxed">
-                            {s.subject} selection currently has{' '}
+                          <p key={s.subject} className="mt-0.5 text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                            {s.subject} has{' '}
                             <span className="font-mono font-semibold">{s.mcqAvailable} MCQs</span> and{' '}
                             <span className="font-mono font-semibold">{s.intAvailable} Integer</span>{' '}
-                            questions (Requested: 20 MCQs + 5 Integer).
+                            (Required: 20 MCQs + 5 Integer).
                           </p>
                         ))}
                     </div>
                   </div>
 
-                  <label className="flex items-start gap-2 pt-2 border-t border-amber-500/30 text-slate-200 cursor-pointer">
+                  <label className="flex items-start gap-2 pt-2 border-t border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={allowFlexibleCount}
                       onChange={(e) => setAllowFlexibleCount(e.target.checked)}
-                      className="mt-0.5 rounded border-slate-600"
+                      className="mt-0.5 rounded border-neutral-300 dark:border-neutral-700"
                     />
                     <span>
-                      Allow creating a shorter test using the exact available questions in this chapter
+                      Allow creating a shorter test using the exact available questions
                     </span>
                   </label>
                 </div>
               )}
 
-              {/* Primary CTA: Generate Chapter Test */}
-              <div className="space-y-2.5">
+              {/* Primary CTA */}
+              <div className="space-y-2 pt-1">
                 <button
                   type="button"
                   disabled={!canGenerateStandardTest}
                   onClick={handleGenerateStandard}
-                  className={`btn-interactive w-full py-3.5 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all ${
+                  className={`w-full py-2.5 px-3 rounded text-xs font-medium flex items-center justify-center gap-1.5 transition-colors ${
                     canGenerateStandardTest
-                      ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-950/50 cursor-pointer'
-                      : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      ? 'bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-950 cursor-pointer'
+                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-600 cursor-not-allowed border border-neutral-200 dark:border-neutral-700'
                   }`}
                 >
                   <span>Generate Test</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
-                {/* Dedicated Wrong-Question Retest CTA */}
                 {totalMistakesInSelection > 0 && !anySubjectWithoutChapters && (
                   <button
                     type="button"
                     onClick={handleGenerateMistakeRetest}
-                    className="btn-interactive w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-red-600/90 hover:bg-red-500 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    className="w-full py-2 px-3 rounded text-xs font-medium text-neutral-900 dark:text-neutral-100 bg-white dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
-                    <RotateCcw className="w-3.5 h-3.5" />
+                    <RotateCcw className="w-3 h-3" />
                     <span>
                       Retest {totalMistakesInSelection} Mistake
-                      {totalMistakesInSelection === 1 ? '' : 's'} in Selection
+                      {totalMistakesInSelection === 1 ? '' : 's'}
                     </span>
                   </button>
                 )}
