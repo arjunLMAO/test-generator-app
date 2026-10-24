@@ -165,10 +165,32 @@ export const TestHistoryView: React.FC<TestHistoryViewProps> = ({
                       </td>
                       <td className="py-3 px-4">
                         <div className="font-semibold text-neutral-950 dark:text-white text-xs">{rep.title}</div>
-                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5 flex items-center gap-1.5 font-mono">
+                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-0.5 flex flex-wrap items-center gap-1.5 font-mono">
                           <span>{modeLabel}</span>
                           <span aria-hidden="true">·</span>
                           <span>{rep.totalQuestions} Qs</span>
+                          {rep.targetScore !== undefined && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              <span
+                                className={`px-1.5 py-0.2 rounded text-[10px] ${
+                                  rep.targetScoreMet
+                                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold'
+                                    : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+                                }`}
+                              >
+                                Target {rep.targetScore} {rep.targetScoreMet ? '✓' : `(${rep.totalMarks - rep.targetScore > 0 ? `+${rep.totalMarks - rep.targetScore}` : rep.totalMarks - rep.targetScore})`}
+                              </span>
+                            </>
+                          )}
+                          {rep.tabSwitchCount !== undefined && rep.tabSwitchCount > 0 && (
+                            <>
+                              <span aria-hidden="true">·</span>
+                              <span className="px-1.5 py-0.2 rounded text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 font-medium">
+                                ⚠️ {rep.tabSwitchCount} {rep.tabSwitchCount === 1 ? 'switch' : 'switches'}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </td>
                       <td className="py-3 px-4">

@@ -31,6 +31,7 @@ export interface TestGenerationRequest {
   seed?: string;
   targetQuestionIds?: string[];
   sourceAttemptId?: string;
+  targetScore?: number;
 }
 
 export interface TestGenerationOutcome {
@@ -871,6 +872,8 @@ export class TestGeneratorService {
       noticeMessage,
       scoringConfig,
       sourceAttemptId: request.sourceAttemptId,
+      targetScore: request.targetScore,
+      tabSwitchCount: 0,
     };
   }
 }

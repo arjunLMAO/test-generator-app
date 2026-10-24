@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Play, ShieldCheck, X } from 'lucide-react';
+import { Check, Play, ShieldCheck, Target, X } from 'lucide-react';
 import { SubjectName, TestMode } from '../types/jee';
 
 interface TestOverviewModalProps {
@@ -7,7 +7,7 @@ interface TestOverviewModalProps {
   selectedSubjects: SubjectName[];
   chaptersBySubject: Partial<Record<SubjectName, string[]>>;
   allowFlexibleCount?: boolean;
-  onConfirmStart: () => Promise<void>;
+  onConfirmStart: (targetScore?: number) => Promise<void>;
   onClose: () => void;
   errorMessage?: string | null;
 }
@@ -28,6 +28,10 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
   const totalMcq = subjectCount * 20;
   const totalInt = subjectCount * 5;
   const durationHours = subjectCount;
+  const maxMarks = subjectCount * 100;
+
+  const defaultTarget = mode === TestMode.FULL_SYLLABUS ? 180 : Math.round(maxMarks * 0.7);
+  const [targetScore, setTargetScore] = useState<number | ''>(defaultTarget);
 
   const handleLaunch = async () => {
     setIsGenerating(true);
@@ -37,7 +41,8 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
     await new Promise((r) => setTimeout(r, 200));
     setGenerationStep(3);
     await new Promise((r) => setTimeout(r, 160));
-    await onConfirmStart();
+    const finalTarget = typeof targetScore === 'number' && targetScore > 0 ? targetScore : undefined;
+    await onConfirmStart(finalTarget);
     setIsGenerating(false);
   };
 
@@ -152,6 +157,81 @@ export const TestOverviewModal: React.FC<TestOverviewModalProps> = ({
                 })}
               </div>
             </div>
+
+            {/* Target Score Goal */}
+            {mode !== TestMode.WRONG_QUESTION_RETEST && (
+              <div className="p-4 rounded-lg bg-neutral-50 dark:bg-[#121214] border border-neutral-200 dark:border-neutral-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-4 h-4 text-neutral-800 dark:text-neutral-200" />
+                    <span className="text-xs font-semibold text-neutral-900 dark:text-white">
+                      Target Score Goal
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400">
+                    Max: {maxMarks} marks
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="relative flex-1">
+                    <input
+                      type="number"
+                      min={0}
+                      max={maxMarks}
+                      value={targetScore}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        if (v === '') setTargetScore('');
+                        else {
+                          const num = Math.min(maxMarks, Math.max(0, parseInt(v, 10) || 0));
+                          setTargetScore(num);
+                        }
+                      }}
+                      placeholder={`e.g. ${Math.round(maxMarks * 0.65)}`}
+                      className="w-full px-3 py-1.5 text-xs font-mono bg-white dark:bg-[#18181B] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-300"
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono text-neutral-400 dark:text-neutral-500">
+                      / {maxMarks}
+                    </span>
+                  </div>
+
+                  {/* Preset Chips */}
+                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                    {[
+                      { label: '50%', val: Math.round(maxMarks * 0.5) },
+                      { label: '65%', val: Math.round(maxMarks * 0.65) },
+                      { label: '75%', val: Math.round(maxMarks * 0.75) },
+                      { label: '85%', val: Math.round(maxMarks * 0.85) },
+                    ].map((p) => (
+                      <button
+                        key={p.label}
+                        type="button"
+                        onClick={() => setTargetScore(p.val)}
+                        className={`px-2 py-1 text-xs rounded border transition-colors cursor-pointer ${
+                          targetScore === p.val
+                            ? 'bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 font-semibold border-neutral-900 dark:border-white'
+                            : 'bg-white dark:bg-[#18181B] text-neutral-600 dark:text-neutral-400 border-neutral-200 dark:border-neutral-700 hover:text-neutral-900 dark:hover:text-white'
+                        }`}
+                      >
+                        {p.label} ({p.val})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {typeof targetScore === 'number' && targetScore > 0 && (
+                  <div className="text-[11px] text-neutral-500 dark:text-neutral-400 flex items-center justify-between font-mono">
+                    <span>
+                      Target: {targetScore} marks (approx. {Math.ceil(targetScore / 4)} correct questions with zero errors)
+                    </span>
+                    <span className="text-neutral-800 dark:text-neutral-200 font-medium">
+                      {Math.round((targetScore / maxMarks) * 100)}% pacing
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Test Pattern & Marking Scheme */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">

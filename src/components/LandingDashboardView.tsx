@@ -1,5 +1,5 @@
-import React from 'react';
-import { Clock, Trash2 } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ArrowRight, BookOpen, Clock, Search, Trash2 } from 'lucide-react';
 import { DashboardAnalyticsSummary } from '../services/LongTermAnalyticsService';
 import {
   GeneratedTest,
@@ -49,10 +49,24 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
   onRetestMistakes,
   onNavigateTab,
 }) => {
-  const totalChapters =
-    diagnostics.bySubject.Physics.chaptersCount +
-    diagnostics.bySubject.Chemistry.chaptersCount +
-    diagnostics.bySubject.Mathematics.chaptersCount;
+  const totalChapters = diagnostics.chapterInventories.length;
+
+  const [chapterFilterTab, setChapterFilterTab] = useState<'ALL' | SubjectName>('ALL');
+  const [chapterSearch, setChapterSearch] = useState('');
+
+  const filteredInventories = useMemo(() => {
+    return diagnostics.chapterInventories.filter((inv) => {
+      if (chapterFilterTab !== 'ALL' && inv.subject !== chapterFilterTab) return false;
+      if (chapterSearch.trim()) {
+        const q = chapterSearch.toLowerCase();
+        return (
+          inv.chapter.toLowerCase().includes(q) ||
+          inv.topics.some((t) => t.toLowerCase().includes(q))
+        );
+      }
+      return true;
+    });
+  }, [diagnostics.chapterInventories, chapterFilterTab, chapterSearch]);
 
   return (
     <div className="bg-white dark:bg-[#0F0F11] text-neutral-900 dark:text-neutral-100 min-h-screen transition-colors">
@@ -312,23 +326,27 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
         </section>
 
         {/* Syllabus / Subject Overview */}
-        <section aria-label="Syllabus by Subject" className="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-800">
-          <div className="flex items-center justify-between">
+        <section aria-label="Syllabus by Subject" className="space-y-6 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-neutral-950 dark:text-white">Subjects</h2>
+              <h2 className="text-lg font-semibold text-neutral-950 dark:text-white">
+                Syllabus & Chapter Directory
+              </h2>
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {totalChapters} chapters and {diagnostics.validQuestionsCount.toLocaleString()} total questions available.
+                All {totalChapters} chapters and {diagnostics.validQuestionsCount.toLocaleString()} total questions available across JEE syllabus.
               </p>
             </div>
             <button
               type="button"
-              onClick={() => onNavigateTab('question-bank')}
-              className="text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white transition-colors cursor-pointer"
+              onClick={() => onOpenChapterSelector()}
+              className="text-xs font-medium text-neutral-900 dark:text-white hover:underline flex items-center gap-1 cursor-pointer self-start sm:self-auto"
             >
-              Question Bank ({diagnostics.filesScanned} files) →
+              <span>Open Custom Chapter Builder</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
+          {/* Subject Metric Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {(['Physics', 'Chemistry', 'Mathematics'] as SubjectName[]).map((sub) => {
               const info = diagnostics.bySubject[sub];
@@ -362,7 +380,10 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
 
                   <button
                     type="button"
-                    onClick={() => onOpenChapterSelector(sub)}
+                    onClick={() => {
+                      setChapterFilterTab(sub);
+                      onOpenChapterSelector(sub);
+                    }}
                     className="w-full py-1.5 px-3 text-xs font-medium text-neutral-800 dark:text-neutral-200 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 rounded transition-colors cursor-pointer"
                   >
                     Select {sub} Chapters
@@ -370,6 +391,86 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
                 </div>
               );
             })}
+          </div>
+
+          {/* Full Interactive Chapter Roster */}
+          <div className="p-5 bg-white dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 rounded-lg space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+                  All Available Chapters ({filteredInventories.length} shown)
+                </h3>
+              </div>
+
+              <div className="relative w-full sm:w-64">
+                <Search className="w-3.5 h-3.5 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={chapterSearch}
+                  onChange={(e) => setChapterSearch(e.target.value)}
+                  placeholder="Search chapters..."
+                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 dark:focus:border-white"
+                />
+              </div>
+            </div>
+
+            {/* Subject Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-1.5 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 text-xs">
+              {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((tab) => {
+                const count =
+                  tab === 'ALL'
+                    ? diagnostics.chapterInventories.length
+                    : diagnostics.bySubject[tab].chaptersCount;
+                const isSelected = chapterFilterTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => setChapterFilterTab(tab)}
+                    className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                    }`}
+                  >
+                    <span>{tab === 'ALL' ? 'All Chapters' : tab}</span>
+                    <span className="font-mono text-[11px] opacity-70">({count})</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Chapter Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-[500px] overflow-y-auto pr-1">
+              {filteredInventories.map((inv) => (
+                <div
+                  key={`${inv.subject}::${inv.chapter}`}
+                  className="p-3 bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:border-neutral-400 dark:hover:border-neutral-600 transition-colors flex flex-col justify-between gap-2"
+                >
+                  <div>
+                    <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+                      <span>{inv.subject}</span>
+                      <span>{inv.totalQuestions} Qs</span>
+                    </div>
+                    <div className="text-xs font-semibold text-neutral-950 dark:text-white mt-1 leading-snug">
+                      {inv.chapter}
+                    </div>
+                    <div className="text-[11px] font-mono text-neutral-500 dark:text-neutral-400 mt-1">
+                      {inv.mcqCount} MCQ · {inv.integerCount} Num
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => onOpenChapterSelector(inv.subject, inv.chapter)}
+                    className="w-full mt-1 py-1 px-2 text-[11px] font-medium text-neutral-900 dark:text-neutral-100 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded transition-colors cursor-pointer text-center"
+                  >
+                    Drill Chapter →
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -383,14 +484,6 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
               className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
             >
               Select Chapters
-            </button>
-            <span aria-hidden="true">·</span>
-            <button
-              type="button"
-              onClick={() => onNavigateTab('question-bank')}
-              className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
-            >
-              Question Bank
             </button>
             <span aria-hidden="true">·</span>
             <button

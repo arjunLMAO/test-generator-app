@@ -9,7 +9,6 @@ import { ChapterSelectorView } from './components/ChapterSelectorView';
 import { ExamWorkspaceView } from './components/ExamWorkspaceView';
 import { LandingDashboardView } from './components/LandingDashboardView';
 import { ActiveNavTab, Navbar } from './components/Navbar';
-import { QuestionBankAdminView } from './components/QuestionBankAdminView';
 import { TestHistoryView } from './components/TestHistoryView';
 import { TestOverviewModal } from './components/TestOverviewModal';
 import { TestResultsView } from './components/TestResultsView';
@@ -43,8 +42,7 @@ type ViewScreen =
   | 'exam'
   | 'results'
   | 'analytics'
-  | 'history'
-  | 'question-bank';
+  | 'history';
 
 interface OverviewPendingConfig {
   mode: TestMode;
@@ -445,7 +443,7 @@ export default function App() {
   }, [activeTest, currentView, handleSubmitTest]);
 
   // Confirm & Generate Test from Overview Modal
-  const handleConfirmStartTest = async () => {
+  const handleConfirmStartTest = async (targetScore?: number) => {
     if (!overviewConfig) return;
     setGenerationError(null);
 
@@ -459,13 +457,18 @@ export default function App() {
           selectedSubjects: overviewConfig.selectedSubjects,
           chaptersBySubject: overviewConfig.chaptersBySubject,
           allowFlexibleCount: overviewConfig.allowFlexibleCount,
+          targetScore,
         }),
       });
 
       if (resp.ok) {
         const outcome = await resp.json();
         if (outcome && outcome.success && outcome.test) {
-          const generated: GeneratedTest = outcome.test;
+          const generated: GeneratedTest = {
+            ...outcome.test,
+            targetScore,
+            tabSwitchCount: 0,
+          };
           setActiveTest(generated);
           persistActiveTestState(generated);
           setOverviewConfig(null);
@@ -486,6 +489,7 @@ export default function App() {
         selectedSubjects: overviewConfig.selectedSubjects,
         chaptersBySubject: overviewConfig.chaptersBySubject,
         allowFlexibleCount: overviewConfig.allowFlexibleCount,
+        targetScore,
       },
       historyMap
     );
@@ -494,8 +498,13 @@ export default function App() {
       setGenerationError(outcome.error || 'Failed to generate test.');
       return;
     }
-    setActiveTest(outcome.test);
-    persistActiveTestState(outcome.test);
+    const finalTest: GeneratedTest = {
+      ...outcome.test,
+      targetScore,
+      tabSwitchCount: 0,
+    };
+    setActiveTest(finalTest);
+    persistActiveTestState(finalTest);
     setOverviewConfig(null);
     setCurrentView('exam');
   };
@@ -913,44 +922,6 @@ export default function App() {
             }}
             onRetestAttemptMistakes={(testId) => startMistakeRetest({ attemptId: testId })}
             onStartNewTest={handleOpenFullSyllabusOverview}
-          />
-        )}
-
-        {currentView === 'question-bank' && (
-          <QuestionBankAdminView
-            questions={questions}
-            diagnostics={diagnostics}
-            onImportJsonFiles={async (files, replaceExisting) => {
-              const resp = await fetch('/api/question-bank/import-files', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ files, replaceExisting }),
-              });
-              const data = await resp.json();
-              if (!resp.ok) throw new Error(data.error || 'Import failed');
-              setQuestions(data.questions || []);
-              setDiagnostics(data.diagnostics || null);
-            }}
-            onImportGitRepo={async (repoUrl, branch, subPath, replaceExisting, githubToken) => {
-              const resp = await fetch('/api/question-bank/import-git', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ repoUrl, branch, subPath, replaceExisting, githubToken }),
-              });
-              const data = await resp.json();
-              if (!resp.ok) throw new Error(data.error || 'Git sync failed');
-              setQuestions(data.questions || []);
-              setDiagnostics(data.diagnostics || null);
-            }}
-            onResetDefaultBank={async () => {
-              const resp = await fetch('/api/question-bank/reset', {
-                method: 'POST',
-              });
-              const data = await resp.json();
-              if (!resp.ok) throw new Error(data.error || 'Reset failed');
-              setQuestions(data.questions || []);
-              setDiagnostics(data.diagnostics || null);
-            }}
           />
         )}
       </div>

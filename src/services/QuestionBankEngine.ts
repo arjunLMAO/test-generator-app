@@ -324,55 +324,109 @@ function normalizeDifficulty(raw: unknown, fallbackSeedId = ''): DifficultyLevel
 }
 
 const CHAPTER_CANONICAL_MAP: Record<string, string> = {
+  // Physics
   'units and measurements': 'Units & Measurements',
-  'work, power and energy': 'Work, Energy & Power',
-  'work power and energy': 'Work, Energy & Power',
-  'properties of matter': 'Properties of Solids & Liquids',
-  'mechanical properties of fluids': 'Properties of Solids & Liquids',
+  'units': 'Units & Measurements',
+  'work, power and energy': 'Work, Power & Energy',
+  'work power energy': 'Work, Power & Energy',
+  'work power and energy': 'Work, Power & Energy',
+  'properties of matter': 'Properties of Matter',
+  'mechanical properties of fluids': 'Mechanical Properties of Fluids',
   'magnetics': 'Magnetic Effects of Current & Magnetism',
-  'dual nature of radiation': 'Dual Nature of Matter & Radiation',
-  'simple harmonic motion': 'Oscillations & Waves',
-  'waves': 'Oscillations & Waves',
-  'wave optics': 'Ray & Wave Optics',
-  'ray optics': 'Ray & Wave Optics',
+  'magnetic': 'Magnetic Effects of Current & Magnetism',
+  'magnetic properties of matter': 'Magnetic Properties of Matter',
+  'dual nature of radiation': 'Dual Nature of Radiation & Matter',
+  'simple harmonic motion': 'Simple Harmonic Motion',
+  'shm': 'Simple Harmonic Motion',
+  'waves': 'Waves',
+  'wave optics': 'Wave Optics',
+  'ray optics': 'Ray Optics',
+  'circular motion': 'Circular Motion',
+  'capacitor': 'Capacitance & Dielectrics',
+  'current electricity': 'Current Electricity',
+  'alternating current': 'Alternating Current',
+  'electromagnetic induction': 'Electromagnetic Induction',
+  'electromagnetic waves': 'Electromagnetic Waves',
+  'electrostatics': 'Electrostatics',
+  'gravitation': 'Gravitation',
+  'motion in a plane': 'Motion in a Plane',
+  'motion in a straight line': 'Motion in a Straight Line',
+  'rotational': 'Rotational Motion',
+  'rotational motion': 'Rotational Motion',
+  'vector algebra': 'Vector Algebra',
+
+  // Chemistry
   'some basic concepts of chemistry': 'Mole Concept & Stoichiometry',
-  'structure of atom': 'Atomic Structure',
+  'moles': 'Mole Concept & Stoichiometry',
+  'structure of atom': 'Structure of Atom',
   'chemical bonding and molecular structure': 'Chemical Bonding & Molecular Structure',
-  'thermodynamics': 'Thermodynamics',
-  'electrochemistry': 'Redox Reactions & Electrochemistry',
-  'redox reactions': 'Redox Reactions & Electrochemistry',
-  'ionic equilibrium': 'Equilibrium (Chemical & Ionic)',
-  'chemical equilibrium': 'Equilibrium (Chemical & Ionic)',
+  'thermodynamics': 'Chemical Thermodynamics',
+  'chem thermo': 'Chemical Thermodynamics',
+  'electrochemistry': 'Electrochemistry',
+  'redox reactions': 'Redox Reactions',
+  'redox': 'Redox Reactions',
+  'ionic equilibrium': 'Ionic Equilibrium',
+  'ionic equillibrium': 'Ionic Equilibrium',
+  'chemical equilibrium': 'Chemical Equilibrium',
   'periodic table and periodicity': 'Classification of Elements & Periodicity',
+  'periodic table': 'Classification of Elements & Periodicity',
   'd and f block elements': 'd- and f-Block Elements',
+  'p block elements': 'p-Block Elements',
+  'p-block elements': 'p-Block Elements',
+  's-block elements': 's-Block Elements',
   'haloalkanes and haloarenes': 'Haloalkanes & Haloarenes',
   'aldehydes ketones and carboxylic acids': 'Aldehydes, Ketones & Carboxylic Acids',
-  'biomolecules': 'Amines & Biomolecules',
+  'biomolecules': 'Biomolecules',
   'solutions': 'Solutions & Colligative Properties',
-  'chemical kinetics and nuclear chemistry': 'Chemical Kinetics',
+  'chemical kinetics and nuclear chemistry': 'Chemical Kinetics & Nuclear Chemistry',
+  'chemistry in everyday life': 'Chemistry in Everyday Life',
+  'coordination compounds': 'Coordination Compounds',
+  'hydrocarbons': 'Hydrocarbons',
+  'polymers': 'Polymers',
+
+  // Mathematics
   'complex numbers 2': 'Complex Numbers',
-  'quadratic equation and inequalities': 'Quadratic Equations',
-  'sequences and series': 'Sequence & Series',
+  'complex numbers': 'Complex Numbers',
+  'quadratic equation and inequalities': 'Quadratic Equations & Inequalities',
+  'quadratic': 'Quadratic Equations & Inequalities',
+  'sequences and series': 'Sequences & Series',
   'limits, continuity and differentiability': 'Limits, Continuity & Differentiability',
-  'trigonometric functions and equations': 'Trigonometry',
+  'continuity': 'Limits, Continuity & Differentiability',
+  'trigonometric functions and equations': 'Trigonometric Functions & Equations',
+  'trigo': 'Trigonometry',
+  'inverse trigo': 'Inverse Trigonometric Functions',
+  'inverse trigonometric functions': 'Inverse Trigonometric Functions',
   'sets and relations': 'Sets, Relations & Functions',
-  'straight lines and pair of straight lines': 'Coordinate Geometry (Straight Lines & Circles)',
-  'straight lines': 'Coordinate Geometry (Straight Lines & Circles)',
-  'circles': 'Coordinate Geometry (Straight Lines & Circles)',
-  'statistics': 'Statistics & Probability',
-  'probability': 'Statistics & Probability',
+  'sets': 'Sets, Relations & Functions',
+  'straight lines and pair of straight lines': 'Straight Lines & Pair of Lines',
+  'straight lines': 'Straight Lines',
+  'circles': 'Circles',
+  'statistics': 'Statistics',
+  'stats': 'Statistics',
+  'probability': 'Probability',
+  'area under the curves': 'Area Under Curves',
+  'binomial theorem': 'Binomial Theorem',
+  'definite integration': 'Definite Integration',
+  'differential equations': 'Differential Equations',
+  'differentiation': 'Differentiation',
+  'hyperbola': 'Hyperbola',
+  'indefinite integrals': 'Indefinite Integrals',
+  'log inequalities': 'Logarithms & Inequalities',
+  'logarithm': 'Logarithms & Inequalities',
+  'matrices and determinants': 'Matrices & Determinants',
+  'parabola': 'Parabola',
 };
 
 function canonicalizeChapterName(rawChapter: string, subject: SubjectName): string {
-  const trimmed = rawChapter.trim();
-  const lower = trimmed.toLowerCase();
-  if (lower === 'thermodynamics' && subject === 'Chemistry') {
-    return 'Chemical Thermodynamics';
+  const clean = rawChapter.replace(/\s*questions$/i, '').trim();
+  const lower = clean.toLowerCase();
+  if (lower === 'thermodynamics') {
+    return subject === 'Chemistry' ? 'Chemical Thermodynamics' : 'Thermodynamics';
   }
   if (CHAPTER_CANONICAL_MAP[lower]) {
     return CHAPTER_CANONICAL_MAP[lower];
   }
-  return trimmed;
+  return clean;
 }
 
 function normalizeQuestionType(rawType: unknown, hasOptions: boolean, rawAnswer: unknown): QuestionType | null {

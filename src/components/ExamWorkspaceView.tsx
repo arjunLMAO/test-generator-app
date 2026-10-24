@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import {
+  AlertTriangle,
   Bookmark,
   ChevronLeft,
   ChevronRight,
@@ -7,6 +8,7 @@ import {
   Moon,
   Send,
   Sun,
+  Target,
   X,
 } from 'lucide-react';
 import {
@@ -59,6 +61,32 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
 }) => {
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [integerInput, setIntegerInput] = useState('');
+  const [tabSwitchCount, setTabSwitchCount] = useState<number>(test.tabSwitchCount || 0);
+  const [lastTabSwitchWarning, setLastTabSwitchWarning] = useState<string | null>(null);
+
+  // Tab switch detector
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Tab hidden
+      } else {
+        // Tab visible again after being hidden
+        setTabSwitchCount((prev) => {
+          const next = prev + 1;
+          test.tabSwitchCount = next;
+          setLastTabSwitchWarning(
+            `Tab switch detected (Incident #${next}). Navigating away from the examination window is recorded in your audit log.`
+          );
+          return next;
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [test]);
 
   const currentAllocation = useMemo(() => {
     return (
@@ -250,6 +278,29 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
+            {/* Target Score Indicator */}
+            {test.targetScore !== undefined && test.targetScore > 0 && (
+              <div
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-xs font-mono"
+                title="Target Score Goal"
+              >
+                <Target className="w-3.5 h-3.5 text-neutral-500 dark:text-neutral-400" />
+                <span className="text-neutral-500 dark:text-neutral-400">Target:</span>
+                <span className="font-semibold text-neutral-900 dark:text-white">{test.targetScore}</span>
+              </div>
+            )}
+
+            {/* Tab Switch Badge */}
+            {tabSwitchCount > 0 && (
+              <div
+                className="flex items-center gap-1.5 px-2 py-1 rounded border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 text-xs font-mono"
+                title="Tab switches detected"
+              >
+                <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                <span>Switches: {tabSwitchCount}</span>
+              </div>
+            )}
+
             {/* Theme Toggle Button */}
             {onToggleTheme && (
               <button
@@ -291,6 +342,23 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
             </button>
           </div>
         </div>
+
+        {/* Tab Switch Warning Banner */}
+        {lastTabSwitchWarning && (
+          <div className="bg-amber-50 dark:bg-amber-950/60 border-t border-b border-amber-200 dark:border-amber-800 px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 text-xs text-amber-900 dark:text-amber-200">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <span className="font-medium">{lastTabSwitchWarning}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLastTabSwitchWarning(null)}
+              className="px-2.5 py-0.5 rounded bg-amber-200/60 dark:bg-amber-800/60 hover:bg-amber-300 dark:hover:bg-amber-700 text-amber-950 dark:text-amber-100 font-medium transition-colors cursor-pointer shrink-0 text-xs"
+            >
+              Acknowledge
+            </button>
+          </div>
+        )}
 
         {/* Subject Subheader */}
         <div className="bg-neutral-50 dark:bg-[#18181B] border-t border-neutral-200 dark:border-neutral-800 px-4 sm:px-6 h-10 flex items-center justify-between">
@@ -627,6 +695,18 @@ export const ExamWorkspaceView: React.FC<ExamWorkspaceViewProps> = ({
                 <span className="text-neutral-500 dark:text-neutral-400">Marked for Review:</span>
                 <span className="font-mono font-semibold text-neutral-900 dark:text-white ml-1.5">
                   {stats.marked + stats.answeredAndMarked}
+                </span>
+              </div>
+              {test.targetScore !== undefined && test.targetScore > 0 && (
+                <div>
+                  <span className="text-neutral-500 dark:text-neutral-400">Target Goal:</span>
+                  <span className="font-mono font-semibold text-neutral-900 dark:text-white ml-1.5">{test.targetScore} pts</span>
+                </div>
+              )}
+              <div>
+                <span className="text-neutral-500 dark:text-neutral-400">Tab Switches:</span>
+                <span className={`font-mono font-semibold ml-1.5 ${tabSwitchCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-neutral-900 dark:text-white'}`}>
+                  {tabSwitchCount} {tabSwitchCount > 0 ? '(logged)' : '(clean)'}
                 </span>
               </div>
             </div>

@@ -155,49 +155,52 @@ export function scanQuestionBankDirectory(dirPath: string): RawFilePayload[] {
     // ignore
   }
 
-  if (!fs.existsSync(dirPath)) {
-    // Try fallback to public/question-bank
-    const pubDir = path.join(ROOT_DIR, 'public', 'question-bank');
-    if (fs.existsSync(pubDir)) {
-      dirPath = pubDir;
-    } else {
-      return results;
-    }
-  }
+  const candidateDirs = [
+    dirPath,
+    path.join(ROOT_DIR, 'public', 'question-bank'),
+    path.join(ROOT_DIR, 'question-bank'),
+  ];
 
-  const walk = (currentDir: string) => {
-    try {
-      const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-      for (const entry of entries) {
-        const fullPath = path.join(currentDir, entry.name);
-        if (entry.isDirectory()) {
-          walk(fullPath);
-        } else if (
-          entry.isFile() &&
-          entry.name.toLowerCase().endsWith('.json') &&
-          entry.name.toLowerCase() !== 'manifest.json'
-        ) {
-          const relPath = path.relative(dirPath, fullPath);
-          if (seenFiles.has(relPath)) continue;
-          seenFiles.add(relPath);
-          try {
-            const text = fs.readFileSync(fullPath, 'utf-8');
-            const parsed = JSON.parse(text);
-            results.push({ filePath: relPath, content: parsed });
-          } catch {
-            results.push({
-              filePath: relPath,
-              content: [{ id: `MALFORMED_${entry.name}`, question: '' }],
-            });
+  for (const baseDir of candidateDirs) {
+    if (!fs.existsSync(baseDir)) continue;
+
+    const walk = (currentDir: string) => {
+      try {
+        const entries = fs.readdirSync(currentDir, { withFileTypes: true });
+        for (const entry of entries) {
+          const fullPath = path.join(currentDir, entry.name);
+          if (entry.isDirectory()) {
+            walk(fullPath);
+          } else if (
+            entry.isFile() &&
+            entry.name.toLowerCase().endsWith('.json') &&
+            entry.name.toLowerCase() !== 'manifest.json' &&
+            entry.name.toLowerCase() !== 'vercel.json'
+          ) {
+            const relPath = path.relative(baseDir, fullPath);
+            const normKey = relPath.toLowerCase().replace(/\\/g, '/');
+            if (seenFiles.has(normKey)) continue;
+            seenFiles.add(normKey);
+            try {
+              const text = fs.readFileSync(fullPath, 'utf-8');
+              const parsed = JSON.parse(text);
+              results.push({ filePath: relPath, content: parsed });
+            } catch {
+              results.push({
+                filePath: relPath,
+                content: [{ id: `MALFORMED_${entry.name}`, question: '' }],
+              });
+            }
           }
         }
+      } catch {
+        // ignore read error
       }
-    } catch {
-      // ignore read error
-    }
-  };
+    };
 
-  walk(dirPath);
+    walk(baseDir);
+  }
+
   return results;
 }
 

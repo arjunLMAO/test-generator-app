@@ -41,8 +41,9 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
   onCancel,
 }) => {
   const [selectedSubjects, setSelectedSubjects] = useState<SubjectName[]>(
-    initialSubject ? [initialSubject] : ['Physics']
+    initialSubject ? [initialSubject] : ['Physics', 'Chemistry', 'Mathematics']
   );
+  const [viewSubjectTab, setViewSubjectTab] = useState<'ALL' | SubjectName>(initialSubject || 'ALL');
 
   const [selectedChapters, setSelectedChapters] = useState<Record<SubjectName, string[]>>({
     Physics: initialSubject === 'Physics' && initialChapter ? [initialChapter] : [],
@@ -58,6 +59,7 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
       setSelectedSubjects((prev) =>
         prev.includes(initialSubject) ? prev : [...prev, initialSubject]
       );
+      setViewSubjectTab(initialSubject);
       if (initialChapter) {
         setSelectedChapters((prev) => ({
           ...prev,
@@ -295,14 +297,14 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
             </div>
 
             {/* Step 2: Search & Chapter Selection */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h2 className="text-sm font-semibold text-neutral-950 dark:text-white">
                     2. Select Chapters
                   </h2>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    Click chapters to include or exclude from this test session
+                    All {diagnostics.chapterInventories.length} chapters available across JEE syllabus. Click chapters to include or exclude.
                   </p>
                 </div>
                 <div className="relative w-full sm:w-64">
@@ -311,24 +313,48 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search chapters..."
+                    placeholder="Search all chapters..."
                     className="w-full pl-8 pr-3 py-1.5 text-xs bg-white dark:bg-[#121214] border border-neutral-300 dark:border-neutral-700 rounded text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-neutral-900 dark:focus:border-white"
                   />
                 </div>
               </div>
 
-              {selectedSubjects.length === 0 ? (
-                <div className="p-8 rounded-lg bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 text-center text-xs text-neutral-500 dark:text-neutral-400">
-                  Select at least one subject above to view its chapters.
-                </div>
-              ) : (
-                selectedSubjects.map((sub) => {
+              {/* Subject Filter Tabs */}
+              <div className="flex flex-wrap items-center gap-1.5 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 text-xs">
+                {(['ALL', 'Physics', 'Chemistry', 'Mathematics'] as const).map((tab) => {
+                  const count =
+                    tab === 'ALL'
+                      ? diagnostics.chapterInventories.length
+                      : chaptersBySubjectBank[tab]?.length || 0;
+                  const isSelectedTab = viewSubjectTab === tab;
+                  return (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => setViewSubjectTab(tab)}
+                      className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+                        isSelectedTab
+                          ? 'bg-white dark:bg-neutral-700 text-neutral-950 dark:text-white font-semibold shadow-xs'
+                          : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white'
+                      }`}
+                    >
+                      <span>{tab === 'ALL' ? 'All Chapters' : tab}</span>
+                      <span className="font-mono text-[11px] opacity-70">({count})</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {(() => {
+                const subjectsToDisplay = viewSubjectTab === 'ALL' ? ALL_SUBJECTS : [viewSubjectTab];
+                return subjectsToDisplay.map((sub) => {
                   const subChapters = chaptersBySubjectBank[sub] || [];
                   const filtered = subChapters.filter((c) =>
                     c.chapter.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
                     c.topics.some((t) => t.toLowerCase().includes(searchQuery.trim().toLowerCase()))
                   );
                   const chosenList = selectedChapters[sub] || [];
+                  const isSubActiveInTest = selectedSubjects.includes(sub);
 
                   return (
                     <div
@@ -341,6 +367,11 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                           <span className="text-xs font-mono text-neutral-500 dark:text-neutral-400 tabular-nums">
                             · {chosenList.length} of {subChapters.length} selected
                           </span>
+                          {!isSubActiveInTest && chosenList.length === 0 && (
+                            <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-neutral-200 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
+                              Inactive in test
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 text-xs">
                           <button
@@ -431,8 +462,8 @@ export const ChapterSelectorView: React.FC<ChapterSelectorViewProps> = ({
                       </div>
                     </div>
                   );
-                })
-              )}
+                });
+              })()}
             </div>
           </div>
 

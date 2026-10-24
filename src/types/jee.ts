@@ -347,6 +347,8 @@ export interface GeneratedTest {
   noticeMessage?: string;
   scoringConfig: ScoringConfig;
   sourceAttemptId?: string;
+  targetScore?: number;
+  tabSwitchCount?: number;
 }
 
 export interface AttemptEntry {
@@ -486,6 +488,10 @@ export interface TestResultReport {
   strongChapters: ChapterPerformance[];
   questionResults: QuestionResultDetail[];
   summaryInsights: string[];
+  targetScore?: number;
+  targetScoreMet?: boolean;
+  targetScoreDelta?: number;
+  tabSwitchCount?: number;
 }
 
 export const DEFAULT_SCORING_CONFIG: ScoringConfig = {

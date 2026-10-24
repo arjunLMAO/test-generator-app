@@ -346,6 +346,10 @@ export class ScoringAndAnalyticsService {
       strongChapters,
       questionResults,
       summaryInsights,
+      targetScore: test.targetScore,
+      targetScoreMet: test.targetScore !== undefined ? totalMarks >= test.targetScore : undefined,
+      targetScoreDelta: test.targetScore !== undefined ? totalMarks - test.targetScore : undefined,
+      tabSwitchCount: test.tabSwitchCount ?? 0,
     };
 
     return { report, updatedHistoryMap };

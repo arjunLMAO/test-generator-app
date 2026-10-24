@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
-  AlertCircle,
+  AlertTriangle,
   ArrowLeft,
   CheckCircle2,
   Clock,
-  Filter,
+  Hourglass,
   RotateCcw,
-  Sliders,
-  XCircle,
+  ShieldAlert,
+  ShieldCheck,
+  Target,
+  Zap,
 } from 'lucide-react';
 import { SubjectName, TestResultReport } from '../types/jee';
 import { MathText } from './MathText';
@@ -40,6 +42,7 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
 }) => {
   const [filterResult, setFilterResult] = useState<'all' | 'incorrect' | 'correct' | 'unattempted'>('all');
   const [filterSubject, setFilterSubject] = useState<string>('all');
+  const [quadrantFilter, setQuadrantFilter] = useState<'all' | 'optimal' | 'grind' | 'impulsive' | 'timesink'>('all');
   const [expandedSolutions, setExpandedSolutions] = useState<Record<string, boolean>>({});
 
   const toggleSolution = (qid: string) => {
@@ -49,9 +52,50 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
     }));
   };
 
+  const benchmarkAvgTime = report.avgTimePerAttemptedSeconds > 0 ? report.avgTimePerAttemptedSeconds : 90;
+
+  const efficiencyMatrix = useMemo(() => {
+    const optimal: typeof report.questionResults = [];
+    const grind: typeof report.questionResults = [];
+    const impulsive: typeof report.questionResults = [];
+    const timesink: typeof report.questionResults = [];
+
+    let totalTimeWastedOnMistakes = 0;
+
+    for (const q of report.questionResults) {
+      const isSlow = q.timeSpentSeconds > benchmarkAvgTime;
+      if (q.result === 'incorrect') {
+        totalTimeWastedOnMistakes += q.timeSpentSeconds;
+      }
+
+      if (q.result === 'correct') {
+        if (!isSlow) optimal.push(q);
+        else grind.push(q);
+      } else {
+        if (!isSlow && q.result === 'incorrect') impulsive.push(q);
+        else timesink.push(q);
+      }
+    }
+
+    return {
+      optimal,
+      grind,
+      impulsive,
+      timesink,
+      totalTimeWastedOnMistakes,
+    };
+  }, [report.questionResults, benchmarkAvgTime]);
+
   const filteredQuestions = report.questionResults.filter((q) => {
     if (filterResult !== 'all' && q.result !== filterResult) return false;
     if (filterSubject !== 'all' && q.subject !== filterSubject) return false;
+    if (quadrantFilter !== 'all') {
+      const isSlow = q.timeSpentSeconds > benchmarkAvgTime;
+      if (quadrantFilter === 'optimal' && !(q.result === 'correct' && !isSlow)) return false;
+      if (quadrantFilter === 'grind' && !(q.result === 'correct' && isSlow)) return false;
+      if (quadrantFilter === 'impulsive' && !(q.result === 'incorrect' && !isSlow)) return false;
+      if (quadrantFilter === 'timesink' && !(isSlow && q.result !== 'correct')) return false;
+    }
     return true;
   });
 
@@ -174,6 +218,106 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
           )}
         </div>
 
+        {/* Target Score Goal & Session Integrity Card */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Target Score Card */}
+          <div className="p-4 bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 rounded-lg flex items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-neutral-200 dark:bg-neutral-800 rounded text-neutral-800 dark:text-neutral-200 shrink-0">
+                <Target className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+                  Target Score Goal
+                </div>
+                {report.targetScore !== undefined ? (
+                  <div className="mt-1 space-y-0.5">
+                    <div className="text-sm text-neutral-800 dark:text-neutral-200 font-medium">
+                      Goal: <span className="font-mono font-bold">{report.targetScore}</span> marks · Achieved:{' '}
+                      <span className="font-mono font-bold">{report.totalMarks}</span> marks
+                    </div>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      {report.targetScoreMet ? (
+                        <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                          Target exceeded by +{report.targetScoreDelta ?? (report.totalMarks - report.targetScore)} marks.
+                        </span>
+                      ) : (
+                        <span className="text-amber-700 dark:text-amber-400 font-medium">
+                          Fell short by {Math.abs(report.targetScoreDelta ?? (report.totalMarks - report.targetScore))} marks of target goal.
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                    No target score was set for this session. You can define target score goals in pre-test setup.
+                  </div>
+                )}
+              </div>
+            </div>
+            {report.targetScore !== undefined && (
+              <span
+                className={`px-2.5 py-1 text-xs font-semibold rounded shrink-0 border ${
+                  report.targetScoreMet
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                    : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                }`}
+              >
+                {report.targetScoreMet ? 'Target Met' : 'Missed'}
+              </span>
+            )}
+          </div>
+
+          {/* Tab Switch & Integrity Audit */}
+          <div className="p-4 bg-neutral-50 dark:bg-[#18181B] border border-neutral-200 dark:border-neutral-800 rounded-lg flex items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div
+                className={`p-2 rounded shrink-0 ${
+                  (report.tabSwitchCount ?? 0) === 0
+                    ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400'
+                    : 'bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400'
+                }`}
+              >
+                {(report.tabSwitchCount ?? 0) === 0 ? (
+                  <ShieldCheck className="w-4 h-4" />
+                ) : (
+                  <ShieldAlert className="w-4 h-4" />
+                )}
+              </div>
+              <div>
+                <div className="text-xs font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+                  Tab Switch & Integrity Audit
+                </div>
+                <div className="mt-1 space-y-0.5">
+                  <div className="text-sm text-neutral-800 dark:text-neutral-200 font-medium">
+                    {(report.tabSwitchCount ?? 0) === 0 ? (
+                      <span className="text-emerald-700 dark:text-emerald-400 font-semibold">Clean Exam Session</span>
+                    ) : (
+                      <span className="text-amber-700 dark:text-amber-400 font-semibold font-mono">
+                        {report.tabSwitchCount} {report.tabSwitchCount === 1 ? 'Tab Switch' : 'Tab Switches'} Detected
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {(report.tabSwitchCount ?? 0) === 0
+                      ? 'Candidate remained focused inside the active test tab.'
+                      : 'Candidate navigated away from the exam tab during the session.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <span
+              className={`px-2.5 py-1 text-xs font-semibold rounded shrink-0 border ${
+                (report.tabSwitchCount ?? 0) === 0
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
+                  : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+              }`}
+            >
+              {(report.tabSwitchCount ?? 0) === 0 ? 'Verified' : 'Flagged'}
+            </span>
+          </div>
+        </div>
+
         {/* Subject-Wise Performance Table */}
         <section className="space-y-3">
           <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
@@ -213,6 +357,156 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
               </tbody>
             </table>
           </div>
+        </section>
+
+        {/* Timer Per Question Efficiency Matrix */}
+        <section className="p-5 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#18181B] rounded-lg space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-100 dark:border-neutral-800 pb-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <Hourglass className="w-4 h-4 text-neutral-700 dark:text-neutral-300" />
+                <h2 className="text-sm font-semibold text-neutral-900 dark:text-white uppercase tracking-wider">
+                  Timer-Per-Question Efficiency Matrix
+                </h2>
+              </div>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                Quadrant analysis comparing question solve time vs. accuracy against session pace benchmark ({benchmarkAvgTime}s/Q).
+              </p>
+            </div>
+            {efficiencyMatrix.totalTimeWastedOnMistakes > 0 && (
+              <div className="px-3 py-1.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/60 rounded text-xs text-red-800 dark:text-red-300 font-mono">
+                Total time lost on errors: <strong>{formatDuration(efficiencyMatrix.totalTimeWastedOnMistakes)}</strong>
+              </div>
+            )}
+          </div>
+
+          {/* 4 Quadrants */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Quadrant 1: Optimal Pace */}
+            <button
+              type="button"
+              onClick={() => setQuadrantFilter((prev) => (prev === 'optimal' ? 'all' : 'optimal'))}
+              className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
+                quadrantFilter === 'optimal'
+                  ? 'border-emerald-600 dark:border-emerald-400 bg-emerald-50/70 dark:bg-emerald-950/30 ring-1 ring-emerald-500'
+                  : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 hover:border-neutral-400 dark:hover:border-neutral-600'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5" />
+                  Optimal Pace
+                </span>
+                <span className="text-xs font-mono font-bold text-neutral-900 dark:text-white">
+                  {efficiencyMatrix.optimal.length} Qs
+                </span>
+              </div>
+              <div className="mt-2 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                Fast & Correct (≤{benchmarkAvgTime}s)
+              </div>
+              <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                Peak mastery. High speed execution with decisive accuracy.
+              </p>
+            </button>
+
+            {/* Quadrant 2: Methodical Grind */}
+            <button
+              type="button"
+              onClick={() => setQuadrantFilter((prev) => (prev === 'grind' ? 'all' : 'grind'))}
+              className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
+                quadrantFilter === 'grind'
+                  ? 'border-neutral-600 dark:border-neutral-300 bg-neutral-100 dark:bg-neutral-800 ring-1 ring-neutral-400'
+                  : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 hover:border-neutral-400 dark:hover:border-neutral-600'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300 uppercase tracking-wider flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Methodical Grind
+                </span>
+                <span className="text-xs font-mono font-bold text-neutral-900 dark:text-white">
+                  {efficiencyMatrix.grind.length} Qs
+                </span>
+              </div>
+              <div className="mt-2 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                Slow & Correct (&gt;{benchmarkAvgTime}s)
+              </div>
+              <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                Accurate but slow. High candidate potential through shortcut mastery.
+              </p>
+            </button>
+
+            {/* Quadrant 3: Impulsive Errors */}
+            <button
+              type="button"
+              onClick={() => setQuadrantFilter((prev) => (prev === 'impulsive' ? 'all' : 'impulsive'))}
+              className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
+                quadrantFilter === 'impulsive'
+                  ? 'border-amber-600 dark:border-amber-400 bg-amber-50/70 dark:bg-amber-950/30 ring-1 ring-amber-500'
+                  : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 hover:border-neutral-400 dark:hover:border-neutral-600'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  Impulsive Errors
+                </span>
+                <span className="text-xs font-mono font-bold text-neutral-900 dark:text-white">
+                  {efficiencyMatrix.impulsive.length} Qs
+                </span>
+              </div>
+              <div className="mt-2 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                Fast & Incorrect (≤{benchmarkAvgTime}s)
+              </div>
+              <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                Rushed calculations or misread questions. Costing -1 negative marks each.
+              </p>
+            </button>
+
+            {/* Quadrant 4: Critical Time Sinks */}
+            <button
+              type="button"
+              onClick={() => setQuadrantFilter((prev) => (prev === 'timesink' ? 'all' : 'timesink'))}
+              className={`p-3.5 rounded-lg border text-left transition-all cursor-pointer ${
+                quadrantFilter === 'timesink'
+                  ? 'border-red-600 dark:border-red-400 bg-red-50/70 dark:bg-red-950/30 ring-1 ring-red-500'
+                  : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40 hover:border-neutral-400 dark:hover:border-neutral-600'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-red-800 dark:text-red-400 uppercase tracking-wider flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" />
+                  Critical Time Sinks
+                </span>
+                <span className="text-xs font-mono font-bold text-neutral-900 dark:text-white">
+                  {efficiencyMatrix.timesink.length} Qs
+                </span>
+              </div>
+              <div className="mt-2 text-xs font-medium text-neutral-900 dark:text-neutral-100">
+                Slow & Wrong/Unsolved (&gt;{benchmarkAvgTime}s)
+              </div>
+              <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                Critical leakage: heavy time invested with zero or negative return.
+              </p>
+            </button>
+          </div>
+
+          {quadrantFilter !== 'all' && (
+            <div className="flex items-center justify-between p-2.5 bg-neutral-100 dark:bg-neutral-800/80 rounded text-xs">
+              <span className="text-neutral-700 dark:text-neutral-300">
+                Active Matrix Filter:{' '}
+                <strong className="capitalize text-neutral-950 dark:text-white">{quadrantFilter}</strong> (
+                {filteredQuestions.length} matching questions shown below)
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuadrantFilter('all')}
+                className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white underline cursor-pointer"
+              >
+                Clear Matrix Filter
+              </button>
+            </div>
+          )}
         </section>
 
         {/* Weak Chapters Recommendation */}
@@ -375,9 +669,40 @@ export const TestResultsView: React.FC<TestResultsViewProps> = ({
                       <span className="text-neutral-500 dark:text-neutral-400 font-sans">Correct Answer: </span>
                       <strong className="text-neutral-900 dark:text-white">{String(q.correctAnswer)}</strong>
                     </div>
-                    <div>
-                      <span className="text-neutral-500 dark:text-neutral-400 font-sans">Time: </span>
-                      <span className="text-neutral-700 dark:text-neutral-300">{q.timeSpentSeconds}s</span>
+                    <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2">
+                      <div>
+                        <span className="text-neutral-500 dark:text-neutral-400 font-sans">Time: </span>
+                        <span className="text-neutral-700 dark:text-neutral-300 font-bold">{q.timeSpentSeconds}s</span>
+                      </div>
+                      {(() => {
+                        const isSlow = q.timeSpentSeconds > benchmarkAvgTime;
+                        if (q.result === 'correct' && !isSlow) {
+                          return (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                              ⚡ Optimal Pace
+                            </span>
+                          );
+                        }
+                        if (q.result === 'correct' && isSlow) {
+                          return (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700">
+                              ⏳ Methodical Grind
+                            </span>
+                          );
+                        }
+                        if (q.result === 'incorrect' && !isSlow) {
+                          return (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                              ⚠️ Impulsive Error
+                            </span>
+                          );
+                        }
+                        return (
+                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800">
+                            ⏱️ Critical Time Sink
+                          </span>
+                        );
+                      })()}
                     </div>
                   </div>
 
