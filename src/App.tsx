@@ -5,6 +5,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnalyticsDashboardView } from './components/AnalyticsDashboardView';
+import { ChapterMasteryView } from './components/ChapterMasteryView';
 import { ChapterSelectorView } from './components/ChapterSelectorView';
 import { ExamWorkspaceView } from './components/ExamWorkspaceView';
 import { LandingDashboardView } from './components/LandingDashboardView';
@@ -42,7 +43,8 @@ type ViewScreen =
   | 'exam'
   | 'results'
   | 'analytics'
-  | 'history';
+  | 'history'
+  | 'mastery';
 
 interface OverviewPendingConfig {
   mode: TestMode;
@@ -922,6 +924,23 @@ export default function App() {
             }}
             onRetestAttemptMistakes={(testId) => startMistakeRetest({ attemptId: testId })}
             onStartNewTest={handleOpenFullSyllabusOverview}
+          />
+        )}
+
+        {currentView === 'mastery' && diagnostics && (
+          <ChapterMasteryView
+            diagnostics={diagnostics}
+            historyMap={historyMap}
+            onPracticeChapter={(subject, chapter) => {
+              setChapterPreset({ subject, chapter });
+              setCurrentView('chapters');
+            }}
+            onRetestMistakes={(sub, chap) => startMistakeRetest({ subject: sub, chapter: chap })}
+            onStartFullTest={handleOpenFullSyllabusOverview}
+            onOpenChapterSelector={(sub) => {
+              if (sub) setChapterPreset({ subject: sub });
+              setCurrentView('chapters');
+            }}
           />
         )}
       </div>

@@ -496,6 +496,14 @@ export const LandingDashboardView: React.FC<LandingDashboardViewProps> = ({
             <span aria-hidden="true">·</span>
             <button
               type="button"
+              onClick={() => onNavigateTab('mastery')}
+              className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              Mastery
+            </button>
+            <span aria-hidden="true">·</span>
+            <button
+              type="button"
               onClick={() => onNavigateTab('analytics')}
               className="hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
             >
